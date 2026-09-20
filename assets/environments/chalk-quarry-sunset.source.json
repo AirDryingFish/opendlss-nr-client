@@ -1,0 +1,52 @@
+{
+  "title": "Sunset in the Chalk Quarry",
+  "presetId": "chalk-quarry-sunset",
+  "presetName": "Chalk Quarry Sunset",
+  "purpose": "Warm sunset in an open chalk quarry",
+  "author": "Sergej Majboroda",
+  "source": "https://polyhaven.com/a/sunset_in_the_chalk_quarry",
+  "license": "CC0-1.0",
+  "licenseUrl": "https://polyhaven.com/license",
+  "licenseText": "LICENSE.txt",
+  "downloadUrl": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/sunset_in_the_chalk_quarry_1k.hdr",
+  "apiInfoUrl": "https://api.polyhaven.com/info/sunset_in_the_chalk_quarry",
+  "apiFilesUrl": "https://api.polyhaven.com/files/sunset_in_the_chalk_quarry",
+  "resolution": [
+    1024,
+    512
+  ],
+  "format": "Radiance HDR (32-bit_rle_rgbe)",
+  "bytes": 1580299,
+  "sha256": "84c2d65672c7f49c955c1cf1c9e05253547dd227073f821a47c0546e317be4a0",
+  "upstreamMd5": "43215e388c7db9f6f9b960feea4fad4f",
+  "retrievedAt": "2026-11-11T07:11:06+00:00",
+  "changes": "None. The official Poly Haven 1k HDR file is preserved byte-for-byte.",
+  "primarySourceLicenseEvidence": {
+    "name": "Sunset in the Chalk Quarry",
+    "url": "https://polyhaven.com/a/sunset_in_the_chalk_quarry",
+    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "acquireLicensePage": "https://polyhaven.com/license",
+    "copyrightNotice": "CC0 1.0 Universal - public domain dedication, no attribution required",
+    "creditText": "Sergej Majboroda",
+    "creator": [
+      {
+        "@type": "Person",
+        "name": "Sergej Majboroda"
+      }
+    ],
+    "datePublished": "2019-05-27",
+    "description": "Unclipped, free 16K HDRI: pale chalk quarry at sunset - low golden sun, cool blue sky with partly cloudy bands, soft natural light and medium contrast."
+  },
+  "apiAttribution": {
+    "Sergej Majboroda": "All"
+  },
+  "apiCategories": [
+    "outdoor",
+    "skies",
+    "nature",
+    "sunrise-sunset",
+    "partly cloudy",
+    "medium contrast",
+    "natural light"
+  ]
+}

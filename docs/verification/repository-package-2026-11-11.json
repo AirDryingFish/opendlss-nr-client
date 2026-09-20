@@ -1,0 +1,52 @@
+{
+  "date": "2026-11-11",
+  "asset": "assets/test-static.glb",
+  "assetBytes": 61583972,
+  "assetSha256": "90ea40a9c98084312351cb4b3e37a84f7b34ee3aa0adbe7194af477cc531a389",
+  "gitLfsRequired": false,
+  "cacheDefault": "${XDG_CACHE_HOME:-$HOME/.cache}/opendlss-nr-client",
+  "pythonTestsPassed": 21,
+  "nativeControlsAndImportPassed": true,
+  "requirementsCasesPassed": 12,
+  "realMaterialCasesPassed": 24,
+  "buildPathsCasesPassed": 3,
+  "freshNativeBuild": {
+    "passed": true,
+    "targets": 27,
+    "dependencySdk": "reused pinned, patched Filament1.77.0 SDK",
+    "nativeBuildDirectory": "new independent configure/build directory"
+  },
+  "weightExtractor": {
+    "runtime": "Ubuntu Node18.19.1",
+    "blocks": 71,
+    "tensors": 153,
+    "stagesMatchingVerifiedSha256": 11
+  },
+  "images": {
+    "metadata": "../images/gallery-metadata.json",
+    "caseGallery": "../images/case-gallery.png",
+    "characterViews": "../images/character-views.png",
+    "environmentPresets": "../images/environment-presets.png"
+  },
+  "independentCloneRuntime": {
+    "sourceCommit": "13eb1b3",
+    "defaultAssetHashVerified": true,
+    "passed": true,
+    "frames": 40,
+    "renderResolution": [
+      1024,
+      1024
+    ],
+    "nrEnabled": true,
+    "captureCreated": true,
+    "weights": "existing local verified model supplied via --model; not bundled"
+  },
+  "publicCases": {
+    "models": 4,
+    "importValidation": "passed",
+    "nativeNrRendering": "passed",
+    "foxAnimation": "fox-animation-2026-11-11.json"
+  },
+  "sourceHistoryCompleteAtOriginalPackaging": true,
+  "currentHistoryLayout": "Imported sources, vendor files, assets and documentation are in init; only locally authored implementation/test changes follow."
+}

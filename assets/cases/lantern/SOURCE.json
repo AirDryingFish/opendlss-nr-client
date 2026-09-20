@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "name": "Lantern",
+  "purpose": "Textured PBR: normal, metal/roughness, emissive",
+  "repository": "https://github.com/KhronosGroup/glTF-Sample-Assets",
+  "commit": "8f492390ddc7a2ae221a1369ef560589cf8c70fb",
+  "modelDirectoryUrl": "https://github.com/KhronosGroup/glTF-Sample-Assets/tree/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/Lantern",
+  "downloadUrl": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/Lantern/glTF-Binary/Lantern.glb",
+  "upstreamReadmeUrl": "https://github.com/KhronosGroup/glTF-Sample-Assets/blob/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/Lantern/README.md",
+  "licenseExpression": "CC0-1.0",
+  "attribution": [
+    {
+      "license": "CC0-1.0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
+      "artist": "sbtron",
+      "year": "2017",
+      "owner": "Microsoft",
+      "what": "Initial version",
+      "text": "Creative Commons Zero v1.0 Universal",
+      "spdx": "CC0-1.0",
+      "icon": "https://licensebuttons.net/p/zero/1.0/88x31.png"
+    },
+    {
+      "license": "CC0-1.0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
+      "artist": "Frank Galligan",
+      "year": "2018",
+      "owner": "Frank Galligan",
+      "what": "Draco compression",
+      "text": "Creative Commons Zero v1.0 Universal",
+      "spdx": "CC0-1.0",
+      "icon": "https://licensebuttons.net/p/zero/1.0/88x31.png"
+    }
+  ],
+  "upstreamMetadocumentation": {
+    "attribution": "KhronosGroup/glTF-Sample-Assets contributors",
+    "license": "CC-BY-4.0"
+  },
+  "changes": "None. Model.glb is the upstream glTF-Binary file byte-for-byte; only its local filename differs. Upstream README.md, LICENSE.md and metadata.json are preserved verbatim.",
+  "licenseFiles": [
+    "../LICENSES/CC0-1.0.txt",
+    "../LICENSES/CC-BY-4.0.txt"
+  ],
+  "files": [
+    {
+      "path": "lantern/Model.glb",
+      "upstreamPath": "Models/Lantern/glTF-Binary/Lantern.glb",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/Lantern/glTF-Binary/Lantern.glb",
+      "bytes": 9564264,
+      "sha256": "a79458c4b02d695187a952f23a63b8bf278e7bc3d316a3c2a314f2d6974181f1",
+      "upstreamGitBlobSha1": "0c97893aee066b6fa36f7725443b7536c3510d09"
+    },
+    {
+      "path": "lantern/README.md",
+      "upstreamPath": "Models/Lantern/README.md",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/Lantern/README.md",
+      "bytes": 1080,
+      "sha256": "58a4903ae9c0bbb7d3f6ff1b9263b3b480edb7ca82109afdb06723275835a6c7"
+    },
+    {
+      "path": "lantern/LICENSE.md",
+      "upstreamPath": "Models/Lantern/LICENSE.md",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/Lantern/LICENSE.md",
+      "bytes": 911,
+      "sha256": "59fcd6131454dd17312ff9671094bfe9139f3b301d0c3e3b1a5a7e4ee1b0c75a"
+    },
+    {
+      "path": "lantern/metadata.json",
+      "upstreamPath": "Models/Lantern/metadata.json",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/Lantern/metadata.json",
+      "bytes": 1006,
+      "sha256": "89f9dfb00347fbfd36ef4592d32d8493abb74ba000cd7c620e491bfc264a81ad"
+    }
+  ],
+  "inspection": {
+    "gltfVersion": "2.0",
+    "embeddedImageMimeTypes": [
+      "image/png"
+    ],
+    "extensionsUsed": [],
+    "extensionsRequired": [],
+    "meshes": 3,
+    "skins": 0,
+    "animations": [],
+    "materialCount": 1,
+    "alphaModes": [
+      "OPAQUE"
+    ],
+    "normalMappedMaterials": 1,
+    "metallicRoughnessTexturedMaterials": 1,
+    "transmissionMaterials": 0,
+    "cameras": []
+  }
+}

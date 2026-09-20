@@ -1,0 +1,306 @@
+{
+  "date": "2026-11-11",
+  "scope": "Native Vulkan/FP8 NR scene capture, recursive asset discovery, SDL/ImGui file browser interaction and transactional import rollback. Capture timings are samples, not performance benchmarks.",
+  "gpu": "NVIDIA GeForce RTX 4080 SUPER",
+  "driver": "595.99.02",
+  "historicalSourceBase": "1e22c5ddf4f318b85ae1ebdab75898bc3e65072a",
+  "sourceSha256": {
+    "demo/main.cpp": "a0d9ceff26263248740464c8c947318e30956feb94cfde398e858ccb45a6571b",
+    "demo/CMakeLists.txt": "113e40e82e5fdce32f2904ed04dc05fd249b9c6f4332df9fc25fa4944485bfb4",
+    "demo/asset_catalog.h": "ff07e3d6593d54792f83554f8f59bc368964a894ccd4857a96291e205d063a32",
+    "demo/model_file_browser.h": "fb8a682e474643b4b1a5c0213c8c35228119292441337fb6daf3988cc5339b04",
+    "demo/model_file_browser.cpp": "917452d158a6cd64fd0dddba11721939dce7677e59bd88f04aa52a4f28d7690b",
+    "demo/model_file_listing.h": "76457326da9c80d6def095e90ab75cbc42a932117fd2f438bf574e83d7671a1c",
+    "demo/client_controls.cpp": "55189be120d8e30f51dd0c7d9fca636dbfbe6778dec15335e084845bbdb12e65",
+    "demo/client_controls.h": "63bf5c897473fa2ddfd4f1f52453a24256cb4b6222a9e62324e994e75dd1068d",
+    "demo/scene.cpp": "fcc671d07886088c8775c4a84580e23167a97ec256854920eb695f9e8e8829cf",
+    "demo/scene.h": "7e687523d15a286157c95f71fd3799c25aa0806751a3d5b6cb9a3ceefc5910be",
+    "demo/nr_pass.cpp": "100dab79f7736f22a7a0b1bfdddb7f8d9b1275e0720cd3f584707832e2bbb69f",
+    "demo/nr_pass.h": "b7de8eb2830df1bb94759ea8f96ee363277c03b686575b388a169b0f5ff42917",
+    "tests/asset_import_scenario.h": "a8065eefaceed5acd20d199eafb5c5d0d46ff5e8bdac2ec2b5384a5b0958f2b2"
+  },
+  "binary": {
+    "path": "build/demo/dlss5-demo",
+    "bytes": 9273128,
+    "sha256": "dff7d5544cdcd9580b9cd83cf2caf138b30050228e94928f84d32a6313860b95"
+  },
+  "pythonTests": {
+    "passed": 26,
+    "failed": 0
+  },
+  "startupRegression": {
+    "before": "No scene, exit2 when no explicit model/build scene was supplied",
+    "after": "Native launch discovers8 shipped models and selects the default character; explicit model and custom scene settings retain priority"
+  },
+  "fileBrowser": "Built-in ImGui filesystem browser; actual SDL click/key events, no GTK/zenity dependency",
+  "uiRuns": [
+    {
+      "complete": true,
+      "completed_frames": 267,
+      "actions_passed": 6,
+      "discovered_assets": 8,
+      "startup_scene_count": 8,
+      "final_scene_count": 9,
+      "checks": [
+        {
+          "action": "startup_catalog_fox",
+          "frame": 32,
+          "scene_count": 8,
+          "passed": true,
+          "network_samples": 13,
+          "network_gpu_ms": 6.08996,
+          "import_error": ""
+        },
+        {
+          "action": "browse_cancel",
+          "frame": 52,
+          "scene_count": 8,
+          "passed": true,
+          "network_samples": 0,
+          "import_error": ""
+        },
+        {
+          "action": "browse_escape",
+          "frame": 67,
+          "scene_count": 8,
+          "passed": true,
+          "network_samples": 0,
+          "import_error": ""
+        },
+        {
+          "action": "external_fox_import",
+          "frame": 133,
+          "scene_count": 9,
+          "passed": true,
+          "network_samples": 13,
+          "network_gpu_ms": 5.92045,
+          "import_error": ""
+        },
+        {
+          "action": "malformed_glb_rollback",
+          "frame": 200,
+          "scene_count": 9,
+          "passed": true,
+          "network_samples": 13,
+          "network_gpu_ms": 5.78628,
+          "import_error": "cannot parse glTF (code 3)"
+        },
+        {
+          "action": "missing_hdr_renderer_rollback",
+          "frame": 267,
+          "scene_count": 9,
+          "passed": true,
+          "network_samples": 13,
+          "network_gpu_ms": 6.09598,
+          "import_error": "cannot load <external fixture>/bad environment/Model.GLB: cannot load environment <external fixture>/bad environment/missing.hdr: cannot decode HDR environment <external fixture>/bad environment/missing.hdr: can't fopen"
+        }
+      ]
+    },
+    {
+      "complete": true,
+      "completed_frames": 267,
+      "actions_passed": 6,
+      "discovered_assets": 8,
+      "startup_scene_count": 8,
+      "final_scene_count": 9,
+      "checks": [
+        {
+          "action": "startup_catalog_fox",
+          "frame": 32,
+          "scene_count": 8,
+          "passed": true,
+          "network_samples": 13,
+          "network_gpu_ms": 6.19655,
+          "import_error": ""
+        },
+        {
+          "action": "browse_cancel",
+          "frame": 52,
+          "scene_count": 8,
+          "passed": true,
+          "network_samples": 0,
+          "import_error": ""
+        },
+        {
+          "action": "browse_escape",
+          "frame": 67,
+          "scene_count": 8,
+          "passed": true,
+          "network_samples": 0,
+          "import_error": ""
+        },
+        {
+          "action": "external_fox_import",
+          "frame": 133,
+          "scene_count": 9,
+          "passed": true,
+          "network_samples": 13,
+          "network_gpu_ms": 5.72865,
+          "import_error": ""
+        },
+        {
+          "action": "malformed_glb_rollback",
+          "frame": 200,
+          "scene_count": 9,
+          "passed": true,
+          "network_samples": 13,
+          "network_gpu_ms": 5.9442,
+          "import_error": "cannot parse glTF (code 3)"
+        },
+        {
+          "action": "missing_hdr_renderer_rollback",
+          "frame": 267,
+          "scene_count": 9,
+          "passed": true,
+          "network_samples": 13,
+          "network_gpu_ms": 5.85376,
+          "import_error": "cannot load <external fixture>/bad environment/Model.GLB: cannot load environment <external fixture>/bad environment/missing.hdr: cannot decode HDR environment <external fixture>/bad environment/missing.hdr: can't fopen"
+        }
+      ]
+    },
+    {
+      "complete": true,
+      "completed_frames": 267,
+      "actions_passed": 6,
+      "discovered_assets": 8,
+      "startup_scene_count": 8,
+      "final_scene_count": 9,
+      "checks": [
+        {
+          "action": "startup_catalog_fox",
+          "frame": 32,
+          "scene_count": 8,
+          "passed": true,
+          "network_samples": 13,
+          "network_gpu_ms": 6.09354,
+          "import_error": ""
+        },
+        {
+          "action": "browse_cancel",
+          "frame": 52,
+          "scene_count": 8,
+          "passed": true,
+          "network_samples": 0,
+          "import_error": ""
+        },
+        {
+          "action": "browse_escape",
+          "frame": 67,
+          "scene_count": 8,
+          "passed": true,
+          "network_samples": 0,
+          "import_error": ""
+        },
+        {
+          "action": "external_fox_import",
+          "frame": 133,
+          "scene_count": 9,
+          "passed": true,
+          "network_samples": 13,
+          "network_gpu_ms": 5.81122,
+          "import_error": ""
+        },
+        {
+          "action": "malformed_glb_rollback",
+          "frame": 200,
+          "scene_count": 9,
+          "passed": true,
+          "network_samples": 13,
+          "network_gpu_ms": 5.8806,
+          "import_error": "cannot parse glTF (code 3)"
+        },
+        {
+          "action": "missing_hdr_renderer_rollback",
+          "frame": 267,
+          "scene_count": 9,
+          "passed": true,
+          "network_samples": 13,
+          "network_gpu_ms": 5.78946,
+          "import_error": "cannot load <external fixture>/bad environment/Model.GLB: cannot load environment <external fixture>/bad environment/missing.hdr: cannot decode HDR environment <external fixture>/bad environment/missing.hdr: can't fopen"
+        }
+      ]
+    }
+  ],
+  "windowFollowRegression": {
+    "complete": true,
+    "scope": "logical SDL/ImGui hit testing; rendered alignment requires visual verification",
+    "error": "",
+    "logical_clicks_passed": 12,
+    "resize_requests": 6,
+    "resizes_passed": 6,
+    "actual_extent_changes": 5,
+    "actions_passed": 18,
+    "render_follows_window": true,
+    "geometry_matches": true,
+    "completed_frames": 145,
+    "begin_frame_skips": 1014
+  },
+  "captures": [
+    {
+      "id": "a-beautiful-game",
+      "image": "docs/images/realistic-scenes/a-beautiful-game.png",
+      "pngSha256": "83b05b0e372929ec630fd47455a3fded622cbba0e322351f2e9268a541ef7394",
+      "capturePpmSha256": "731d3434a83e0ae0cf4c8355b470ab79d66ca1d01dcbe6c219825def0e1b1656",
+      "model": "assets/realistic-scenes/a-beautiful-game/Model.glb",
+      "modelSha256": "bd7133b4b322aae97c589b8839dae8155ad2546acb35ae32a127e722a959d007",
+      "view": "assets/realistic-scenes/a-beautiful-game/view.json",
+      "viewSha256": "1d87d2163ae989669b0d2a12bbe1c5a46e935cd02fcc9f5ab97583efdb16ee74",
+      "frameCaptured": 40,
+      "lastNetworkGpuMs": 3.223,
+      "lastSceneGpuMs": 0.419,
+      "timingScope": "Last sample from capture run, not a benchmark"
+    },
+    {
+      "id": "gothic-cloister-corner",
+      "image": "docs/images/realistic-scenes/gothic-cloister-corner.png",
+      "pngSha256": "897fade62d7460052e80e824bab73f0247351da94b8568601039535dbbd0e647",
+      "capturePpmSha256": "08d3433303d48fc9b60ee2f794d5e573b0ee8e608f716d402d1e987d61850684",
+      "model": "assets/realistic-scenes/gothic-cloister-corner/Model.glb",
+      "modelSha256": "63702faac4b64738954e07cadea627b81fb87de29e1f35998d665f257c30f393",
+      "view": "assets/realistic-scenes/gothic-cloister-corner/view.json",
+      "viewSha256": "ebbf64800f283da2ae668f8c8033518202c8bae183ab2198834da4e1ddf1e719",
+      "frameCaptured": 40,
+      "lastNetworkGpuMs": 3.105,
+      "lastSceneGpuMs": 0.313,
+      "timingScope": "Last sample from capture run, not a benchmark"
+    },
+    {
+      "id": "iridescent-dish-with-olives",
+      "image": "docs/images/realistic-scenes/iridescent-dish-with-olives.png",
+      "pngSha256": "b3e43e2cc8885b08e639c05ceb0a2ca36c56a544f0cd3c08c8779eed071a3fdc",
+      "capturePpmSha256": "e91c7e8c2ab3ee9c159e38ba74855ff788c98247e4197144d85a7e5773bac891",
+      "model": "assets/realistic-scenes/iridescent-dish-with-olives/Model.glb",
+      "modelSha256": "1540b4a36b790a907f4824cfe848ba481b3da3cc8070172b7b3ba178f78a7ed1",
+      "view": "assets/realistic-scenes/iridescent-dish-with-olives/view.json",
+      "viewSha256": "819fa2a0269a63875c4a5a378ad3e329b2f9517cf3a81c743cc5f0136288f568",
+      "frameCaptured": 40,
+      "lastNetworkGpuMs": 3.299,
+      "lastSceneGpuMs": 0.192,
+      "timingScope": "Last sample from capture run, not a benchmark"
+    }
+  ],
+  "resolution": [
+    960,
+    720
+  ],
+  "nrEnabled": true,
+  "temporalEnabled": true,
+  "captureProcessing": "Unretouched native pixels converted losslessly from PPM to PNG; contact sheet resize/layout/labels only.",
+  "assetManifest": "assets/realistic-scenes/manifest.json",
+  "gothicAdaptation": {
+    "sceneRootRotationDegrees": [
+      -90,
+      0,
+      0
+    ],
+    "originalNodesAndDefinitionsPreserved": true,
+    "binChunkIdentical": true,
+    "binChunkSha256": "e6da71d6c545e522e063ffd1973147fd1d7a783f3528cdb3c60b2d24403343a3",
+    "binPayloadSha256": "12011be850c37718ced3858098684e887be230c390f6020c9438e40a0d2bdb91"
+  },
+  "limits": [
+    "Gothic uses baked unlit photogrammetry, so HDR presets do not relight its photographic texture.",
+    "Iridescence-specific parity with the Dish reference renderer is not claimed.",
+    "SDL/ImGui tests verify logical hit testing; the published images show rendered scenes rather than a file-dialog visual acceptance test."
+  ]
+}

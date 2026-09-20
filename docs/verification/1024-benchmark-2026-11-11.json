@@ -1,0 +1,30 @@
+{
+  "complete": true,
+  "gpu": "NVIDIA GeForce RTX 4080 SUPER",
+  "driver_version_raw": 2497233024,
+  "driver_name": "NVIDIA",
+  "driver_info": "595.99.02",
+  "backend": "Vulkan VK_NV_cuda_kernel_launch / FP8 Tensor Core PTX",
+  "nr_enabled": true,
+  "width": 1024,
+  "height": 1024,
+  "window_width": 1024,
+  "window_height": 1024,
+  "scene": "assets/test-static.glb",
+  "temporal_enabled": true,
+  "warmup_frames": 30,
+  "samples": 120,
+  "frame_wall_ms": {
+    "median": 6.864666,
+    "p95": 7.796201
+  },
+  "frame_gpu_ms": {
+    "median": 4.73266602,
+    "p95": 4.75976562
+  },
+  "network_gpu_ms": {
+    "median": 4.22961426,
+    "p95": 4.25585938
+  },
+  "packaging_note": "Scene path normalized to repository-relative form; measured values unchanged."
+}

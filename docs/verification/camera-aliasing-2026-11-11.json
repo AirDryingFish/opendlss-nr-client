@@ -1,0 +1,54 @@
+{
+  "date": "2026-11-11",
+  "compiledSourceCommit": "dbc5d042c1d87bda4e4bceb5f09cb6eba9fab28c",
+  "input": "assets/test-static.glb",
+  "nrEnabled": false,
+  "resolution": [
+    512,
+    512
+  ],
+  "camera": "pure yaw0.05deg/frame; compare frames99 and100",
+  "method": "Camera-matrix reprojection of previous linear HDR scene with bilinear sampling. Error is mean RGB absolute difference after Reinhard compression. One pose pair; this is an aliasing diagnostic, not a general perceptual metric.",
+  "regions": {
+    "hairEdge": "30<y<270 and(x<210 or x>300), valid reprojected pixels"
+  },
+  "samples": {
+    "1": {
+      "all": {
+        "mae": 0.0005824510409409303,
+        "pixelsAbove0_02": 1638,
+        "pixels": 261121
+      },
+      "hairEdge": {
+        "mae": 0.0004998430287950204,
+        "pixelsAbove0_02": 433,
+        "pixels": 100380
+      }
+    },
+    "4": {
+      "all": {
+        "mae": 0.0004192120471542536,
+        "pixelsAbove0_02": 1382,
+        "pixels": 261121
+      },
+      "hairEdge": {
+        "mae": 0.00036111044953078943,
+        "pixelsAbove0_02": 252,
+        "pixels": 100380
+      }
+    }
+  },
+  "hairEdgeMeanErrorReduction": 0.27755229396451897,
+  "hairEdgeThresholdCountReduction": 0.418013856812933,
+  "defaultMatchesExplicit4x": {
+    "-pre-scene.raw": true,
+    "-moving-scene.raw": true,
+    "-nr-static.ppm": true,
+    "-nr-moving.ppm": true
+  },
+  "remainingLimitations": [
+    "MSAA improves geometry coverage; translucent texture filtering and renderable-order changes can still shimmer.",
+    "BLEND material modes and original GLB files were preserved.",
+    "Background picker interaction was code reviewed; no separate native desktop picker automation."
+  ]
+}

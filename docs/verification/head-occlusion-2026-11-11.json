@@ -1,0 +1,71 @@
+{
+  "date": "2026-11-11",
+  "compiledSourceCommit": "0f72a9906d443f9d3c5b20312cc3f2cde01d3a73",
+  "asset": "assets/test-static.glb",
+  "assetChanged": false,
+  "rootCause": "ArchiveCache selected the first capable ubershader. Optional Transmission/Volume flags let ordinary specular/IOR surfaces use a static screen-space refraction shader. FADE hair then entered REFRACT rather than BLENDED and opaque skin could overwrite it as view-dependent sort keys changed.",
+  "fix": "Require Transmission for transmission specs and Volume for volume specs. Material factors and geometry remain authored; normal opaque/alpha passes restored.",
+  "camera": {
+    "eye": [
+      0.43,
+      2.16,
+      -0.7
+    ],
+    "target": [
+      0,
+      1.7,
+      0.06
+    ],
+    "fovVerticalDegrees": 40,
+    "resolution": [
+      2560,
+      1403
+    ],
+    "backgroundSrgb": "#ffa6a6",
+    "msaa": 4,
+    "capturedFrame": 40
+  },
+  "nativeMaterialRegression": {
+    "backend": "NOOP; real installed Filament provider and archive, no GPU",
+    "cases": 24,
+    "beforeFailures": 9,
+    "afterFailures": 0,
+    "controls": "OPAQUE/MASK/BLEND; base, specular, IOR, clearcoat, actual transmission and volume"
+  },
+  "gpuRegression": {
+    "rearNrOnPassed": true,
+    "rearNrOffPassed": true,
+    "frontNrOnInspected": true,
+    "rearOnOffSourceSceneIdentical": true,
+    "roi": [
+      1240,
+      850,
+      1340,
+      1000
+    ],
+    "beforeMeanRgb": [
+      158.61606666666665,
+      114.36846666666666,
+      93.83613333333334
+    ],
+    "afterMeanRgb": [
+      4.938533333333333,
+      3.1818666666666666,
+      2.3668666666666667
+    ]
+  },
+  "buildChecks": [
+    "Filament uberarchive rebuilt and installed",
+    "native client rebuilt",
+    "18 Python tests passed",
+    "native controls/import passed",
+    "12 requirements cases and Vulkan CUDA feature contract passed",
+    "fresh routing patch forward/reverse checked; existing dependency fetch rerun passed",
+    "independent code review: no blocking findings"
+  ],
+  "diagnostics": "DLSS5_DEMO_CAPTURE_HIDDEN=1 hides only opt-in scripted capture windows; normal interactive launch unchanged. Temporary depth/culling/color/orbit probes removed.",
+  "limitations": [
+    "This fixes the reproduced view-dependent wrong draw pass; no claim to eliminate all intersecting-transparent-triangle artifacts.",
+    "Earlier performance reports predate this material-route correction. No new benchmark while the user client was running."
+  ]
+}

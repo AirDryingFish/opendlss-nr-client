@@ -1,0 +1,174 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/KhronosGroup/glTF-Sample-Assets",
+  "commit": "8f492390ddc7a2ae221a1369ef560589cf8c70fb",
+  "totalModelBytes": 14179720,
+  "files": [
+    {
+      "id": "lantern",
+      "name": "Lantern",
+      "purpose": "Textured PBR: normal, metal/roughness, emissive",
+      "model": "lantern/Model.glb",
+      "source": "lantern/SOURCE.json",
+      "license": "lantern/LICENSE.md",
+      "licenseExpression": "CC0-1.0",
+      "bytes": 9564264,
+      "sha256": "a79458c4b02d695187a952f23a63b8bf278e7bc3d316a3c2a314f2d6974181f1",
+      "upstreamUrl": "https://github.com/KhronosGroup/glTF-Sample-Assets/tree/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/Lantern",
+      "inspection": {
+        "gltfVersion": "2.0",
+        "embeddedImageMimeTypes": [
+          "image/png"
+        ],
+        "extensionsUsed": [],
+        "extensionsRequired": [],
+        "meshes": 3,
+        "skins": 0,
+        "animations": [],
+        "materialCount": 1,
+        "alphaModes": [
+          "OPAQUE"
+        ],
+        "normalMappedMaterials": 1,
+        "metallicRoughnessTexturedMaterials": 1,
+        "transmissionMaterials": 0,
+        "cameras": []
+      },
+      "upstreamGitBlobSha1": "0c97893aee066b6fa36f7725443b7536c3510d09"
+    },
+    {
+      "id": "fox",
+      "name": "Fox",
+      "purpose": "Skinned animation: Survey, Walk, Run",
+      "model": "fox/Model.glb",
+      "source": "fox/SOURCE.json",
+      "license": "fox/LICENSE.md",
+      "licenseExpression": "CC0-1.0 AND CC-BY-4.0",
+      "bytes": 162852,
+      "sha256": "d97044e701822bac5a62696459b27d7b375aada5de8574ed4362edbba94771f7",
+      "upstreamUrl": "https://github.com/KhronosGroup/glTF-Sample-Assets/tree/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/Fox",
+      "inspection": {
+        "gltfVersion": "2.0",
+        "embeddedImageMimeTypes": [
+          "image/png"
+        ],
+        "extensionsUsed": [],
+        "extensionsRequired": [],
+        "meshes": 1,
+        "skins": 1,
+        "animations": [
+          "Survey",
+          "Walk",
+          "Run"
+        ],
+        "materialCount": 1,
+        "alphaModes": [
+          "OPAQUE"
+        ],
+        "normalMappedMaterials": 0,
+        "metallicRoughnessTexturedMaterials": 0,
+        "transmissionMaterials": 0,
+        "cameras": []
+      },
+      "upstreamGitBlobSha1": "1ef5c0d05658caea339680fe581aa2c8302b3365"
+    },
+    {
+      "id": "alpha-blend-mode-test",
+      "name": "Alpha Blend Mode Test",
+      "purpose": "OPAQUE, BLEND and MASK alpha modes",
+      "model": "alpha-blend-mode-test/Model.glb",
+      "source": "alpha-blend-mode-test/SOURCE.json",
+      "license": "alpha-blend-mode-test/LICENSE.md",
+      "licenseExpression": "CC-BY-4.0",
+      "bytes": 2978812,
+      "sha256": "37c3577d143071b42dd46e9d942b157837eb25c6340112171d7faecaa987b14e",
+      "upstreamUrl": "https://github.com/KhronosGroup/glTF-Sample-Assets/tree/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/AlphaBlendModeTest",
+      "inspection": {
+        "gltfVersion": "2.0",
+        "embeddedImageMimeTypes": [
+          "image/jpeg",
+          "image/png"
+        ],
+        "extensionsUsed": [],
+        "extensionsRequired": [],
+        "meshes": 9,
+        "skins": 0,
+        "animations": [],
+        "materialCount": 6,
+        "alphaModes": [
+          "BLEND",
+          "MASK",
+          "OPAQUE"
+        ],
+        "normalMappedMaterials": 1,
+        "metallicRoughnessTexturedMaterials": 1,
+        "transmissionMaterials": 0,
+        "cameras": []
+      },
+      "upstreamGitBlobSha1": "f2483d76fa9c97af61a1c2c5b4f7ce548afcf60b"
+    },
+    {
+      "id": "transmission-test",
+      "name": "Transmission Test",
+      "purpose": "KHR_materials_transmission material grid",
+      "model": "transmission-test/Model.glb",
+      "source": "transmission-test/SOURCE.json",
+      "license": "transmission-test/LICENSE.md",
+      "licenseExpression": "CC0-1.0",
+      "bytes": 1473792,
+      "sha256": "dd9732dae5517f8605ad4324d78b077b969c3e8357c056280d0a4e4b67797d15",
+      "upstreamUrl": "https://github.com/KhronosGroup/glTF-Sample-Assets/tree/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/TransmissionTest",
+      "inspection": {
+        "gltfVersion": "2.0",
+        "embeddedImageMimeTypes": [
+          "image/png"
+        ],
+        "extensionsUsed": [
+          "KHR_materials_transmission",
+          "KHR_xmp"
+        ],
+        "extensionsRequired": [],
+        "meshes": 22,
+        "skins": 0,
+        "animations": [],
+        "materialCount": 14,
+        "alphaModes": [
+          "MASK",
+          "OPAQUE"
+        ],
+        "normalMappedMaterials": 0,
+        "metallicRoughnessTexturedMaterials": 7,
+        "transmissionMaterials": 12,
+        "cameras": [
+          {
+            "perspective": {
+              "znear": 5.606882768915966e-05,
+              "yfov": 0.6024156808853149,
+              "zfar": 3.0837855339050293,
+              "aspectRatio": 1.3333333730697632
+            },
+            "type": "perspective",
+            "name": "render_camera"
+          }
+        ]
+      },
+      "upstreamGitBlobSha1": "feaa7f8164700fdc9e1acc12ad424b2fc184534f"
+    }
+  ],
+  "sharedLicenseFiles": [
+    {
+      "path": "LICENSES/CC0-1.0.txt",
+      "upstreamPath": "LICENSES/CC0-1.0.txt",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/LICENSES/CC0-1.0.txt",
+      "bytes": 6533,
+      "sha256": "a43fc2004d1e073f1107a1f6146664d08dae6cea93cb828742a4bec6da828e91"
+    },
+    {
+      "path": "LICENSES/CC-BY-4.0.txt",
+      "upstreamPath": "LICENSES/CC-BY-4.0.txt",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/LICENSES/CC-BY-4.0.txt",
+      "bytes": 13034,
+      "sha256": "c8041334a99cb48852b2139253cbde5f8ac87e27f124aed51223e0d5bf0080eb"
+    }
+  ]
+}

@@ -1,0 +1,154 @@
+{
+  "date": "2026-11-11",
+  "rendererSourceCommit": "0f72a99",
+  "resolution": [
+    960,
+    720
+  ],
+  "nrEnabled": true,
+  "temporalEnabled": true,
+  "frameCaptured": 40,
+  "processing": "Actual native-rendered pixels; PNG format conversion and contact-sheet layout/labels only. No generated or retouched content.",
+  "environment": "assets/environments/studio_small_09_1k.hdr",
+  "cases": [
+    {
+      "screenshot": "docs/images/cases/lantern.png",
+      "screenshotSha256": "fcbf3d5a5c7ef2b943e54fe6037eec71ba932293f278f93a83910fa12e50975f",
+      "capturePpmSha256": "b1ac8fbf1ef8df938077947daadc9ffce8be8503de07ac1af5ddeaf4ef86bbd3",
+      "framesRendered": 40,
+      "lastNetworkGpuMs": 2.732,
+      "lastFrameGpuMs": 2.954,
+      "timingScope": "last captured-run sample, not a performance benchmark",
+      "id": "lantern",
+      "model": "assets/cases/lantern/Model.glb",
+      "modelSha256": "a79458c4b02d695187a952f23a63b8bf278e7bc3d316a3c2a314f2d6974181f1",
+      "view": "assets/cases/lantern/view.json",
+      "viewSha256": "cb0516d16f750dfb5026673e3a0068e10263dc002fa0ecf131f48e0d7b772091"
+    },
+    {
+      "screenshot": "docs/images/cases/fox.png",
+      "screenshotSha256": "cb2242a8090b4f79e005fc53f065a274df95e08d0c02a0ec4e4c48dd26d18c6b",
+      "capturePpmSha256": "dad174cfadd91f106bd969c641388213608831483d6e9e4ef796d6d81c006416",
+      "framesRendered": 100,
+      "lastNetworkGpuMs": 2.601,
+      "lastFrameGpuMs": 2.81,
+      "timingScope": "last captured-run sample, not a performance benchmark",
+      "id": "fox",
+      "model": "assets/cases/fox/Model.glb",
+      "modelSha256": "d97044e701822bac5a62696459b27d7b375aada5de8574ed4362edbba94771f7",
+      "view": "assets/cases/fox/view.json",
+      "viewSha256": "603cb318776d8a50d306c43ba78f0cce9ac840bb2fed6e359e93dbe15a512c9c"
+    },
+    {
+      "screenshot": "docs/images/cases/alpha-blend-mode-test.png",
+      "screenshotSha256": "55248094496a9d334a6dfc1ea06c64ce1cd773cc52693b616c933f29cbf5daed",
+      "capturePpmSha256": "92292ce3aa1362c7e28759895c9978027905632bcbd478001df97cbbd5e777e0",
+      "framesRendered": 40,
+      "lastNetworkGpuMs": 3.326,
+      "lastFrameGpuMs": 3.572,
+      "timingScope": "last captured-run sample, not a performance benchmark",
+      "id": "alpha-blend-mode-test",
+      "model": "assets/cases/alpha-blend-mode-test/Model.glb",
+      "modelSha256": "37c3577d143071b42dd46e9d942b157837eb25c6340112171d7faecaa987b14e",
+      "view": "assets/cases/alpha-blend-mode-test/view.json",
+      "viewSha256": "a9716e575676ebb4ae4283d19821dae7821fe6c2a1579f5ca1ed46a9b999d388"
+    },
+    {
+      "screenshot": "docs/images/cases/transmission-test.png",
+      "screenshotSha256": "883d9e289a1f5985cb02adca9e6f47c3b72f0a70cf7a485c73f7324fa57cd27b",
+      "capturePpmSha256": "c0cd627dcb4ba02a07694a0fa049feab39a179db994e82e9e9d6e31875e78dae",
+      "framesRendered": 40,
+      "lastNetworkGpuMs": 2.761,
+      "lastFrameGpuMs": 3.225,
+      "timingScope": "last captured-run sample, not a performance benchmark",
+      "id": "transmission-test",
+      "model": "assets/cases/transmission-test/Model.glb",
+      "modelSha256": "dd9732dae5517f8605ad4324d78b077b969c3e8357c056280d0a4e4b67797d15",
+      "view": "assets/cases/transmission-test/view.json",
+      "viewSha256": "81b800ea85cb017dca811b828ccca84cba2d15b5a1c861db17a243732788673f"
+    }
+  ],
+  "characterViews": [
+    {
+      "screenshot": "docs/images/character/front.png",
+      "screenshotSha256": "05211a2a2bf88182c712cbcbe4c1ecd6089bbb40624ba2996ffc0a38eb535065",
+      "capturePpmSha256": "4ca2c91de7c7f4e1853a94b176e640424bb706270651aa89542406d69f1ab29e",
+      "framesRendered": 40,
+      "lastNetworkGpuMs": 2.911,
+      "lastFrameGpuMs": 3.294,
+      "timingScope": "last captured-run sample, not a performance benchmark",
+      "view": "front",
+      "model": "assets/test-static.glb",
+      "camera": {
+        "position": [
+          0.22,
+          1.58,
+          0.88
+        ],
+        "target": [
+          0,
+          1.48,
+          0.06
+        ],
+        "fov": 40,
+        "near": 0.005,
+        "far": 60
+      },
+      "background": "#dbe4ee"
+    },
+    {
+      "screenshot": "docs/images/character/profile.png",
+      "screenshotSha256": "45545611b921212ea58cd98e7b8536ebced509e9ad70b5d9eea6ce1de369a747",
+      "capturePpmSha256": "737b15999b02d75fd303a22f1e09780a99343dead6e39ebbf1b3caaf736f6929",
+      "framesRendered": 40,
+      "lastNetworkGpuMs": 2.882,
+      "lastFrameGpuMs": 3.28,
+      "timingScope": "last captured-run sample, not a performance benchmark",
+      "view": "profile",
+      "model": "assets/test-static.glb",
+      "camera": {
+        "position": [
+          0.9,
+          1.6,
+          0.08
+        ],
+        "target": [
+          0,
+          1.5,
+          0.06
+        ],
+        "fov": 40,
+        "near": 0.005,
+        "far": 60
+      },
+      "background": "#dbe4ee"
+    },
+    {
+      "screenshot": "docs/images/character/rear.png",
+      "screenshotSha256": "662f21e61b49306485a9bf63b6fed5c62473a690116c7f855154d76f1dfd0b9e",
+      "capturePpmSha256": "82d456293758e118124fd87868dbbc041a1ae510211e00ec97dcd6066ae19c0b",
+      "framesRendered": 40,
+      "lastNetworkGpuMs": 3.086,
+      "lastFrameGpuMs": 3.499,
+      "timingScope": "last captured-run sample, not a performance benchmark",
+      "view": "rear",
+      "model": "assets/test-static.glb",
+      "camera": {
+        "position": [
+          0.15,
+          1.58,
+          -0.82
+        ],
+        "target": [
+          0,
+          1.48,
+          0.06
+        ],
+        "fov": 40,
+        "near": 0.005,
+        "far": 60
+      },
+      "background": "#dbe4ee"
+    }
+  ]
+}

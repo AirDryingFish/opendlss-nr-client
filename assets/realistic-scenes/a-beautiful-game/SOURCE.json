@@ -1,0 +1,474 @@
+{
+  "schemaVersion": 1,
+  "name": "A Beautiful Game",
+  "purpose": "Realistic chess tabletop with individually instanced pieces, polished wood, glass transmission and volume",
+  "repository": "https://github.com/KhronosGroup/glTF-Sample-Assets",
+  "commit": "8f492390ddc7a2ae221a1369ef560589cf8c70fb",
+  "modelDirectoryUrl": "https://github.com/KhronosGroup/glTF-Sample-Assets/tree/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/ABeautifulGame",
+  "downloadUrl": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/ABeautifulGame/glTF-Binary/ABeautifulGame.glb",
+  "upstreamGitBlobSha1": "f950b8a26e97353ec8dede8e4137dcbb48b2a440",
+  "licenseExpression": "CC-BY-4.0",
+  "attribution": [
+    {
+      "license": "CC-BY-4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/legalcode",
+      "artist": "MaterialX Project",
+      "year": "2020",
+      "owner": "ASWF",
+      "what": "Original model",
+      "text": "Creative Commons Attribution 4.0 International",
+      "spdx": "CC-BY-4.0",
+      "icon": "https://licensebuttons.net/l/by/4.0/88x31.png"
+    },
+    {
+      "license": "CC-BY-4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/legalcode",
+      "artist": "Ed Mackey",
+      "year": "2022",
+      "owner": "Ed Mackey",
+      "what": "Conversion to glTF",
+      "text": "Creative Commons Attribution 4.0 International",
+      "spdx": "CC-BY-4.0",
+      "icon": "https://licensebuttons.net/l/by/4.0/88x31.png"
+    }
+  ],
+  "licenseFiles": [
+    "../LICENSES/CC-BY-4.0.txt"
+  ],
+  "changes": "None. Model.glb is the official upstream GLB byte-for-byte; only its local filename differs. Upstream attribution and metadata documents are preserved verbatim.",
+  "retrievedAt": "2026-11-11T08:57:50+00:00",
+  "files": [
+    {
+      "path": "a-beautiful-game/Model.glb",
+      "upstreamPath": "Models/ABeautifulGame/glTF-Binary/ABeautifulGame.glb",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/ABeautifulGame/glTF-Binary/ABeautifulGame.glb",
+      "bytes": 42977928,
+      "sha256": "bd7133b4b322aae97c589b8839dae8155ad2546acb35ae32a127e722a959d007",
+      "upstreamGitBlobSha1": "f950b8a26e97353ec8dede8e4137dcbb48b2a440"
+    },
+    {
+      "path": "a-beautiful-game/README.md",
+      "upstreamPath": "Models/ABeautifulGame/README.md",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/ABeautifulGame/README.md",
+      "bytes": 3783,
+      "sha256": "35b650cc930a9c86de184f28e973e5122e26a0c20b88175e7c362e1faf97596b"
+    },
+    {
+      "path": "a-beautiful-game/LICENSE.md",
+      "upstreamPath": "Models/ABeautifulGame/LICENSE.md",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/ABeautifulGame/LICENSE.md",
+      "bytes": 932,
+      "sha256": "2f2bdb47880dcffc73bf532c69d48863c081708adc5f870ad21cfff6d7b9363e"
+    },
+    {
+      "path": "a-beautiful-game/metadata.json",
+      "upstreamPath": "Models/ABeautifulGame/metadata.json",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/ABeautifulGame/metadata.json",
+      "bytes": 1065,
+      "sha256": "80070530e19cba44b46bc0655ec94a2c67683d773697c9f17e3e5f5faffc4a91"
+    }
+  ],
+  "inspection": {
+    "gltfVersion": "2.0",
+    "asset": {
+      "copyright": "Original assets by Moeen Sayed and Mujtaba Sayed for SideFX.",
+      "generator": "Created by RapidPipeline 3D Processor v7.3.0 | rapidpipeline.com",
+      "version": "2.0"
+    },
+    "embeddedImageMimeTypes": [
+      "image/jpeg"
+    ],
+    "embeddedImageCount": 33,
+    "embeddedImages": [
+      {
+        "index": 0,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 361127,
+        "dimensions": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "index": 1,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 673915,
+        "dimensions": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "index": 2,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 622771,
+        "dimensions": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "index": 3,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 403990,
+        "dimensions": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "index": 4,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 850400,
+        "dimensions": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "index": 5,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 630950,
+        "dimensions": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "index": 6,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 366216,
+        "dimensions": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "index": 7,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 764089,
+        "dimensions": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "index": 8,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 782417,
+        "dimensions": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "index": 9,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 395138,
+        "dimensions": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "index": 10,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 961725,
+        "dimensions": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "index": 11,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 822486,
+        "dimensions": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "index": 12,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 295346,
+        "dimensions": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "index": 13,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 777060,
+        "dimensions": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "index": 14,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 741172,
+        "dimensions": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "index": 15,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 309191,
+        "dimensions": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "index": 16,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 662916,
+        "dimensions": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "index": 17,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 709227,
+        "dimensions": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "index": 18,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 529405,
+        "dimensions": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "index": 19,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 727372,
+        "dimensions": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "index": 20,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 582751,
+        "dimensions": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "index": 21,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 750313,
+        "dimensions": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "index": 22,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 792174,
+        "dimensions": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "index": 23,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 303807,
+        "dimensions": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "index": 24,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 315179,
+        "dimensions": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "index": 25,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 394527,
+        "dimensions": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "index": 26,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 491396,
+        "dimensions": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "index": 27,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 1371413,
+        "dimensions": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "index": 28,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 334252,
+        "dimensions": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "index": 29,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 244999,
+        "dimensions": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "index": 30,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 215780,
+        "dimensions": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "index": 31,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 350946,
+        "dimensions": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "index": 32,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 395645,
+        "dimensions": [
+          2048,
+          2048
+        ]
+      }
+    ],
+    "extensionsUsed": [
+      "KHR_materials_transmission",
+      "KHR_materials_volume"
+    ],
+    "extensionsRequired": [],
+    "meshes": 15,
+    "nodes": 49,
+    "scenes": 1,
+    "skins": 0,
+    "animations": [],
+    "materialCount": 15,
+    "alphaModes": [
+      "OPAQUE"
+    ],
+    "normalMappedMaterials": 15,
+    "metallicRoughnessTexturedMaterials": 15,
+    "transmissionMaterials": 2,
+    "unlitMaterials": 0,
+    "cameras": [],
+    "cameraNodes": [],
+    "bounds": {
+      "min": [
+        -0.3527080714702606,
+        -5.566945304735782e-08,
+        -0.3527080714702606
+      ],
+      "max": [
+        0.3527080714702606,
+        0.16899584978818893,
+        0.3527080714702606
+      ],
+      "center": [
+        0.0,
+        0.08449789705936794,
+        0.0
+      ],
+      "extent": [
+        0.3527080714702606,
+        0.08449795272882099,
+        0.3527080714702606
+      ],
+      "radius": 0.5059109322557707,
+      "method": "Default scene, static node transforms applied to POSITION accessor bounds; excludes animation and deformation"
+    },
+    "modelStats": {
+      "defaultSceneMeshInstances": 49,
+      "sourcePrimitives": 15,
+      "renderedPrimitives": 49,
+      "sourceVerticesSummedPerPrimitive": 417028,
+      "sourceTriangles": 573952,
+      "renderedTriangles": 1499072
+    },
+    "appearanceNotes": [
+      "Polished chess tabletop with transmission and volume materials."
+    ]
+  },
+  "upstreamMetadocumentation": {
+    "attribution": "KhronosGroup/glTF-Sample-Assets contributors",
+    "license": "CC-BY-4.0"
+  }
+}

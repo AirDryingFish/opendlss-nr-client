@@ -1,0 +1,23 @@
+{
+  "model": "Model.glb",
+  "background": "#dbe4ee",
+  "backgroundEnvironment": false,
+  "msaa": 4,
+  "name": "Gothic Cloister Corner",
+  "camera": {
+    "position": [
+      -26,
+      9,
+      35
+    ],
+    "target": [
+      -2,
+      11,
+      2
+    ],
+    "fov": 50,
+    "near": 0.1,
+    "far": 2000
+  },
+  "moveSpeed": 15
+}

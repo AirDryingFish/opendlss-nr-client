@@ -1,0 +1,184 @@
+{
+  "schemaVersion": 1,
+  "name": "Gothic Cloister Corner",
+  "purpose": "Photogrammetry architecture: gothic cloister corner, arches, stonework and foliage; baked unlit photographic appearance",
+  "repository": "https://github.com/BabylonJS/Assets",
+  "commit": "3798844710bb7e76199ee38b175176c0fe4e9e62",
+  "modelDirectoryUrl": "https://github.com/BabylonJS/Assets/tree/3798844710bb7e76199ee38b175176c0fe4e9e62/meshes/GothicCloisterCorner",
+  "downloadUrl": "https://raw.githubusercontent.com/BabylonJS/Assets/3798844710bb7e76199ee38b175176c0fe4e9e62/meshes/GothicCloisterCorner/gothic_cloister_corner_mobile.glb",
+  "upstreamGitBlobSha1": "6f0fa311d1a6691b8f5ac944bbe3a5b7d12e4e5f",
+  "licenseExpression": "CC-BY-4.0",
+  "attribution": [
+    {
+      "artist": "Zoilo",
+      "artistUrl": "https://sketchfab.com/iliedom",
+      "what": "Original photogrammetry model",
+      "license": "CC-BY-4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "sourceUrl": "https://sketchfab.com/3d-models/gothic-cloister-corner-69f4351215e84d3ca61feea9fe9890db",
+      "evidence": "license.txt preserved verbatim from the official BabylonJS/Assets directory"
+    }
+  ],
+  "licenseFiles": [
+    "../LICENSES/CC-BY-4.0.txt"
+  ],
+  "changes": "Local orientation normalization: append a new top-level scene-root node rotated -90 degrees about X (quaternion [-sqrt(0.5), 0, 0, sqrt(0.5)]) and parent the original scene roots beneath it, making the observed Z-up scan floor Y-up. The GLB JSON chunk is reserialized and its length/padding and container length are updated. The complete original BIN chunk, all pre-existing nodes, meshes, accessors, materials and images are unchanged. Original artist attribution and license.txt are preserved verbatim.",
+  "retrievedAt": "2026-11-11T08:57:50+00:00",
+  "files": [
+    {
+      "path": "gothic-cloister-corner/Model.glb",
+      "bytes": 44185820,
+      "sha256": "63702faac4b64738954e07cadea627b81fb87de29e1f35998d665f257c30f393",
+      "gitBlobSha1": "b73cd152d3be45977e96130ccdb8940406fd9d72",
+      "jsonChunkBytes": 11764,
+      "role": "Locally orientation-normalized derivative; upstream identity is recorded separately in upstreamModel.",
+      "derivedFrom": "upstreamModel"
+    },
+    {
+      "path": "gothic-cloister-corner/license.txt",
+      "upstreamPath": "meshes/GothicCloisterCorner/license.txt",
+      "url": "https://raw.githubusercontent.com/BabylonJS/Assets/3798844710bb7e76199ee38b175176c0fe4e9e62/meshes/GothicCloisterCorner/license.txt",
+      "bytes": 222,
+      "sha256": "417a2ae3e93e98f63161a828eadeaadf2c6cb2b989e17074cd610d5364c0a8c8"
+    }
+  ],
+  "inspection": {
+    "gltfVersion": "2.0",
+    "asset": {
+      "generator": "fab-model-conversion",
+      "version": "2.0"
+    },
+    "embeddedImageMimeTypes": [
+      "image/jpeg"
+    ],
+    "embeddedImageCount": 1,
+    "embeddedImages": [
+      {
+        "index": 0,
+        "name": "",
+        "mimeType": "image/jpeg",
+        "bytes": 428125,
+        "dimensions": [
+          1024,
+          1024
+        ]
+      }
+    ],
+    "extensionsUsed": [
+      "KHR_materials_unlit"
+    ],
+    "extensionsRequired": [],
+    "meshes": 16,
+    "nodes": 21,
+    "scenes": 1,
+    "skins": 0,
+    "animations": [],
+    "materialCount": 1,
+    "alphaModes": [
+      "OPAQUE"
+    ],
+    "normalMappedMaterials": 0,
+    "metallicRoughnessTexturedMaterials": 0,
+    "transmissionMaterials": 0,
+    "unlitMaterials": 1,
+    "cameras": [],
+    "cameraNodes": [],
+    "bounds": {
+      "min": [
+        -24.369300842285156,
+        -2.9857049156587006,
+        -13.829125906365713
+      ],
+      "max": [
+        16.175365447998047,
+        25.541307873301324,
+        19.89879085032854
+      ],
+      "center": [
+        -4.096967697143555,
+        11.277801478821312,
+        3.034832471981413
+      ],
+      "extent": [
+        20.2723331451416,
+        14.263506394480013,
+        16.863958378347125
+      ],
+      "radius": 29.98013005308021,
+      "method": "Default scene, static node transforms applied to POSITION accessor bounds; excludes animation and deformation"
+    },
+    "modelStats": {
+      "defaultSceneMeshInstances": 16,
+      "sourcePrimitives": 16,
+      "renderedPrimitives": 16,
+      "sourceVerticesSummedPerPrimitive": 987040,
+      "sourceTriangles": 1013385,
+      "renderedTriangles": 1013385
+    },
+    "appearanceNotes": [
+      "Baked unlit photogrammetry; environment lighting does not relight the photographic texture.",
+      "Local Y-up normalization adds one scene-root node rotated -90 degrees about X; mesh, texture and material payloads are unchanged."
+    ],
+    "localOrientationNormalization": {
+      "node": 20,
+      "rotationAxis": "X",
+      "rotationDegrees": -90,
+      "quaternion": [
+        -0.7071067811865476,
+        0.0,
+        0.0,
+        0.7071067811865476
+      ],
+      "originalSceneRoots": [
+        0
+      ],
+      "purpose": "Normalize the observed Z-up scan floor to Y-up for the native viewer.",
+      "binaryPayloadUnchanged": true
+    }
+  },
+  "upstreamModel": {
+    "upstreamPath": "meshes/GothicCloisterCorner/gothic_cloister_corner_mobile.glb",
+    "url": "https://raw.githubusercontent.com/BabylonJS/Assets/3798844710bb7e76199ee38b175176c0fe4e9e62/meshes/GothicCloisterCorner/gothic_cloister_corner_mobile.glb",
+    "bytes": 44185696,
+    "sha256": "8fe0abc4f55bc545d2ea9bdfb1a393c7f0bdecd1fea165c7ae10e081ce7f465a",
+    "gitBlobSha1": "6f0fa311d1a6691b8f5ac944bbe3a5b7d12e4e5f",
+    "jsonChunkBytes": 11640
+  },
+  "localModel": {
+    "path": "gothic-cloister-corner/Model.glb",
+    "bytes": 44185820,
+    "sha256": "63702faac4b64738954e07cadea627b81fb87de29e1f35998d665f257c30f393",
+    "gitBlobSha1": "b73cd152d3be45977e96130ccdb8940406fd9d72",
+    "jsonChunkBytes": 11764
+  },
+  "preservedBinaryPayload": {
+    "binaryChunkBytes": 44174036,
+    "binaryChunkSha256": "e6da71d6c545e522e063ffd1973147fd1d7a783f3528cdb3c60b2d24403343a3",
+    "binaryPayloadBytes": 44174028,
+    "binaryPayloadSha256": "12011be850c37718ced3858098684e887be230c390f6020c9438e40a0d2bdb91",
+    "unchangedFromUpstream": true
+  },
+  "reproduction": {
+    "input": "Download the pinned upstreamModel.url and verify upstreamModel.sha256/gitBlobSha1.",
+    "steps": [
+      "Parse the GLB v2 header and JSON chunk; retain the complete following BIN chunk including its 8-byte chunk header.",
+      "Append exactly the newSceneRoot node to nodes; replace the default scene nodes list with the appended node index.",
+      "Encode JSON as UTF-8 with compact separators and no NaN; pad the JSON chunk with ASCII spaces to a multiple of four bytes.",
+      "Emit the updated GLB and JSON chunk lengths, followed by the unchanged original BIN chunk.",
+      "Verify the localModel identity, unchanged BIN chunk SHA-256, original JSON component equality and the recorded world-space bounds."
+    ],
+    "newSceneRoot": {
+      "name": "Local_Y_Up_Orientation_Normalization",
+      "rotation": [
+        -0.7071067811865476,
+        0.0,
+        0.0,
+        0.7071067811865476
+      ],
+      "children": [
+        0
+      ]
+    },
+    "defaultSceneIndex": 0
+  }
+}

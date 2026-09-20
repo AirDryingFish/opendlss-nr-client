@@ -1,0 +1,192 @@
+{
+  "date": "2026-11-11",
+  "repositoryHeadAtAnalysis": "9a69f9e3549ca1412b3713bb8aca6cb600d84ee1",
+  "asset": "assets/cases/fox/Model.glb",
+  "assetSha256": "d97044e701822bac5a62696459b27d7b375aada5de8574ed4362edbba94771f7",
+  "upstreamCommit": "8f492390ddc7a2ae221a1369ef560589cf8c70fb",
+  "capture": {
+    "resolution": [
+      960,
+      720
+    ],
+    "frames": 100,
+    "animationIndex": 2,
+    "animationName": "Run",
+    "orbitDegreesPerFrame": 0,
+    "nrEnabled": true,
+    "lighting": "Bare-asset neutral ambient plus directional key; no HDR environment",
+    "artifactPrefix": "fox-final",
+    "sceneName": "Fox Animation"
+  },
+  "method": "Compare native capture frames 99 and 100. Validate exact raw headers and payload sizes, finite scene/motion floats, identical recorded projection and view matrices, changed scene RGB, and nonzero renderer velocity on drawn foreground pixels. Camera equality is limited to recorded text precision. This establishes animation with a fixed camera; it is not temporal image quality or motion reprojection accuracy certification.",
+  "camera": {
+    "frames": [
+      99,
+      100
+    ],
+    "recordedProjectionAndViewIdentical": true,
+    "maximumRecordedMatrixElementDelta": 0.0,
+    "projectionRowMajor": [
+      [
+        2.06061,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        2.74748,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        -1.0,
+        -2.0
+      ],
+      [
+        0.0,
+        0.0,
+        -1.0,
+        0.0
+      ]
+    ],
+    "viewRowMajor": [
+      [
+        0.683939,
+        -8.62054e-10,
+        -0.72954,
+        -7.29462
+      ],
+      [
+        -0.1309,
+        0.983771,
+        -0.122718,
+        -40.5771
+      ],
+      [
+        0.7177,
+        0.179429,
+        0.672839,
+        -223.384
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  "sceneDifference": {
+    "changedPixelsAbove1eMinus6": 78966,
+    "totalPixels": 691200,
+    "linearRgbMeanAbsoluteDifference": 0.014870901812373856,
+    "linearRgbMaximumAbsoluteDifference": 1.0387725830078125,
+    "reinhardRgbMeanAbsoluteDifference": 0.007456464238792807
+  },
+  "foregroundMotion": {
+    "definition": "Drawn velocity pixel with nonzero depth; motion channels decoded as float32 NDC previous-minus-current displacement",
+    "foregroundPixels": 72507,
+    "pixelsWithNdcLengthAbove1eMinus8": 72507,
+    "movingFraction": 1.0,
+    "meanNdcLength": 0.024839918656188672,
+    "maximumNdcLength": 0.11824834087359078,
+    "meanPixelLength": 9.351470491495306,
+    "maximumPixelLength": 43.373805833138114
+  },
+  "nrEvidence": {
+    "modelKernelsAndPipelinesLoaded": true,
+    "lastGpuMilliseconds": {
+      "scene": 0.064,
+      "preprocess": 0.087,
+      "network": 2.601,
+      "composite": 0.029,
+      "presentAndUi": 0.03,
+      "frame": 2.81
+    },
+    "positiveNetworkTiming": true,
+    "chainedTimeoutMessages": 0,
+    "historyWeightCaptureCount": 2
+  },
+  "rawArtifacts": {
+    "fox-final-pre-scene.raw": {
+      "resolution": [
+        960,
+        720
+      ],
+      "channels": 3,
+      "payloadType": "float32",
+      "bytes": 8294412,
+      "sha256": "ba1f72358e90c860f2a7f439990f2d551bfb417e6a0a6963865ddb2a38aa54ba"
+    },
+    "fox-final-moving-scene.raw": {
+      "resolution": [
+        960,
+        720
+      ],
+      "channels": 3,
+      "payloadType": "float32",
+      "bytes": 8294412,
+      "sha256": "964832ff831645f85c1c958f06dc57f5a6628771fee90e3318e23e0869d1d0ff"
+    },
+    "fox-final-pre-velocity.raw": {
+      "resolution": [
+        960,
+        720
+      ],
+      "channels": 4,
+      "payloadType": "uint32",
+      "bytes": 11059212,
+      "sha256": "c22a5017b2d9dc862774bedd2708d4e91678f3c711b0e2fba29c72556be70980"
+    },
+    "fox-final-moving-velocity.raw": {
+      "resolution": [
+        960,
+        720
+      ],
+      "channels": 4,
+      "payloadType": "uint32",
+      "bytes": 11059212,
+      "sha256": "96b565aa4297742cf706ad5fdf6a896b4f337de2a164c895cca5cee8c63d5c13"
+    },
+    "fox-final-moving-motion.raw": {
+      "resolution": [
+        960,
+        720
+      ],
+      "channels": 3,
+      "payloadType": "float32",
+      "bytes": 8294412,
+      "sha256": "3d4450db3eb2753cc3b74e30ffb48eac3e7138d865de38b206b9177744eeb996"
+    }
+  },
+  "logEvidence": {
+    "file": "fox-final.log",
+    "sha256": "2410f89f04ffc2914bfa4c08139429fa2ce9d8090111d5a133cf9be180088cbe",
+    "note": "Raw captures and runtime log were inspected in the temporary case-gallery directory; filenames identify those artifacts without machine-specific paths."
+  },
+  "result": "passed",
+  "view": {
+    "path": "assets/cases/fox/view.json",
+    "sha256": "603cb318776d8a50d306c43ba78f0cce9ac840bb2fed6e359e93dbe15a512c9c",
+    "camera": {
+      "position": [
+        160,
+        80,
+        140
+      ],
+      "target": [
+        0,
+        40,
+        -10
+      ],
+      "fov": 40,
+      "near": 1,
+      "far": 2000
+    },
+    "msaa": 4,
+    "backgroundSrgb": "#dbe4ee"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "model": "Model.glb",
+  "background": "#dbe4ee",
+  "backgroundEnvironment": false,
+  "msaa": 4,
+  "name": "Iridescent Dish with Olives",
+  "environment": "../../environments/studio_small_09_1k.hdr",
+  "sun": {
+    "direction": [
+      0.5,
+      0.8,
+      0.3
+    ],
+    "intensity": 1
+  },
+  "camera": {
+    "position": [
+      0.92,
+      0.56,
+      0
+    ],
+    "target": [
+      0,
+      0.15,
+      0
+    ],
+    "fov": 28,
+    "near": 0.001,
+    "far": 100
+  }
+}

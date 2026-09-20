@@ -1,0 +1,84 @@
+{
+  "date": "2026-11-11",
+  "sourceHeadBeforeDocumentationChanges": "9a69f9e3549ca1412b3713bb8aca6cb600d84ee1",
+  "upstreamAssets": {
+    "repository": "https://github.com/KhronosGroup/glTF-Sample-Assets",
+    "commit": "8f492390ddc7a2ae221a1369ef560589cf8c70fb",
+    "unchangedModelBytes": 14179720
+  },
+  "coverage": "CPU import validation and native Vulkan/FP8 NR rendering smoke tests, plus fixed-camera skeletal animation evidence. No benchmark or complete glTF conformance claim.",
+  "cases": [
+    {
+      "id": "lantern",
+      "model": "assets/cases/lantern/Model.glb",
+      "sha256": "a79458c4b02d695187a952f23a63b8bf278e7bc3d316a3c2a314f2d6974181f1",
+      "cpuImportPassed": true,
+      "gpuRendered": true,
+      "nrEnabled": true,
+      "temporalEnabled": true,
+      "view": "assets/cases/lantern/view.json",
+      "screenshot": "docs/images/cases/lantern.png",
+      "framesRendered": 40,
+      "positiveNetworkTiming": true
+    },
+    {
+      "id": "fox",
+      "model": "assets/cases/fox/Model.glb",
+      "sha256": "d97044e701822bac5a62696459b27d7b375aada5de8574ed4362edbba94771f7",
+      "cpuImportPassed": true,
+      "gpuRendered": true,
+      "nrEnabled": true,
+      "temporalEnabled": true,
+      "view": "assets/cases/fox/view.json",
+      "screenshot": "docs/images/cases/fox.png",
+      "framesRendered": 100,
+      "positiveNetworkTiming": true
+    },
+    {
+      "id": "alpha-blend-mode-test",
+      "model": "assets/cases/alpha-blend-mode-test/Model.glb",
+      "sha256": "37c3577d143071b42dd46e9d942b157837eb25c6340112171d7faecaa987b14e",
+      "cpuImportPassed": true,
+      "gpuRendered": true,
+      "nrEnabled": true,
+      "temporalEnabled": true,
+      "view": "assets/cases/alpha-blend-mode-test/view.json",
+      "screenshot": "docs/images/cases/alpha-blend-mode-test.png",
+      "framesRendered": 40,
+      "positiveNetworkTiming": true
+    },
+    {
+      "id": "transmission-test",
+      "model": "assets/cases/transmission-test/Model.glb",
+      "sha256": "dd9732dae5517f8605ad4324d78b077b969c3e8357c056280d0a4e4b67797d15",
+      "cpuImportPassed": true,
+      "gpuRendered": true,
+      "nrEnabled": true,
+      "temporalEnabled": true,
+      "view": "assets/cases/transmission-test/view.json",
+      "screenshot": "docs/images/cases/transmission-test.png",
+      "framesRendered": 40,
+      "positiveNetworkTiming": true
+    }
+  ],
+  "characterViews": {
+    "count": 3,
+    "nrEnabled": true,
+    "metadata": "../images/gallery-metadata.json"
+  },
+  "foxAnimationProof": "fox-animation-2026-11-11.json",
+  "pythonTestsPassed": 21,
+  "sourceChecks": [
+    "Model SHA256 and official Git blob identities match pinned upstream files",
+    "Source credits and CC0/CC-BY license files retained",
+    "Embedded PNG/JPEG assets have no unsupported KTX2/compression requirement",
+    "All seven published capture logs have positive network GPU samples and no chained-wait timeout",
+    "All published PNG hashes match recorded capture metadata"
+  ],
+  "environment": {
+    "path": "assets/environments/studio_small_09_1k.hdr",
+    "sha256": "e7cfda5f4e98e623db12b8bfd0184e048488e4855d9c83e2751fb44a32e80c45",
+    "source": "https://polyhaven.com/a/studio_small_09",
+    "license": "CC0-1.0"
+  }
+}

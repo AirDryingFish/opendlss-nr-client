@@ -1,0 +1,237 @@
+{
+  "gltfVersion": "2.0",
+  "asset": {
+    "version": "2.0",
+    "copyright": "Copyright 2021 Wayfair LLC. CC BY 4.0 International https://creativecommons.org/licenses/by/4.0/",
+    "generator": "Created in 3ds Max, exported with Max2Babylon, edited in Visual Studio Code with glTF Tools"
+  },
+  "embeddedImageMimeTypes": [
+    "image/png"
+  ],
+  "embeddedImageCount": 11,
+  "embeddedImages": [
+    {
+      "index": 0,
+      "name": "",
+      "mimeType": "image/png",
+      "bytes": 418795,
+      "dimensions": [
+        2048,
+        1024
+      ]
+    },
+    {
+      "index": 1,
+      "name": "",
+      "mimeType": "image/png",
+      "bytes": 191297,
+      "dimensions": [
+        512,
+        512
+      ]
+    },
+    {
+      "index": 2,
+      "name": "",
+      "mimeType": "image/png",
+      "bytes": 323206,
+      "dimensions": [
+        512,
+        512
+      ]
+    },
+    {
+      "index": 3,
+      "name": "",
+      "mimeType": "image/png",
+      "bytes": 151821,
+      "dimensions": [
+        512,
+        512
+      ]
+    },
+    {
+      "index": 4,
+      "name": "",
+      "mimeType": "image/png",
+      "bytes": 280389,
+      "dimensions": [
+        2048,
+        1024
+      ]
+    },
+    {
+      "index": 5,
+      "name": "",
+      "mimeType": "image/png",
+      "bytes": 306632,
+      "dimensions": [
+        2048,
+        1024
+      ]
+    },
+    {
+      "index": 6,
+      "name": "",
+      "mimeType": "image/png",
+      "bytes": 699795,
+      "dimensions": [
+        2048,
+        1024
+      ]
+    },
+    {
+      "index": 7,
+      "name": "",
+      "mimeType": "image/png",
+      "bytes": 1434505,
+      "dimensions": [
+        2048,
+        1024
+      ]
+    },
+    {
+      "index": 8,
+      "name": "",
+      "mimeType": "image/png",
+      "bytes": 315078,
+      "dimensions": [
+        2048,
+        1024
+      ]
+    },
+    {
+      "index": 9,
+      "name": "",
+      "mimeType": "image/png",
+      "bytes": 781211,
+      "dimensions": [
+        2048,
+        1024
+      ]
+    },
+    {
+      "index": 10,
+      "name": "",
+      "mimeType": "image/png",
+      "bytes": 1213,
+      "dimensions": [
+        2048,
+        1024
+      ]
+    }
+  ],
+  "extensionsUsed": [
+    "KHR_materials_ior",
+    "KHR_materials_iridescence",
+    "KHR_materials_transmission",
+    "KHR_materials_volume"
+  ],
+  "extensionsRequired": [],
+  "meshes": 4,
+  "nodes": 6,
+  "scenes": 1,
+  "skins": 0,
+  "animations": [
+    "glassCover rotation"
+  ],
+  "materialCount": 4,
+  "alphaModes": [
+    "MASK",
+    "OPAQUE"
+  ],
+  "normalMappedMaterials": 3,
+  "metallicRoughnessTexturedMaterials": 3,
+  "transmissionMaterials": 2,
+  "unlitMaterials": 0,
+  "cameras": [
+    {
+      "perspective": {
+        "yfov": 0.457822353,
+        "zfar": 10000,
+        "znear": 0.1
+      },
+      "type": "perspective",
+      "name": "Camera001"
+    }
+  ],
+  "cameraNodes": [
+    {
+      "node": 5,
+      "name": "Camera001",
+      "camera": 0,
+      "definition": {
+        "perspective": {
+          "yfov": 0.457822353,
+          "zfar": 10000,
+          "znear": 0.1
+        },
+        "type": "perspective",
+        "name": "Camera001"
+      },
+      "worldPosition": [
+        0.8,
+        0.5,
+        0.0
+      ],
+      "worldForward": [
+        -0.8949371241193572,
+        -0.44619151020284986,
+        -0.000824679255507148
+      ],
+      "worldMatrixColumnMajor": [
+        0.0008240000000001579,
+        0.0,
+        -0.9991759999999998,
+        0.0,
+        -0.445824,
+        0.895024,
+        0.0,
+        0.0,
+        0.8941999999999999,
+        0.445824,
+        0.0008240000000001579,
+        0.0,
+        0.8,
+        0.5,
+        0.0,
+        1.0
+      ]
+    }
+  ],
+  "bounds": {
+    "min": [
+      -0.2661104939986962,
+      -2.581076e-05,
+      -0.26611049243586105
+    ],
+    "max": [
+      0.2661104851354254,
+      0.3623647103047129,
+      0.2661104939986962
+    ],
+    "center": [
+      -4.431635391988209e-09,
+      0.18116944977235644,
+      7.814175695397552e-10
+    ],
+    "extent": [
+      0.2661104895670608,
+      0.18119526053235646,
+      0.26611049321727864
+    ],
+    "radius": 0.41768565895581405,
+    "method": "Default scene, static node transforms applied to POSITION accessor bounds; excludes animation and deformation"
+  },
+  "modelStats": {
+    "defaultSceneMeshInstances": 4,
+    "sourcePrimitives": 4,
+    "renderedPrimitives": 4,
+    "sourceVerticesSummedPerPrimitive": 14863,
+    "sourceTriangles": 24448,
+    "renderedTriangles": 24448
+  },
+  "appearanceNotes": [
+    "Iridescence/transmission/volume appearance requires actual native renderer verification."
+  ]
+}

@@ -1,0 +1,160 @@
+{
+  "date": "2026-11-11",
+  "review": "NR comparison capture path independently reviewed; all14 matched-input pairs verified and published without changing native pixels",
+  "build": {
+    "status": "passed",
+    "platform": "Ubuntu 24.04 amd64 / X11",
+    "backend": "upstream native Vulkan + FP8 Tensor Core PTX",
+    "generatedResourceCount": 95,
+    "runtimeLibraries": "bundled LLVM C++ libraries; system Vulkan/X11"
+  },
+  "checks": {
+    "pythonTestsPassed": 26,
+    "requirementsCasesPassed": 12,
+    "vulkanCudaQueryAndEnableContract": "passed",
+    "nativeControlsAndImport": "passed, including actual prepared asset",
+    "resourceValidation": "passed",
+    "stageHashes": "all 11 passed",
+    "launchFromOtherDirectory": "passed launcher path/argument tests; earlier unsupported-driver run rejected cleanly with exit2",
+    "customBackendAcceptanceBenchmark": "rejected before GPU/window, exit2 without dialog",
+    "assetGltfErrors": 0,
+    "assetPreexistingWarnings": 7,
+    "applySizeRegression": "historical manual-Apply behavior: 12 logical clicks passed before replacement by window-follow sizing",
+    "windowFollowRegression": "passed: 6 window-size requests, 5 actual extent changes, 12 NR checkbox clicks; render/native/SDL/ImGui dimensions agree, including desktop-clamped2048 request",
+    "defaultMsaa4": "passed actualNR-off renders: defaultmatchesexplicit4x byte-for-byte in static/moving outputs and raw scene frames99/100",
+    "windowFollowAfterMsaaChange": "passed:6windowrequests/5actualchanges/12NRclicks;render/native/SDL/ImGui agree, including2048x1403 WMclamp",
+    "nativeMaterialArchiveCasesPassed": 24,
+    "headOcclusionRegression": "passed exact rear-pose2560x1403 withNRon/off; foreground scalp restored, front pose also inspected",
+    "dependencyPatchResume": "passed fresh routing patch forward/reverse check and existing-cache fetch rerun",
+    "standaloneBuildPaths": "3 behavioral cases passed: HOME cache, XDG cache and explicit overrides",
+    "standaloneNativeBuild": "passed: independent Git clone, reused pinned dependency SDK, clean native configure/build27targets",
+    "distroNodeExtraction": "UbuntuNode18.19.1 statically extracted71blocks/153tensors;11stagehashesmatchverifiedlocalmodel",
+    "packagedCloneRuntime": "passed:independentGitclone compiled27targets,trackedtestGLBhashmatches,40nativeNR-onframes1024x1024+capture",
+    "publicCaseImports": "4unchangedKhronosGLBs passednativeCPUimportvalidation",
+    "publicCaseRuntime": "4cases renderednativeNR+temporal withpositiveGPUtiming;7publishedviews inspected",
+    "hdrPresets": "4 verified CC0 HDRs, 210 native NR-on frames, 7 successful replacements, 2 GPU rollback checks plus 6 NOOP failure transactions",
+    "windowFollowAfterEnvironmentPresets": "passed:6windowrequests/5actualchanges/12NRclicks; render/native/SDL/ImGui agree",
+    "startupAssets": "8 models discovered recursively; bare native launch accepted, CLI selection and adjacent views preserved",
+    "fileBrowserImport": "3 native runs, 6 actions each: catalog, Cancel, Escape, external import, malformed GLB and renderer failure rollback",
+    "realisticScenes": "3 licensed models imported/rendered with native NR; Gothic orientation normalized without changing BIN payload",
+    "readmeNrComparisons": "14 pairs / 28 native captures: all linear HDR inputs byte-identical; camera text, animation time and clip match; real NR bypass versus enabled network"
+  },
+  "runtime": {
+    "status": "native_nr_all_readme_comparisons_passed",
+    "gpu": {
+      "name": "NVIDIA GeForce RTX 4080 SUPER",
+      "driver": "595.99.02",
+      "vendorId": 4318,
+      "missing": []
+    },
+    "cudaKernelLaunchFeature": "supported and explicitly enabled in native creation chain",
+    "renderedNativeFrame": true,
+    "nrExecuted": true,
+    "fpsMeasured": true,
+    "fallbackUsed": false,
+    "benchmark": "docs/verification/1024-msaa4-benchmark-2026-11-11.json",
+    "applySizeRegression": "docs/verification/ui-resize-2026-11-11.json",
+    "capture": {
+      "resolution": [
+        1024,
+        1024
+      ],
+      "nrOnAndOff": true,
+      "sourceScenesIdentical": true,
+      "outputMeanAbsoluteDifference8Bit": 7.500795364379883,
+      "outputChangedPixels": 479814,
+      "note": "Static camera capture. Output difference verifies the switch has an effect; no numerical parity or perceptual quality claim."
+    },
+    "notCovered": [
+      "Native desktop maximize/minimize button interactions were code reviewed but not separately exercised in the window-resize scenario.",
+      "Background picker interaction code reviewed; separate desktop automation not performed. No claim that all translucent sorting artifacts are eliminated."
+    ],
+    "windowFollowRegression": "docs/verification/realistic-scenes-and-import-2026-11-11.json",
+    "historicalBenchmark": "docs/verification/1024-benchmark-2026-11-11.json",
+    "cameraAliasingDiagnostic": "docs/verification/camera-aliasing-2026-11-11.json",
+    "sceneMsaaSamples": 4,
+    "headOcclusionRegression": "docs/verification/head-occlusion-2026-11-11.json",
+    "benchmarkSourceCommit": "dbc5d042c1d87bda4e4bceb5f09cb6eba9fab28c",
+    "benchmarkPredatesMaterialRoutingFix": true,
+    "publicCaseGallery": "docs/images/gallery-metadata.json",
+    "foxAnimation": "docs/verification/fox-animation-2026-11-11.json",
+    "hdrEnvironments": "docs/verification/hdr-environments-2026-11-11.json",
+    "windowFollowBeforeHdrPresets": "docs/verification/window-follow-msaa4-2026-11-11.json",
+    "latestVerification": "docs/verification/nr-comparisons-2026-11-11.json",
+    "nrComparisons": "docs/verification/nr-comparisons-2026-11-11.json"
+  },
+  "model": {
+    "blocks": 71,
+    "tensors": 153,
+    "stages": 11,
+    "dllExecuted": false,
+    "nativeGpuUploadVerified": true
+  },
+  "asset": {
+    "vertices": 121968,
+    "maxWorldPositionComponentError": 7.629232157135846e-08,
+    "maxWorldNormalComponentError": 3.7572623678983064e-08,
+    "texturesPreserved": 23,
+    "staticBakeReason": "No animation/morphs; declared skin1185 joints exceeds Filament256."
+  },
+  "artifacts": {
+    "build/demo/dlss5-demo": {
+      "bytes": 9273128,
+      "sha256": "f4d1cab55df36b0a8f03426ae60471adaec6d06f11cd0f9910469945a3546833"
+    },
+    "build/dlss5vk": {
+      "bytes": 625520,
+      "sha256": "af10ffaa5b9a430919645e7ddcfb31ec5a8f8902b6900136b3a70130ea96440a"
+    },
+    "build/nr-doctor": {
+      "bytes": 63712,
+      "sha256": "eb395c84a3fb109bcbed9d45d08a112b73483d5c9cdf2a56194b02537dd721fc"
+    },
+    "assets/test-static.glb": {
+      "bytes": 61583972,
+      "sha256": "90ea40a9c98084312351cb4b3e37a84f7b34ee3aa0adbe7194af477cc531a389"
+    },
+    "models/nr/manifest.json": {
+      "bytes": 32721,
+      "sha256": "8239b5a6b9412d980f1e205b5146dd7a32a38be4e2d443921fac5514d041a549"
+    }
+  },
+  "implementationDecisions": [
+    "Project-local compiler/clean header overlay; no system file or driver changes.",
+    "Four compile jobs for31GiBhost RAM; build time may be longer than more parallel jobs.",
+    "KTX2 rejected pending full validation; users must convert to PNG/JPEG.",
+    "Static preview asset for this animation-free model; original skinned files preserved.",
+    "Performance claims use actual NR-on measurements on the prepared test asset; GPU network time and whole-frame time are reported separately.",
+    "Render and NR resolution always follow actual window client size; CLI dimensions only request initial window size. Identical sizes preserve GPU resources; minimized windows suspend rendering and reset temporal history on restoration.",
+    "Background color picker uses accurate sRGB-to-linear conversion and a solid skybox, preserves IBL and resets NR history. Scene defaults to4x MSAA; explicit scene/UI values remain supported.",
+    "Filament transmission/volume templates require the matching glTF extension, so ordinary specular/IOR PBR and alpha hair retain normal render-pass ordering.",
+    "Four manifest-driven Poly Haven HDR presets load outside active frames, retain IBL intensity/rotation, reset NR history on success and preserve the prior environment on failure.",
+    "Scripted captures use fixed60Hz animation time, record actual NR state, frame40 raw linear scene and camera text for matched-input comparisons; normal rendering retains wall-clock time."
+  ],
+  "dependencyPatches": {
+    "third_party/filament.patch": "be5b7aa265ccbf92b4ac2a77ed3f80d037635a790e2f068c0ad0fb720c617f3b",
+    "third_party/filament-material-routing.patch": "eda6fffd5103c32c22eb2ef031634918979d0751ad6042bdc4fe93359952630d"
+  },
+  "repositoryPackaging": {
+    "assetTracked": "assets/test-static.glb",
+    "assetStorage": "ordinary binary Git blob; noLFS",
+    "readme": "README.md",
+    "comparisons": [
+      "docs/images/comparisons/realistic-scenes.png",
+      "docs/images/comparisons/case-gallery.png",
+      "docs/images/comparisons/character-views.png",
+      "docs/images/comparisons/environment-presets.png"
+    ],
+    "sourceHistory": "Upstream source, vendored code, assets and documentation consolidated into init; only local implementation, build logic and tests follow.",
+    "weightsDistributed": false,
+    "buildCachesDistributed": false,
+    "verification": "docs/verification/repository-package-2026-11-11.json"
+  },
+  "historicalCompiledSourceCommit": "1f0285a98e921f40d48703a4e3924fb3ad765841",
+  "historicalAuthorRewrite": "docs/verification/author-rewrite-2026-11-11.json",
+  "historyLayout": {
+    "initialCommit": "init",
+    "subsequentCommits": "Local implementation, build logic and tests only",
+    "historicalCommitReferences": "Commit IDs in verification reports and the earlier author-rewrite record refer to the pre-consolidation history. Recorded source, binary and asset hashes remain unchanged."
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "Fox Animation",
+  "model": "Model.glb",
+  "background": "#dbe4ee",
+  "msaa": 4,
+  "camera": {
+    "position": [
+      160,
+      80,
+      140
+    ],
+    "target": [
+      0,
+      40,
+      -10
+    ],
+    "fov": 40,
+    "near": 1,
+    "far": 2000
+  }
+}

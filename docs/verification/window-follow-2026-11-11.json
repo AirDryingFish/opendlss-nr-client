@@ -1,0 +1,489 @@
+{
+  "date": "2026-11-11",
+  "compiledSourceCommit": "6f1f9efeade0a5c7227a6988ef252006ac44580d",
+  "method": "Resize this process own SDL window and inject NR checkbox SDL motion/down/up across distinct completed UI frames. Compare render dimensions with X11 native geometry, SDL size, ImGui DisplaySize and UI viewport.",
+  "scope": "Logical hit testing and dimension agreement; no external desktop pointer automation or visual-alignment assertion.",
+  "red": {
+    "complete": false,
+    "scope": "logical SDL/ImGui hit testing; rendered alignment requires visual verification",
+    "error": "render/NR dimensions do not follow actual window",
+    "logical_clicks_passed": 0,
+    "resize_requests": 1,
+    "resizes_passed": 0,
+    "actions_passed": 0,
+    "render_follows_window": false,
+    "geometry_matches": true,
+    "completed_frames": 13,
+    "begin_frame_skips": 139,
+    "exitCode": 4,
+    "lastSample": {
+      "frame": 13,
+      "ui_frame": 13,
+      "action": 0,
+      "phase": 3,
+      "nr_enabled": true,
+      "native_window": [
+        800,
+        600
+      ],
+      "render": [
+        1024,
+        1024
+      ],
+      "sdl_window": [
+        800,
+        600
+      ],
+      "display": [
+        800,
+        600
+      ],
+      "framebuffer_scale": [
+        1,
+        1
+      ],
+      "ui_viewport": [
+        0,
+        0,
+        800,
+        600
+      ],
+      "mouse": [
+        -3.40282e+38,
+        -3.40282e+38
+      ],
+      "mouse_down": false,
+      "want_capture_mouse": false,
+      "window_hovered": false,
+      "enabled_min": [
+        18,
+        347
+      ],
+      "enabled_max": [
+        90,
+        366
+      ],
+      "enabled_hovered": false,
+      "begin_frame_skips": 139,
+      "sdl_resize_events": 1
+    }
+  },
+  "green": {
+    "complete": true,
+    "scope": "logical SDL/ImGui hit testing; rendered alignment requires visual verification",
+    "error": "",
+    "logical_clicks_passed": 12,
+    "resize_requests": 6,
+    "resizes_passed": 6,
+    "actual_extent_changes": 5,
+    "actions_passed": 18,
+    "render_follows_window": true,
+    "geometry_matches": true,
+    "completed_frames": 145,
+    "begin_frame_skips": 798,
+    "exitCode": 0,
+    "lastSample": {
+      "frame": 145,
+      "ui_frame": 145,
+      "action": 17,
+      "phase": 3,
+      "nr_enabled": true,
+      "requested_window": [
+        1024,
+        768
+      ],
+      "native_window": [
+        1024,
+        768
+      ],
+      "render": [
+        1024,
+        768
+      ],
+      "sdl_window": [
+        1024,
+        768
+      ],
+      "display": [
+        1024,
+        768
+      ],
+      "framebuffer_scale": [
+        1,
+        1
+      ],
+      "ui_viewport": [
+        0,
+        0,
+        1024,
+        768
+      ],
+      "mouse": [
+        54,
+        218
+      ],
+      "mouse_down": false,
+      "want_capture_mouse": true,
+      "window_hovered": true,
+      "enabled_min": [
+        18,
+        209
+      ],
+      "enabled_max": [
+        90,
+        228
+      ],
+      "enabled_hovered": true,
+      "begin_frame_skips": 798,
+      "sdl_resize_events": 10
+    },
+    "settledResizeSamples": [
+      {
+        "frame": 14,
+        "ui_frame": 14,
+        "action": 0,
+        "phase": 3,
+        "nr_enabled": true,
+        "requested_window": [
+          800,
+          600
+        ],
+        "native_window": [
+          800,
+          600
+        ],
+        "render": [
+          800,
+          600
+        ],
+        "sdl_window": [
+          800,
+          600
+        ],
+        "display": [
+          800,
+          600
+        ],
+        "framebuffer_scale": [
+          1,
+          1
+        ],
+        "ui_viewport": [
+          0,
+          0,
+          800,
+          600
+        ],
+        "mouse": [
+          -3.40282e+38,
+          -3.40282e+38
+        ],
+        "mouse_down": false,
+        "want_capture_mouse": false,
+        "window_hovered": false,
+        "enabled_min": [
+          18,
+          209
+        ],
+        "enabled_max": [
+          90,
+          228
+        ],
+        "enabled_hovered": false,
+        "begin_frame_skips": 88,
+        "sdl_resize_events": 3
+      },
+      {
+        "frame": 37,
+        "ui_frame": 37,
+        "action": 3,
+        "phase": 3,
+        "nr_enabled": true,
+        "requested_window": [
+          1200,
+          900
+        ],
+        "native_window": [
+          1200,
+          900
+        ],
+        "render": [
+          1200,
+          900
+        ],
+        "sdl_window": [
+          1200,
+          900
+        ],
+        "display": [
+          1200,
+          900
+        ],
+        "framebuffer_scale": [
+          1,
+          1
+        ],
+        "ui_viewport": [
+          0,
+          0,
+          1200,
+          900
+        ],
+        "mouse": [
+          54,
+          218
+        ],
+        "mouse_down": false,
+        "want_capture_mouse": true,
+        "window_hovered": true,
+        "enabled_min": [
+          18,
+          209
+        ],
+        "enabled_max": [
+          90,
+          228
+        ],
+        "enabled_hovered": true,
+        "begin_frame_skips": 194,
+        "sdl_resize_events": 4
+      },
+      {
+        "frame": 60,
+        "ui_frame": 60,
+        "action": 6,
+        "phase": 3,
+        "nr_enabled": true,
+        "requested_window": [
+          720,
+          960
+        ],
+        "native_window": [
+          720,
+          960
+        ],
+        "render": [
+          720,
+          960
+        ],
+        "sdl_window": [
+          720,
+          960
+        ],
+        "display": [
+          720,
+          960
+        ],
+        "framebuffer_scale": [
+          1,
+          1
+        ],
+        "ui_viewport": [
+          0,
+          0,
+          720,
+          960
+        ],
+        "mouse": [
+          54,
+          218
+        ],
+        "mouse_down": false,
+        "want_capture_mouse": true,
+        "window_hovered": true,
+        "enabled_min": [
+          18,
+          209
+        ],
+        "enabled_max": [
+          90,
+          228
+        ],
+        "enabled_hovered": true,
+        "begin_frame_skips": 331,
+        "sdl_resize_events": 5
+      },
+      {
+        "frame": 84,
+        "ui_frame": 84,
+        "action": 9,
+        "phase": 3,
+        "nr_enabled": true,
+        "requested_window": [
+          2048,
+          2048
+        ],
+        "native_window": [
+          2048,
+          1403
+        ],
+        "render": [
+          2048,
+          1403
+        ],
+        "sdl_window": [
+          2048,
+          1403
+        ],
+        "display": [
+          2048,
+          1403
+        ],
+        "framebuffer_scale": [
+          1,
+          1
+        ],
+        "ui_viewport": [
+          0,
+          0,
+          2048,
+          1403
+        ],
+        "mouse": [
+          54,
+          218
+        ],
+        "mouse_down": false,
+        "want_capture_mouse": true,
+        "window_hovered": true,
+        "enabled_min": [
+          18,
+          209
+        ],
+        "enabled_max": [
+          90,
+          228
+        ],
+        "enabled_hovered": true,
+        "begin_frame_skips": 460,
+        "sdl_resize_events": 8
+      },
+      {
+        "frame": 107,
+        "ui_frame": 107,
+        "action": 12,
+        "phase": 3,
+        "nr_enabled": true,
+        "requested_window": [
+          1024,
+          768
+        ],
+        "native_window": [
+          1024,
+          768
+        ],
+        "render": [
+          1024,
+          768
+        ],
+        "sdl_window": [
+          1024,
+          768
+        ],
+        "display": [
+          1024,
+          768
+        ],
+        "framebuffer_scale": [
+          1,
+          1
+        ],
+        "ui_viewport": [
+          0,
+          0,
+          1024,
+          768
+        ],
+        "mouse": [
+          54,
+          218
+        ],
+        "mouse_down": false,
+        "want_capture_mouse": true,
+        "window_hovered": true,
+        "enabled_min": [
+          18,
+          209
+        ],
+        "enabled_max": [
+          90,
+          228
+        ],
+        "enabled_hovered": true,
+        "begin_frame_skips": 580,
+        "sdl_resize_events": 9
+      },
+      {
+        "frame": 129,
+        "ui_frame": 129,
+        "action": 15,
+        "phase": 3,
+        "nr_enabled": true,
+        "requested_window": [
+          1024,
+          768
+        ],
+        "native_window": [
+          1024,
+          768
+        ],
+        "render": [
+          1024,
+          768
+        ],
+        "sdl_window": [
+          1024,
+          768
+        ],
+        "display": [
+          1024,
+          768
+        ],
+        "framebuffer_scale": [
+          1,
+          1
+        ],
+        "ui_viewport": [
+          0,
+          0,
+          1024,
+          768
+        ],
+        "mouse": [
+          54,
+          218
+        ],
+        "mouse_down": false,
+        "want_capture_mouse": true,
+        "window_hovered": true,
+        "enabled_min": [
+          18,
+          209
+        ],
+        "enabled_max": [
+          90,
+          228
+        ],
+        "enabled_hovered": true,
+        "begin_frame_skips": 706,
+        "sdl_resize_events": 10
+      }
+    ]
+  },
+  "initialWindowConstraintCheck": {
+    "requested": [
+      2048,
+      2048
+    ],
+    "rendered": [
+      2048,
+      1403
+    ],
+    "frames": 12,
+    "exitCode": 0
+  },
+  "notSeparatelyExercised": [
+    "Native desktop maximize button and minimize/restore; their event handling was code reviewed.",
+    "Runtime asset reload/error recovery."
+  ]
+}

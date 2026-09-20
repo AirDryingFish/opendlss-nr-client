@@ -1,0 +1,31 @@
+{
+  "name": "Transmission",
+  "model": "Model.glb",
+  "background": "#dbe4ee",
+  "msaa": 4,
+  "environment": "../../environments/studio_small_09_1k.hdr",
+  "backgroundEnvironment": false,
+  "sun": {
+    "direction": [
+      0.5,
+      0.8,
+      0.3
+    ],
+    "intensity": 1.0
+  },
+  "camera": {
+    "position": [
+      -0.07675539702177048,
+      0.3394200801849365,
+      1.802846074104309
+    ],
+    "target": [
+      -0.1460739566888924,
+      0.08672148038825939,
+      0.022020993295372104
+    ],
+    "fov": 34.515876027228366,
+    "near": 5.606882768915966e-05,
+    "far": 3.0837855339050293
+  }
+}

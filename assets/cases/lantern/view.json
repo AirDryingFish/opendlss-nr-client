@@ -1,0 +1,16 @@
+{
+  "name": "Lantern",
+  "model": "Model.glb",
+  "background": "#dbe4ee",
+  "msaa": 4,
+  "environment": "../../environments/studio_small_09_1k.hdr",
+  "backgroundEnvironment": false,
+  "sun": {
+    "direction": [
+      0.5,
+      0.8,
+      0.3
+    ],
+    "intensity": 1.0
+  }
+}

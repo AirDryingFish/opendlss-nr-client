@@ -1,0 +1,399 @@
+{
+  "gltfVersion": "2.0",
+  "asset": {
+    "copyright": "Original assets by Moeen Sayed and Mujtaba Sayed for SideFX.",
+    "generator": "Created by RapidPipeline 3D Processor v7.3.0 | rapidpipeline.com",
+    "version": "2.0"
+  },
+  "embeddedImageMimeTypes": [
+    "image/jpeg"
+  ],
+  "embeddedImageCount": 33,
+  "embeddedImages": [
+    {
+      "index": 0,
+      "name": "",
+      "mimeType": "image/jpeg",
+      "bytes": 361127,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "index": 1,
+      "name": "",
+      "mimeType": "image/jpeg",
+      "bytes": 673915,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "index": 2,
+      "name": "",
+      "mimeType": "image/jpeg",
+      "bytes": 622771,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "index": 3,
+      "name": "",
+      "mimeType": "image/jpeg",
+      "bytes": 403990,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "index": 4,
+      "name": "",
+      "mimeType": "image/jpeg",
+      "bytes": 850400,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "index": 5,
+      "name": "",
+      "mimeType": "image/jpeg",
+      "bytes": 630950,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "index": 6,
+      "name": "",
+      "mimeType": "image/jpeg",
+      "bytes": 366216,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "index": 7,
+      "name": "",
+      "mimeType": "image/jpeg",
+      "bytes": 764089,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "index": 8,
+      "name": "",
+      "mimeType": "image/jpeg",
+      "bytes": 782417,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "index": 9,
+      "name": "",
+      "mimeType": "image/jpeg",
+      "bytes": 395138,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "index": 10,
+      "name": "",
+      "mimeType": "image/jpeg",
+      "bytes": 961725,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "index": 11,
+      "name": "",
+      "mimeType": "image/jpeg",
+      "bytes": 822486,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "index": 12,
+      "name": "",
+      "mimeType": "image/jpeg",
+      "bytes": 295346,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "index": 13,
+      "name": "",
+      "mimeType": "image/jpeg",
+      "bytes": 777060,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "index": 14,
+      "name": "",
+      "mimeType": "image/jpeg",
+      "bytes": 741172,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "index": 15,
+      "name": "",
+      "mimeType": "image/jpeg",
+      "bytes": 309191,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "index": 16,
+      "name": "",
+      "mimeType": "image/jpeg",
+      "bytes": 662916,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "index": 17,
+      "name": "",
+      "mimeType": "image/jpeg",
+      "bytes": 709227,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "index": 18,
+      "name": "",
+      "mimeType": "image/jpeg",
+      "bytes": 529405,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "index": 19,
+      "name": "",
+      "mimeType": "image/jpeg",
+      "bytes": 727372,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "index": 20,
+      "name": "",
+      "mimeType": "image/jpeg",
+      "bytes": 582751,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "index": 21,
+      "name": "",
+      "mimeType": "image/jpeg",
+      "bytes": 750313,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "index": 22,
+      "name": "",
+      "mimeType": "image/jpeg",
+      "bytes": 792174,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "index": 23,
+      "name": "",
+      "mimeType": "image/jpeg",
+      "bytes": 303807,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "index": 24,
+      "name": "",
+      "mimeType": "image/jpeg",
+      "bytes": 315179,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "index": 25,
+      "name": "",
+      "mimeType": "image/jpeg",
+      "bytes": 394527,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "index": 26,
+      "name": "",
+      "mimeType": "image/jpeg",
+      "bytes": 491396,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "index": 27,
+      "name": "",
+      "mimeType": "image/jpeg",
+      "bytes": 1371413,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "index": 28,
+      "name": "",
+      "mimeType": "image/jpeg",
+      "bytes": 334252,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "index": 29,
+      "name": "",
+      "mimeType": "image/jpeg",
+      "bytes": 244999,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "index": 30,
+      "name": "",
+      "mimeType": "image/jpeg",
+      "bytes": 215780,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "index": 31,
+      "name": "",
+      "mimeType": "image/jpeg",
+      "bytes": 350946,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "index": 32,
+      "name": "",
+      "mimeType": "image/jpeg",
+      "bytes": 395645,
+      "dimensions": [
+        2048,
+        2048
+      ]
+    }
+  ],
+  "extensionsUsed": [
+    "KHR_materials_transmission",
+    "KHR_materials_volume"
+  ],
+  "extensionsRequired": [],
+  "meshes": 15,
+  "nodes": 49,
+  "scenes": 1,
+  "skins": 0,
+  "animations": [],
+  "materialCount": 15,
+  "alphaModes": [
+    "OPAQUE"
+  ],
+  "normalMappedMaterials": 15,
+  "metallicRoughnessTexturedMaterials": 15,
+  "transmissionMaterials": 2,
+  "unlitMaterials": 0,
+  "cameras": [],
+  "cameraNodes": [],
+  "bounds": {
+    "min": [
+      -0.3527080714702606,
+      -5.566945304735782e-08,
+      -0.3527080714702606
+    ],
+    "max": [
+      0.3527080714702606,
+      0.16899584978818893,
+      0.3527080714702606
+    ],
+    "center": [
+      0.0,
+      0.08449789705936794,
+      0.0
+    ],
+    "extent": [
+      0.3527080714702606,
+      0.08449795272882099,
+      0.3527080714702606
+    ],
+    "radius": 0.5059109322557707,
+    "method": "Default scene, static node transforms applied to POSITION accessor bounds; excludes animation and deformation"
+  },
+  "modelStats": {
+    "defaultSceneMeshInstances": 49,
+    "sourcePrimitives": 15,
+    "renderedPrimitives": 49,
+    "sourceVerticesSummedPerPrimitive": 417028,
+    "sourceTriangles": 573952,
+    "renderedTriangles": 1499072
+  },
+  "appearanceNotes": [
+    "Polished chess tabletop with transmission and volume materials."
+  ]
+}

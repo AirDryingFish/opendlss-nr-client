@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "name": "Fox",
+  "purpose": "Skinned animation: Survey, Walk, Run",
+  "repository": "https://github.com/KhronosGroup/glTF-Sample-Assets",
+  "commit": "8f492390ddc7a2ae221a1369ef560589cf8c70fb",
+  "modelDirectoryUrl": "https://github.com/KhronosGroup/glTF-Sample-Assets/tree/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/Fox",
+  "downloadUrl": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/Fox/glTF-Binary/Fox.glb",
+  "upstreamReadmeUrl": "https://github.com/KhronosGroup/glTF-Sample-Assets/blob/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/Fox/README.md",
+  "licenseExpression": "CC0-1.0 AND CC-BY-4.0",
+  "attribution": [
+    {
+      "license": "CC0-1.0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
+      "artist": "PixelMannen",
+      "year": "2014",
+      "owner": "Public",
+      "what": "Model",
+      "text": "Creative Commons Zero v1.0 Universal",
+      "spdx": "CC0-1.0",
+      "icon": "https://licensebuttons.net/p/zero/1.0/88x31.png"
+    },
+    {
+      "license": "CC-BY-4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/legalcode",
+      "artist": "tomkranis",
+      "year": "2014",
+      "owner": "tomkranis",
+      "what": "Rigging & Animation",
+      "text": "Creative Commons Attribution 4.0 International",
+      "spdx": "CC-BY-4.0",
+      "icon": "https://licensebuttons.net/l/by/4.0/88x31.png"
+    },
+    {
+      "license": "CC-BY-4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/legalcode",
+      "artist": "@AsoboStudio and @scurest",
+      "year": "2017",
+      "owner": "@AsoboStudio and @scurest",
+      "what": "Conversion to glTF",
+      "text": "Creative Commons Attribution 4.0 International",
+      "spdx": "CC-BY-4.0",
+      "icon": "https://licensebuttons.net/l/by/4.0/88x31.png"
+    }
+  ],
+  "upstreamMetadocumentation": {
+    "attribution": "KhronosGroup/glTF-Sample-Assets contributors",
+    "license": "CC-BY-4.0"
+  },
+  "changes": "None. Model.glb is the upstream glTF-Binary file byte-for-byte; only its local filename differs. Upstream README.md, LICENSE.md and metadata.json are preserved verbatim.",
+  "licenseFiles": [
+    "../LICENSES/CC0-1.0.txt",
+    "../LICENSES/CC-BY-4.0.txt"
+  ],
+  "files": [
+    {
+      "path": "fox/Model.glb",
+      "upstreamPath": "Models/Fox/glTF-Binary/Fox.glb",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/Fox/glTF-Binary/Fox.glb",
+      "bytes": 162852,
+      "sha256": "d97044e701822bac5a62696459b27d7b375aada5de8574ed4362edbba94771f7",
+      "upstreamGitBlobSha1": "1ef5c0d05658caea339680fe581aa2c8302b3365"
+    },
+    {
+      "path": "fox/README.md",
+      "upstreamPath": "Models/Fox/README.md",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/Fox/README.md",
+      "bytes": 1782,
+      "sha256": "cf767a7943b12f3af0ea14a1b18947a45ed7a03c3e722678df33854d97df0f88"
+    },
+    {
+      "path": "fox/LICENSE.md",
+      "upstreamPath": "Models/Fox/LICENSE.md",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/Fox/LICENSE.md",
+      "bytes": 1061,
+      "sha256": "9ddaa2edd6a8f72117eec9709d38cd7d284f61f77752d342c32c828e61f78eae"
+    },
+    {
+      "path": "fox/metadata.json",
+      "upstreamPath": "Models/Fox/metadata.json",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/Fox/metadata.json",
+      "bytes": 1430,
+      "sha256": "1d888d832b5eb2a32a461ae6d5e2bc00f925e3a571c1447842466d2061800604"
+    }
+  ],
+  "inspection": {
+    "gltfVersion": "2.0",
+    "embeddedImageMimeTypes": [
+      "image/png"
+    ],
+    "extensionsUsed": [],
+    "extensionsRequired": [],
+    "meshes": 1,
+    "skins": 1,
+    "animations": [
+      "Survey",
+      "Walk",
+      "Run"
+    ],
+    "materialCount": 1,
+    "alphaModes": [
+      "OPAQUE"
+    ],
+    "normalMappedMaterials": 0,
+    "metallicRoughnessTexturedMaterials": 0,
+    "transmissionMaterials": 0,
+    "cameras": []
+  }
+}

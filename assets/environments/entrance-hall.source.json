@@ -1,0 +1,51 @@
+{
+  "title": "Entrance Hall",
+  "presetId": "entrance-hall",
+  "presetName": "Entrance Hall",
+  "purpose": "Victorian indoor hall with daylight and chandelier lighting",
+  "author": "Sergej Majboroda",
+  "source": "https://polyhaven.com/a/entrance_hall",
+  "license": "CC0-1.0",
+  "licenseUrl": "https://polyhaven.com/license",
+  "licenseText": "LICENSE.txt",
+  "downloadUrl": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/entrance_hall_1k.hdr",
+  "apiInfoUrl": "https://api.polyhaven.com/info/entrance_hall",
+  "apiFilesUrl": "https://api.polyhaven.com/files/entrance_hall",
+  "resolution": [
+    1024,
+    512
+  ],
+  "format": "Radiance HDR (32-bit_rle_rgbe)",
+  "bytes": 1621287,
+  "sha256": "33a4537d666e156f19b0e47c8a2d56ee52d48dfa52d46b04fbbca617c97aee80",
+  "upstreamMd5": "0a7355285e1c7f5e9a4cd368b15fc2cf",
+  "retrievedAt": "2026-11-11T07:11:07+00:00",
+  "changes": "None. The official Poly Haven 1k HDR file is preserved byte-for-byte.",
+  "primarySourceLicenseEvidence": {
+    "name": "Entrance Hall",
+    "url": "https://polyhaven.com/a/entrance_hall",
+    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "acquireLicensePage": "https://polyhaven.com/license",
+    "copyrightNotice": "CC0 1.0 Universal - public domain dedication, no attribution required",
+    "creditText": "Sergej Majboroda",
+    "creator": [
+      {
+        "@type": "Person",
+        "name": "Sergej Majboroda"
+      }
+    ],
+    "datePublished": "2019-06-20",
+    "description": "Unclipped, free 16K HDRI of a Victorian entrance hall: warm midday daylight and chandelier glow, medium-contrast natural & artificial indoor lighting."
+  },
+  "apiAttribution": {
+    "Sergej Majboroda": "All"
+  },
+  "apiCategories": [
+    "indoor",
+    "urban",
+    "midday",
+    "medium contrast",
+    "natural light",
+    "artificial light"
+  ]
+}

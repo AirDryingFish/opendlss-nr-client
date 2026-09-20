@@ -1,0 +1,58 @@
+The source code is licensed under the MIT License (see LICENSE). The test assets have separate provenance
+and are not covered by that source-code license (see assets/README.md). It is not affiliated with, endorsed by, or
+supported by NVIDIA Corporation. "DLSS" is a trademark of NVIDIA Corporation; it is used here only to describe
+what the network implemented by this code is compatible with. No NVIDIA software, weights, headers or
+documentation are included, and no rights under any NVIDIA intellectual property are granted.
+
+Third-party components and attribution:
+
+- Filament by Google (Apache-2.0), including the third-party libraries its build brings in (SDL2 (zlib),
+  Dear ImGui (MIT), stb (MIT / public domain), Draco, meshoptimizer, Basis Universal, zstd, Abseil and others,
+  see its third_party/ directory): the demo renderer. third_party/filament.patch is a modification of Filament's
+  sources; third_party/filament-material-routing.patch corrects material matching. Both patches are
+  offered under the same Apache-2.0 license; demo/native_window_cocoa.mm follows Filament's
+  sample framework.
+- volk (MIT), Vulkan-Headers (Apache-2.0 / MIT), glslang (BSD-3-Clause and others), CMake (BSD-3-Clause),
+  Ninja (Apache-2.0): the toolchain under tools/.
+- meshoptimizer (MIT), @gltf-transform (MIT), draco3dgltf (Apache-2.0), Pillow (HPND): the optional scene
+  conversion scripts.
+- assets/test-static.glb is the user-supplied test character, with its current pose statically baked.
+  Source asset license information was not provided; see assets/README.md.
+- Public test models under assets/cases/ are from KhronosGroup/glTF-Sample-Assets,
+  revision 8f492390ddc7a2ae221a1369ef560589cf8c70fb. Each model directory preserves its upstream
+  provenance and license files:
+  - Lantern: Microsoft / sbtron; Draco compression by Frank Galligan, CC0.
+  - Fox: model by PixelMannen (CC0); rigging and animations by tomkranis, glTF conversion
+    by AsoboStudio and scurest (CC BY 4.0).
+  - AlphaBlendModeTest: Analytical Graphics, Inc. / Ed Mackey, CC BY 4.0.
+  - TransmissionTest: Adobe, CC0.
+  Upstream metadocumentation is by KhronosGroup/glTF-Sample-Assets contributors (CC BY 4.0).
+  Model bytes are unchanged; local filenames differ. See assets/README.md for source links,
+  local file paths and full license texts under assets/cases/LICENSES/.
+- Realistic visual test assets under assets/realistic-scenes/ use CC BY 4.0:
+  - A Beautiful Game: original artwork by Moeen Sayed and Mujtaba Sayed for SideFX's Karma tutorial;
+    publicly released by ASWF / the MaterialX Project. Initial GLB conversion by Chris Rydalch and
+    Jonathan Stone; glTF PBR conversion by Ed Mackey. Copyright 2020 ASWF and 2022 Ed Mackey.
+  - Gothic Cloister Corner: photogrammetry by Zoilo (https://sketchfab.com/iliedom), from
+    https://sketchfab.com/3d-models/gothic-cloister-corner-69f4351215e84d3ca61feea9fe9890db.
+    The mobile GLB is distributed by BabylonJS/Assets, revision
+    3798844710bb7e76199ee38b175176c0fe4e9e62, with the artist's original license.txt retained.
+    Local modification: one new scene-root parent rotates the original scene by -90 degrees about X
+    to normalize the scan floor from Z-up to Y-up. All original nodes, meshes and material definitions
+    are unchanged. The entire BIN chunk is preserved byte-for-byte; the JSON/container lengths are updated.
+  - Iridescent Dish with Olives: Wayfair, LLC / Eric Chadwick, copyright 2020 Wayfair, LLC.
+  The two Khronos models use glTF-Sample-Assets revision 8f492390ddc7a2ae221a1369ef560589cf8c70fb;
+  their upstream metadocumentation is by its contributors (CC BY 4.0). These two GLBs are unchanged,
+  apart from local filenames. Gothic's upstream and locally normalized identities are recorded separately
+  in its SOURCE.json. The accompanying view.json camera/display settings are local additions.
+  See assets/realistic-scenes/README.md, per-asset SOURCE.json and the full license text in
+  assets/realistic-scenes/LICENSES/CC-BY-4.0.txt.
+- HDR environments under assets/environments/ are from Poly Haven (CC0-1.0):
+  "Studio Small 09", "Sunset in the Chalk Quarry" and "Entrance Hall" by Sergej Majboroda;
+  "Kloofendal 48d Partly Cloudy" by Greg Zaal. Files are preserved byte-for-byte.
+  See assets/environments/presets.json, the per-asset source records and LICENSE.txt.
+- The "Lone Monk" scene (Carlo Bergonzini, CC BY) is referenced by a camera view file only.
+- The browser port includes Basis Universal JavaScript/WASM transcoders (Apache-2.0) under
+  ports/browser-webgpu/web/vendor/basis/; see its README and LICENSE.
+- The static PE weight extractor under scripts/model/ is Copyright (c) 2026 SamG-Coder (MIT),
+  with its license preserved in scripts/model/LICENSE.

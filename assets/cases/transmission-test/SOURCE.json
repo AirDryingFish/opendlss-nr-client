@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "name": "Transmission Test",
+  "purpose": "KHR_materials_transmission material grid",
+  "repository": "https://github.com/KhronosGroup/glTF-Sample-Assets",
+  "commit": "8f492390ddc7a2ae221a1369ef560589cf8c70fb",
+  "modelDirectoryUrl": "https://github.com/KhronosGroup/glTF-Sample-Assets/tree/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/TransmissionTest",
+  "downloadUrl": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/TransmissionTest/glTF-Binary/TransmissionTest.glb",
+  "upstreamReadmeUrl": "https://github.com/KhronosGroup/glTF-Sample-Assets/blob/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/TransmissionTest/README.md",
+  "licenseExpression": "CC0-1.0",
+  "attribution": [
+    {
+      "license": "CC0-1.0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
+      "artist": "Adobe",
+      "year": "2020",
+      "owner": "Public",
+      "what": "Everything",
+      "text": "Creative Commons Zero v1.0 Universal",
+      "spdx": "CC0-1.0",
+      "icon": "https://licensebuttons.net/p/zero/1.0/88x31.png"
+    }
+  ],
+  "upstreamMetadocumentation": {
+    "attribution": "KhronosGroup/glTF-Sample-Assets contributors",
+    "license": "CC-BY-4.0"
+  },
+  "changes": "None. Model.glb is the upstream glTF-Binary file byte-for-byte; only its local filename differs. Upstream README.md, LICENSE.md and metadata.json are preserved verbatim.",
+  "licenseFiles": [
+    "../LICENSES/CC0-1.0.txt",
+    "../LICENSES/CC-BY-4.0.txt"
+  ],
+  "files": [
+    {
+      "path": "transmission-test/Model.glb",
+      "upstreamPath": "Models/TransmissionTest/glTF-Binary/TransmissionTest.glb",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/TransmissionTest/glTF-Binary/TransmissionTest.glb",
+      "bytes": 1473792,
+      "sha256": "dd9732dae5517f8605ad4324d78b077b969c3e8357c056280d0a4e4b67797d15",
+      "upstreamGitBlobSha1": "feaa7f8164700fdc9e1acc12ad424b2fc184534f"
+    },
+    {
+      "path": "transmission-test/README.md",
+      "upstreamPath": "Models/TransmissionTest/README.md",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/TransmissionTest/README.md",
+      "bytes": 1326,
+      "sha256": "db422e77f92000cedebb9f24ecd4f31fa40099e15f717b326042faf6241692dd"
+    },
+    {
+      "path": "transmission-test/LICENSE.md",
+      "upstreamPath": "Models/TransmissionTest/LICENSE.md",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/TransmissionTest/LICENSE.md",
+      "bytes": 779,
+      "sha256": "d2b3951c4809d7ebc2cdac547379402d5051d41fc7cf3719bdc489a518270975"
+    },
+    {
+      "path": "transmission-test/metadata.json",
+      "upstreamPath": "Models/TransmissionTest/metadata.json",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/TransmissionTest/metadata.json",
+      "bytes": 678,
+      "sha256": "ee9070ab6c7a2b4cf5845d98c688fbc73d6417735b251edeb5781b518aa8e8c2"
+    }
+  ],
+  "inspection": {
+    "gltfVersion": "2.0",
+    "embeddedImageMimeTypes": [
+      "image/png"
+    ],
+    "extensionsUsed": [
+      "KHR_materials_transmission",
+      "KHR_xmp"
+    ],
+    "extensionsRequired": [],
+    "meshes": 22,
+    "skins": 0,
+    "animations": [],
+    "materialCount": 14,
+    "alphaModes": [
+      "MASK",
+      "OPAQUE"
+    ],
+    "normalMappedMaterials": 0,
+    "metallicRoughnessTexturedMaterials": 7,
+    "transmissionMaterials": 12,
+    "cameras": [
+      {
+        "perspective": {
+          "znear": 5.606882768915966e-05,
+          "yfov": 0.6024156808853149,
+          "zfar": 3.0837855339050293,
+          "aspectRatio": 1.3333333730697632
+        },
+        "type": "perspective",
+        "name": "render_camera"
+      }
+    ]
+  }
+}

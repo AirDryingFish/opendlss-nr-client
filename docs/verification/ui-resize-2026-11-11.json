@@ -1,0 +1,146 @@
+{
+  "red": {
+    "complete": false,
+    "scope": "logical SDL/ImGui hit testing; rendered alignment requires visual verification",
+    "error": "offscreen Apply changed SDL window dimensions",
+    "logical_clicks_passed": 12,
+    "window_preserved": false,
+    "geometry_matches": false,
+    "completed_frames": 103,
+    "begin_frame_skips": 799,
+    "last_sample": {
+      "frame": 103,
+      "ui_frame": 103,
+      "action": 11,
+      "phase": 3,
+      "nr_enabled": true,
+      "native_window": [
+        2048,
+        1403
+      ],
+      "render": [
+        2048,
+        2048
+      ],
+      "sdl_window": [
+        2048,
+        2048
+      ],
+      "display": [
+        2048,
+        2048
+      ],
+      "framebuffer_scale": [
+        1,
+        1
+      ],
+      "ui_viewport": [
+        0,
+        0,
+        2048,
+        2048
+      ],
+      "mouse": [
+        54,
+        356
+      ],
+      "mouse_down": false,
+      "want_capture_mouse": true,
+      "window_hovered": true,
+      "apply_min": [
+        18,
+        261
+      ],
+      "apply_max": [
+        138,
+        280
+      ],
+      "enabled_min": [
+        18,
+        347
+      ],
+      "enabled_max": [
+        90,
+        366
+      ],
+      "apply_hovered": false,
+      "enabled_hovered": true,
+      "begin_frame_skips": 799,
+      "sdl_resize_events": 6
+    }
+  },
+  "green": {
+    "complete": true,
+    "scope": "logical SDL/ImGui hit testing; rendered alignment requires visual verification",
+    "error": "",
+    "logical_clicks_passed": 12,
+    "window_preserved": true,
+    "geometry_matches": true,
+    "completed_frames": 103,
+    "begin_frame_skips": 775,
+    "last_sample": {
+      "frame": 103,
+      "ui_frame": 103,
+      "action": 11,
+      "phase": 3,
+      "nr_enabled": true,
+      "native_window": [
+        1024,
+        1024
+      ],
+      "render": [
+        2048,
+        2048
+      ],
+      "sdl_window": [
+        1024,
+        1024
+      ],
+      "display": [
+        1024,
+        1024
+      ],
+      "framebuffer_scale": [
+        1,
+        1
+      ],
+      "ui_viewport": [
+        0,
+        0,
+        1024,
+        1024
+      ],
+      "mouse": [
+        54,
+        356
+      ],
+      "mouse_down": false,
+      "want_capture_mouse": true,
+      "window_hovered": true,
+      "apply_min": [
+        18,
+        261
+      ],
+      "apply_max": [
+        138,
+        280
+      ],
+      "enabled_min": [
+        18,
+        347
+      ],
+      "enabled_max": [
+        90,
+        366
+      ],
+      "apply_hovered": false,
+      "enabled_hovered": true,
+      "begin_frame_skips": 775,
+      "sdl_resize_events": 0
+    }
+  },
+  "scenario": "Apply 2048, 512, 2048, repeated 2048; toggle NR off/on after each size request",
+  "method": "SDL_PushEvent mouse motion/down/up on separate UI frames; XGetWindowAttributes for physical window geometry",
+  "fix_commit": "86c901265a2ece4bb5323334c850bc993953bea7",
+  "limitation": "Synthetic events test logical hit targets. Physical window, SDL, ImGui display and viewport agreement is checked separately; no external desktop mouse automation."
+}

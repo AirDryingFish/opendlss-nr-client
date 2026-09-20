@@ -1,0 +1,53 @@
+{
+  "title": "Kloofendal 48d Partly Cloudy",
+  "presetId": "kloofendal-daylight",
+  "presetName": "Kloofendal Daylight",
+  "purpose": "Bright outdoor daylight with partly cloudy sky",
+  "author": "Greg Zaal",
+  "source": "https://polyhaven.com/a/kloofendal_48d_partly_cloudy",
+  "license": "CC0-1.0",
+  "licenseUrl": "https://polyhaven.com/license",
+  "licenseText": "LICENSE.txt",
+  "downloadUrl": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/kloofendal_48d_partly_cloudy_1k.hdr",
+  "apiInfoUrl": "https://api.polyhaven.com/info/kloofendal_48d_partly_cloudy",
+  "apiFilesUrl": "https://api.polyhaven.com/files/kloofendal_48d_partly_cloudy",
+  "resolution": [
+    1024,
+    512
+  ],
+  "format": "Radiance HDR (32-bit_rle_rgbe)",
+  "bytes": 1637206,
+  "sha256": "5477b7dbb2aea4a6947cb36b96339c119f90bf36a03b039af3254b5e6a22896d",
+  "upstreamMd5": "ee096fe9e26ce29d8f110b5ba0579011",
+  "retrievedAt": "2026-11-11T07:11:06+00:00",
+  "changes": "None. The official Poly Haven 1k HDR file is preserved byte-for-byte.",
+  "primarySourceLicenseEvidence": {
+    "name": "Kloofendal 48d Partly Cloudy",
+    "url": "https://polyhaven.com/a/kloofendal_48d_partly_cloudy",
+    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "acquireLicensePage": "https://polyhaven.com/license",
+    "copyrightNotice": "CC0 1.0 Universal - public domain dedication, no attribution required",
+    "creditText": "Greg Zaal",
+    "creator": [
+      {
+        "@type": "Person",
+        "name": "Greg Zaal"
+      }
+    ],
+    "datePublished": "2019-03-28",
+    "description": "Free 16K, unclipped HDRI capturing a high-contrast midday sky with sun, scattered cumulus clouds and warm directional light over grassy, rocky hills."
+  },
+  "apiAttribution": {
+    "Greg Zaal": "All"
+  },
+  "apiCategories": [
+    "outdoor",
+    "skies",
+    "nature",
+    "midday",
+    "partly cloudy",
+    "high contrast",
+    "natural light",
+    "collection: verdant_trail"
+  ]
+}

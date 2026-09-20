@@ -1,0 +1,2182 @@
+{
+  "date": "2026-11-11",
+  "historicalSourceBase": "e7803568ca3ebeb8e5d8bf4422d32262a4033064",
+  "scope": "All 14 views shown in the project README, captured twice with actual native NR disabled/enabled",
+  "gpu": "NVIDIA GeForce RTX 4080 SUPER",
+  "driver": "595.99.02",
+  "binary": {
+    "path": "build/demo/dlss5-demo",
+    "sha256": "f4d1cab55df36b0a8f03426ae60471adaec6d06f11cd0f9910469945a3546833",
+    "bytes": 9273128
+  },
+  "sourceSha256": {
+    "demo/main.cpp": "8bc7212df2cfe4b4ecc674f434cff3f0a82bff4e1a3b4fa8c080ebff3badf043",
+    "demo/scene.cpp": "fcc671d07886088c8775c4a84580e23167a97ec256854920eb695f9e8e8829cf",
+    "demo/nr_pass.cpp": "100dab79f7736f22a7a0b1bfdddb7f8d9b1275e0720cd3f584707832e2bbb69f",
+    "demo/shaders/nr_composite.comp": "faca7518816dd325e642b9e309e80bf2e2ee945e092fe3c2363d2735af004c70",
+    "demo/shaders/nr_common.glsl": "0169c580bc56b8afa2ed39a65454010d470b743e8bd5775b134b6fac7d8fa8ef"
+  },
+  "gpuResourcesSha256RecordedAfterCaptures": {
+    "build/data/materials/present.filamat": "134a3022043f3b282509a2ef9073260523844db02849900f0c25d31a83a0bf14",
+    "build/data/shaders/nr_composite.comp.spv": "ccc892b47781892dbc75abac7c8d9d7e0ee218afe510d06e20949dab1e5133e2",
+    "build/data/shaders/nr_preprocess.comp.spv": "0635a9d1e59494cf3064bd77cd230daee8e862e00711600aa4feb0f61604b12c",
+    "build/data/shaders/velocity_unpack.comp.spv": "b2b57617bb69449624df354b891b73b48b3b97d934707ed8d55544508a7772ad",
+    "build/ptx/block32_e4m3_f130.ptx": "f67d2c382aec880f6e427166c99d48ff94358b42f91f9975b99c131d40283196",
+    "build/ptx/block32_e4m3_f2.ptx": "ba6e0279332b14bb1f26a954ce529328b505ed49957fed5d8c02ab1aa52f7b95",
+    "build/ptx/block32_e4m3_f48.ptx": "109f5e99e82566807a081e004a555fa888c166c6f3b2b207ca024ccd22fa3efb",
+    "build/ptx/block32_e4m3_f66.ptx": "00008b7d6c65418f269c9ed919c9c6574bf8d43a882f7c563ed8ca78a49bc181",
+    "build/ptx/block32_e4m3_f74.ptx": "7f65544b3e27792e06dac6fcb21271bf4bb039a4d4b5cee2c1d85c23c4b71bf6",
+    "build/ptx/ffn_e4m3_C128_R4.ptx": "752662b7a36dbdd9ad5cab27f4a8dfa53d9fd9eee30844314c270384c2434719",
+    "build/ptx/ffn_e4m3_C128_R4_proj.ptx": "5665dba7c6a5b457c6a4e18387b450ab8a4fcaab68cc59833802b78a0c00c547",
+    "build/ptx/ffn_e4m3_C256_R3.ptx": "9418c18e3bbaafb4a25e1ee5bf9f5a555fa20373e577b8f8a9f6110dbcff5cea",
+    "build/ptx/ffn_e4m3_C256_R3_proj.ptx": "5df46e86a7b88f221bc7888d18e8e2026dfdc25a2f75f6ad4c8684eccd5520f7",
+    "build/ptx/ffn_e4m3_C256_R4.ptx": "5ccc81e0c7eb9e43079381c22b59050d9327f446c289586a442c7cfc201dd972",
+    "build/ptx/ffn_e4m3_C256_R4_proj.ptx": "c2f363b1aa82181b4cbceea38374647bcbe215cc15e5b31af15799b2dea8900a",
+    "build/ptx/ffn_e4m3_C64_R4.ptx": "59b697e5317b0669fa3e8173041ee55517d2a996aedfd1918d9cf883e3111278",
+    "build/ptx/ffn_e4m3_C64_R4_proj.ptx": "3cb5af022fa8055750ec2751a827c342f832e96c87a6f50e46158fa9cc73e274",
+    "build/ptx/gemm2_e4m3_K1024_f13.ptx": "3988b2bb557c105af0194f502863fa7bf63d83a57454fdf3008bda17e5f8cf88",
+    "build/ptx/gemm2_e4m3_K1024_f4.ptx": "f6d40260749860ddf0793e0e07b773d5f6963ef45154acd8c250169f1e713fa4",
+    "build/ptx/gemm2_e4m3_K1024_f5.ptx": "4e7913f74360fe2e29d5906cb73ff6d2e4f18f483515c3098d9a7bef4806a1bf",
+    "build/ptx/gemm2_e4m3_K1024_f6.ptx": "a870929e1c949deee8dd75540ce25016c4205c6519c0662bd72bbbe62057bc3d",
+    "build/ptx/gemm2_e4m3_K1024_f8.ptx": "c173c2e976fe1e8606f60c0bc331b298711183d606f5acc055d961bb2c010ee2",
+    "build/ptx/gemm2_e4m3_K128_f13.ptx": "3aa906e764752fc50f925710e292b34888bdf57f3fd9625c78893dc22cbd24fc",
+    "build/ptx/gemm2_e4m3_K128_f4.ptx": "128e0d998eaa88f501f4cfb8c37ab04907dc42cc46f23c02121b9f4c65425f16",
+    "build/ptx/gemm2_e4m3_K128_f5.ptx": "95cdfaadf113915fbc34d9bfa4a6b1284a9774fbd2ab9b87fa6ce525a67ba720",
+    "build/ptx/gemm2_e4m3_K128_f6.ptx": "3911e729715e3721eaa4c5d097610aac673a274d49c93aeca984d9a7f459dec0",
+    "build/ptx/gemm2_e4m3_K128_f8.ptx": "e8278d12f06e017c09de0b53f134b73d201341f812f1ff7b6ed58060237ab731",
+    "build/ptx/gemm2_e4m3_K256_f13.ptx": "095735c36d8efe0017b8654024d21f0d9f81746b60f4d73620278ca4d44e2674",
+    "build/ptx/gemm2_e4m3_K256_f4.ptx": "3dd809def33665fb24821b421bc89b6db991dd0169a22a437de124f7284567a5",
+    "build/ptx/gemm2_e4m3_K256_f5.ptx": "0578da204f3a0283275ca855e7a60fc3892c1af55fdc10d6932941f4ca3a2704",
+    "build/ptx/gemm2_e4m3_K256_f6.ptx": "5f72ad6f2e0d06dfd06fd2e12830f2f7ae4221990d4200640dd7e342de822777",
+    "build/ptx/gemm2_e4m3_K256_f8.ptx": "ecf3871e4f2f3328a85e6afba29709cfa1e653b7f5c698a081b24f2022432a3d",
+    "build/ptx/gemm2_e4m3_K32_f13.ptx": "a26abef9e9a49d57ce972b6c3b7a0b690a2f6d5220c73028e14212f2dd30343a",
+    "build/ptx/gemm2_e4m3_K32_f4.ptx": "220136464f87b1d47e3c5610be533401255b610507cdd48ce3ca6bf94c6b5748",
+    "build/ptx/gemm2_e4m3_K32_f5.ptx": "d5b62432a5010aeac3fbee2b80b48d86cd52a34f184dcab2d35ac0042771bf5a",
+    "build/ptx/gemm2_e4m3_K32_f6.ptx": "85b51164cacdc5b738a2c3526fb98601c05f5dd82952fcd2a9c4a6c0ea9b75f0",
+    "build/ptx/gemm2_e4m3_K32_f8.ptx": "984d62fc27ca37dce003e266e61d16f34a2a2223b2b2ad0c6fb444f2a028cda7",
+    "build/ptx/gemm2_e4m3_K512_f13.ptx": "65cd692491dc53830f220f58614167c0364696359c10befabd96f08a57f5a43d",
+    "build/ptx/gemm2_e4m3_K512_f4.ptx": "6a5de8972ea9830b05e0e6b4582b761fb68fc6be5fcddbf2afa6f275213760bb",
+    "build/ptx/gemm2_e4m3_K512_f5.ptx": "9ad4d00dac20d942adc8bb6f9262c371c90b3820b0256f9776b0830e028c1d21",
+    "build/ptx/gemm2_e4m3_K512_f6.ptx": "d0ce9772e8a1f985ccd8441d87d086f875d2ebab610073fd816814dc8360cd33",
+    "build/ptx/gemm2_e4m3_K512_f8.ptx": "f0a4f46d44932dfee731ec6666630d962589f8659df3e6b6932602e657d5d08c",
+    "build/ptx/gemm2_e4m3_K64_f13.ptx": "64d070a0f00699fb515cda5b14c098877e430f86102305fddb30072f3d326371",
+    "build/ptx/gemm2_e4m3_K64_f4.ptx": "67a927d2b62d05e0939dbc32b917a81d37c30106033d00a0261f04fe09863d24",
+    "build/ptx/gemm2_e4m3_K64_f5.ptx": "44890f91cebfe608ff5bdb0c054b4da8366d87d1d565c8ec3ac2f5f90884097f",
+    "build/ptx/gemm2_e4m3_K64_f6.ptx": "0fb2f3f7067fb8fab057a476844ed79f14bd46c38db1d6d1c0bf370c3106db6a",
+    "build/ptx/gemm2_e4m3_K64_f8.ptx": "41dbb211d618ece402d1cb7a4b28ce0f9ffdd3d9dee45d14693520b57008f064",
+    "build/ptx/gemmt_e4m3_K1024_f0_p16_s2.ptx": "3bf1c764d9a98ece7da6c1605d5fa70ed53e5a43542472ee27884d9408b70b7c",
+    "build/ptx/gemmt_e4m3_K1024_f0_p8_s4.ptx": "f3142234bb6bdcbd368582722747b2df058a837a05555f074448a996ae530d5e",
+    "build/ptx/gemmt_e4m3_K1024_f1_p8_s4.ptx": "245c07b859549b5d35ae909ebc1a89cbc252049f9329e13de964781173904c2b",
+    "build/ptx/gemmt_e4m3_K4096_f1_p32_s4.ptx": "ff85c8df505029166c864cb6a746398c2d2f20602d0e1913a0c8b3be8bb05267",
+    "build/ptx/gemmv_e4m3_K1024_f5_s1_m96.ptx": "2d8cdfaee580e793a3af0b1ac4f1c2369b9d166fa832f7252751eb6f1f2f7716",
+    "build/ptx/gemmv_e4m3_K1024_f5_s4.ptx": "a095387d42a01a35f94376e0e17bdfb9b7b1780dbc5e54607091714b86fbd31a",
+    "build/ptx/gemmv_e4m3_K1024_f5_s4_m96.ptx": "8384ebe875930489e0aaa9f0c4f578f8b17f0ce53989debaf2d4d2b62d63e93c",
+    "build/ptx/gemmv_e4m3_K1024_f6_s1.ptx": "7a272e3f8631221f5caf9ce117478e10c2e3dd6ba592d940a04a4207672bb508",
+    "build/ptx/gemmv_e4m3_K1024_f6_s1_m96.ptx": "07c33baa35c734ddb4b9c9da4794cd3a8ee87bff5b5a18a7660107ff64e60cd1",
+    "build/ptx/gemmv_e4m3_K1024_f8_s1_m96.ptx": "b457ba773fe0b179ec8c1b5e865bcb8f359ad861a8cd33a28403c439a049bd6d",
+    "build/ptx/gemmv_e4m3_K1024_f8_s2.ptx": "b65dc2529d5138848f8a0258682718d256409340c35a9f5e3c322a92f1548956",
+    "build/ptx/gemmv_e4m3_K1024_f8_s2_m96.ptx": "f45fa8043cac73f163b9a3d63cda86c91343218ae87e3f2cc6271f554349a2a1",
+    "build/ptx/gemmv_e4m3_K256_f5_s1_m96.ptx": "d8d56736f55dc566046a47c96b81cb545ce94cbf4ac920b8f096830e79821488",
+    "build/ptx/gemmv_e4m3_K4096_f5_s1_m96.ptx": "5efaea851d805756c52281441c71ca95ddb25ad8e559a93e730a1f6ba99386c7",
+    "build/ptx/gemmv_e4m3_K4096_f5_s4.ptx": "f743d7c661a00b6aa174a25f21d6f88cf774bf1ceaa5051d217f7df39056c705",
+    "build/ptx/gemmv_e4m3_K4096_f5_s4_m96.ptx": "1fe4415917849743bfba38b4fe568aadecb13803307e013c7a37a56d2338bb7d",
+    "build/ptx/gemmv_e4m3_K512_f13_s1_m96.ptx": "c9b09d08dba89b4ab9060fef52ba4260476c8a1ea029cc9b72443ad4af1ef229",
+    "build/ptx/gemmv_e4m3_K512_f4_s1_m96.ptx": "83ab3bb217e0913885858e7c684d0342ced277cbc45661ccee38e623af88d6fc",
+    "build/ptx/gemmv_e4m3_K512_f5_s1_m96.ptx": "3b751477e1c4b434bef285d99f957a55af3edd35f4f24c9c59f5b41d4c9fcff6",
+    "build/ptx/global_attention_e4m3_p128.ptx": "5b0344939afa53f0433a649b504c3452bd57b8d6b05379693fb577fdd6e65a41",
+    "build/ptx/global_attention_e4m3_p192.ptx": "a8238eadf523bad3663c14efb3c2826f455f7fc8aea85efa9827bb9d40dc98f8",
+    "build/ptx/global_attention_e4m3_p256.ptx": "732ca99e1147f41f7e8de827972acc6b9dc5b177dd933771e6a9d44f0c76e31c",
+    "build/ptx/global_attention_e4m3_p64.ptx": "5f668b4680f83bb02c500f63208a7fc568b6034381fca006c5ffe3ced6662bd5",
+    "build/ptx/global_attention_stream_e4m3.ptx": "6d115b04f6791773c41a8c21384ccf861be1113a7942e1c3bcd841253845bef4",
+    "build/ptx/global_normalize_e4m3.ptx": "62e5e22830b62630e04999bde9e9d3b093dbb6abdbb618063225420e2437c819",
+    "build/ptx/mlp_e4m3_K128.ptx": "a963810ff831aeaf0a753fd69d9431fcc8112f2ca7a2f69696c48a4567e9d5c6",
+    "build/ptx/mlp_e4m3_K256.ptx": "b077e2f9d231d7a7ce43b8e4425cacb9593aabdf7218ab4ce4e4cea016e68d24",
+    "build/ptx/mlp_e4m3_K64.ptx": "75614d2bbb000f488361efda35a0086d148264e6c01eda2f0b8bc358afe2d113",
+    "build/ptx/qkv_e4m3_K128.ptx": "dc17ad6b897c0436c1bbcc2778f04dc290d7f7d902ed7de088dee42525701283",
+    "build/ptx/qkv_e4m3_K256.ptx": "ffe8d87a37a6f61493f09b362217c7118ac7c0a26f312ce5b4f9579c68c28eee",
+    "build/ptx/qkv_e4m3_K512.ptx": "1a5dc75762f5849c3e570e92c9bf9125029fcfcbdc73ff94974ccf928fe8b621",
+    "build/ptx/qkv_e4m3_K64.ptx": "8616d84acf3ab52a061f3cbf6ac6cfc22fba22efe8823e46769b3888259cce16",
+    "build/ptx/reduce_e4m3_s2_f8.ptx": "1e3d570edb5d2cb707d646b3a0afdeb17989a3de2964b19b9271d54409574723",
+    "build/ptx/reduce_e4m3_s4_f4.ptx": "3b51e443e77cf8fa6b3d98c3b48d681f6620aeb891b4f1cb6b32f9e32a5ee5a9",
+    "build/ptx/reduce_e4m3_s4_f8.ptx": "0dfca5cb920c3b7b80de36542b936f0fa661a6efde641128d2eae9d10e8e1145",
+    "build/shaders/fused_block32.spv": "f94acbdfea1f5129bcfe4ff94bf99541b618665f5e0f4e3d9815868af9c085c9",
+    "build/shaders/gemm_f16.spv": "2de1745cc402af9b0dbcd1805870df0c44f61dcfdebe0ba502cb30dccdca7ef6",
+    "build/shaders/gemm_fp8.spv": "c6219bee9d69d109a5bb62ab92e54e1df6786454e707354f8fe2c69ee07a5942",
+    "build/shaders/gemm_mlp.spv": "5b1d9a5b735270bfc4aaad57057898077c518fc0e4ec5313e0cdfab4b3471e5d",
+    "build/shaders/gemm_reduce.spv": "b24b3ac1c867ea506fb5ab26a7f870f46c59ab5322f3a1394d41a2954a4074f8",
+    "build/shaders/global_attend.spv": "a9e3c23a7713bbf6c100afc21696779fbb3bd07b2f571604ac31e2f8877d3fca",
+    "build/shaders/global_attention.spv": "56e9a503fc087d21ca95f527c4f141889440c36ab274a573e5f0d1cb4f2d5090",
+    "build/shaders/global_normalize.spv": "a8d7ca16a8020fb8f033c11119540869e2daf680b102d7c1d08771f87aaaa8cd",
+    "build/shaders/ops.spv": "6fc879c4d5563225548dd40f2050d81dbbda8e61bf0e77408e743bfba712c7f2",
+    "build/shaders/preprocess.spv": "3674eed6b58a4c6a3fa868a1628b704b93ebd693d5c81981eddf3f66ee65adba",
+    "build/shaders/qkv_attention.spv": "d7d92d2d204f052b174399a74ab91869c0a7e51dbb2a3414c65347bdb5d05447",
+    "build/shaders/window_attend.spv": "af475e041d3621700587177205f1369992ee3d6c2c6e14ac8b5993a1f6de6cf7",
+    "build/shaders/window_normalize.spv": "c9218555db0fb623a049b984ec04e82313efeecd89745c020152e82dac18b6ac"
+  },
+  "weightsManifestSha256": "8239b5a6b9412d980f1e205b5146dd7a32a38be4e2d443921fac5514d041a549",
+  "verifiedWeightStagesSha256": {
+    "stage-0.bin": "43dd499eb24b0c6a4540a38ae5145bd3845c0dc8acb5588c0f8a8496d79ec8c0",
+    "stage-1.bin": "bd57fb0e122c90e31deface260c6f60c9b27d0ff66ea2ea71a2fd6efbe1859f0",
+    "stage-2.bin": "b8293347538bc59fee88b598d34c68543bfbb70cdefd7fab87e5d0ca2ae9e0e7",
+    "stage-3.bin": "fc426b774fb6704b23768ff3c3b480de09e00cf129a22074a4aefbc6bddd05a3",
+    "stage-4.bin": "8bebd29a8024c1a32386edb7b7f542f2fba87baec9962d2b4928bfe297197a90",
+    "stage-5.bin": "0c6a8c7ab9904fc2beb8567c98456eca9790f363771c5cd6a980f289b3bfca71",
+    "stage-6.bin": "19a3fd197ef6677d83637fc83d9e667101df4e8b2b23d5c2abd611ecb9d001e0",
+    "stage-7.bin": "df396fbecb98278b8224583b635ea47c1ba7895575794472fdb43f3d530d0413",
+    "stage-8.bin": "bae3b2ed3cacb71f9ce7662e7a80b490a2d87416d40a0ce7e7ad04496c165080",
+    "stage-9.bin": "d4bc330df80d7cca47fdd8a4a64ddef479eb2469aadba35f8b5229d3512ae83b",
+    "stage-10.bin": "5a78fc1314a415d2d6731d50c13ee9bb7e7a76c564035d3e594a2a13da4a86c9"
+  },
+  "weightsDistributed": false,
+  "pythonTests": {
+    "passed": 26,
+    "failed": 0,
+    "logSha256": "8a2c90c35a36549ece00ae80cbd89632710d2c0247e2a5657da5ae5e57619d26",
+    "environment": "NR_DEPS_DIR and NR_BUILD_DIR point to the prepared SDK/toolchain cache; scripts/linux/common.sh sourced",
+    "initialUnconfiguredRun": "Two compiler-backed tests (environment switch and material archive) could not find clang++; passed when run with the configured build toolchain."
+  },
+  "regression": {
+    "before": "Wall-clock animation produced different Fox scene inputs at the same numbered frame (8-bit diagnostic preview MAE 0.6798181905864197).",
+    "after": "Scripted capture advances by 1/60 second per rendered frame; all14 off/on linear HDR inputs are byte-identical, including Fox Run and Dish glass-cover animation."
+  },
+  "comparisonRules": {
+    "left": "NR disabled (--nr 0), ordinary outputImage readback",
+    "right": "NR enabled (--nr 1), temporal flag enabled",
+    "displayTransform": "Both ordinary outputs use webgiDisplay (ACES fit + sRGB). The Reinhard -scene.ppm debugging previews are not published as NR-off.",
+    "inputEquality": "Full linear HDR RGB raw data and dimensions byte-identical for each pair",
+    "cameraEquality": "Recorded projection and view text identical at default C++ stream precision",
+    "animation": "Successful rendered-frame step 1/60 s; frame40; identical clip and time on both sides",
+    "presentation": "Native960x720 pixels on each side; gutters and labels outside pixel areas only; no resizing, retouching, color adjustment or enhancement",
+    "qualityClaim": "Images show the current implementation. Pixel differences verify effect, without claiming numerical parity or universal quality improvement."
+  },
+  "pairCount": 14,
+  "groupCounts": {
+    "realistic": 3,
+    "public": 4,
+    "character": 3,
+    "hdr": 4
+  },
+  "galleries": {
+    "schemaVersion": 1,
+    "sourceCases": "cases.json",
+    "sourceCasesSha256": "0b7b879df2c180bf999dc2335a81c6c75f13f04f73ad4336ad4a86bb8b2c2358",
+    "generator": "render_galleries.py",
+    "generatorSha256": "58f7d7b1d2dd5ed3a56ff3db99cb2943925fc05df6935c9dd5b0df02a82600c8",
+    "repositoryRoot": "/home/yons/Documents/Codex/2026-11-10/https-dlss5-webgpu-dlss5-webgpu-standalone/outputs/opendlss-nr-client",
+    "pathPolicy": "artifact paths relative to repositoryRoot; source, result and generator paths relative to this layout file",
+    "pixelBboxConvention": "[left, top, right, bottom], zero-based, right and bottom exclusive",
+    "policy": {
+      "source": "display capture *-nr-static.ppm only; scene preview PPMs excluded",
+      "paneResolution": [
+        960,
+        720
+      ],
+      "frame": 40,
+      "captureRateHz": 60,
+      "temporal": true,
+      "pixelTransform": "none; RGB byte-for-byte paste into lossless RGB PNG",
+      "labelsAndFooter": "drawn outside all source pane bounding boxes"
+    },
+    "galleries": [
+      {
+        "group": "realistic",
+        "artifact": "docs/images/comparisons/realistic-scenes.png",
+        "artifactSha256": "f027a2f981d5571e98ab172bc4f8e8a077fe6a8478493180eccc1f22a64c3c63",
+        "dimensions": [
+          1968,
+          2592
+        ],
+        "caseCount": 3,
+        "rows": [
+          {
+            "caseId": "a-beautiful-game",
+            "title": "A Beautiful Game",
+            "result": "results/a-beautiful-game.json",
+            "resultSha256": "8a4adb0a6c8d01500ef18f6b3c5fa8839325f63778c0a6d738bfc261cc8e4613",
+            "panes": [
+              {
+                "mode": "off",
+                "nrEnabled": false,
+                "temporal": true,
+                "pixelBbox": [
+                  16,
+                  156,
+                  976,
+                  876
+                ],
+                "sourcePpm": "captures/a-beautiful-game/off-nr-static.ppm",
+                "sourcePpmSha256": "787c45a89ad134aa4c0fe30a43459e175dd02d48f0018dc2751ad80b875e9175",
+                "rgbPixelsSha256": "daf94340d4139b39a2929809baabb2b2403e45d04cff4690b266ac7e0c4df815",
+                "sourceLinearSceneSha256": "2b468fe5b47e14d02e3f773ac97a96c5d899e83b289622b2e746049c980dff5d",
+                "pixelEqualityVerified": true
+              },
+              {
+                "mode": "on",
+                "nrEnabled": true,
+                "temporal": true,
+                "pixelBbox": [
+                  992,
+                  156,
+                  1952,
+                  876
+                ],
+                "sourcePpm": "captures/a-beautiful-game/on-nr-static.ppm",
+                "sourcePpmSha256": "731d3434a83e0ae0cf4c8355b470ab79d66ca1d01dcbe6c219825def0e1b1656",
+                "rgbPixelsSha256": "34637f2b960b5fea8fcea16cf4ebe496d4a9ab30b4b485109a4fea1f2fb0ee56",
+                "sourceLinearSceneSha256": "2b468fe5b47e14d02e3f773ac97a96c5d899e83b289622b2e746049c980dff5d",
+                "pixelEqualityVerified": true
+              }
+            ]
+          },
+          {
+            "caseId": "gothic-cloister-corner",
+            "title": "Gothic Cloister Corner",
+            "result": "results/gothic-cloister-corner.json",
+            "resultSha256": "5e283454d4aaa8ed8c4477484b6d993ad4e30751700ebb43e2bf57884998d8b6",
+            "panes": [
+              {
+                "mode": "off",
+                "nrEnabled": false,
+                "temporal": true,
+                "pixelBbox": [
+                  16,
+                  972,
+                  976,
+                  1692
+                ],
+                "sourcePpm": "captures/gothic-cloister-corner/off-nr-static.ppm",
+                "sourcePpmSha256": "5d5611cf76f2ae33bb67381502f134bee63e24e648bef0d0cbe1c9e63edc87f9",
+                "rgbPixelsSha256": "f0157ec72eafa17f8011bcfbdcf928f56b086d163825b29da3369aa613168ddf",
+                "sourceLinearSceneSha256": "8b1cae946a9d25b34e0731ba5fbcbeb4b7f66bf5cc24b9ae9aa6b3c03c58162a",
+                "pixelEqualityVerified": true
+              },
+              {
+                "mode": "on",
+                "nrEnabled": true,
+                "temporal": true,
+                "pixelBbox": [
+                  992,
+                  972,
+                  1952,
+                  1692
+                ],
+                "sourcePpm": "captures/gothic-cloister-corner/on-nr-static.ppm",
+                "sourcePpmSha256": "08d3433303d48fc9b60ee2f794d5e573b0ee8e608f716d402d1e987d61850684",
+                "rgbPixelsSha256": "31ea400f26e3059488bf09a9d7c2792c7a1f72d1a10deae582ac584c276a93da",
+                "sourceLinearSceneSha256": "8b1cae946a9d25b34e0731ba5fbcbeb4b7f66bf5cc24b9ae9aa6b3c03c58162a",
+                "pixelEqualityVerified": true
+              }
+            ]
+          },
+          {
+            "caseId": "iridescent-dish-with-olives",
+            "title": "Iridescent Dish with Olives",
+            "result": "results/iridescent-dish-with-olives.json",
+            "resultSha256": "adef44c9a4f69578c59e2ebcc2e42006ad62ee53459990ad47122e8c2373e43f",
+            "panes": [
+              {
+                "mode": "off",
+                "nrEnabled": false,
+                "temporal": true,
+                "pixelBbox": [
+                  16,
+                  1788,
+                  976,
+                  2508
+                ],
+                "sourcePpm": "captures/iridescent-dish-with-olives/off-nr-static.ppm",
+                "sourcePpmSha256": "3f15581a4abbf7c1d2ac52921e65e9be8bf376ad561565017f16e987551c8042",
+                "rgbPixelsSha256": "0efabae7e648a87e255a38e186b4f0294b932a3ebd73ad7b9c7533ea9b1d960f",
+                "sourceLinearSceneSha256": "f079d47b10b2d29448e4f286f11e5dc416f1caa280f7b81dae479803054190b9",
+                "pixelEqualityVerified": true
+              },
+              {
+                "mode": "on",
+                "nrEnabled": true,
+                "temporal": true,
+                "pixelBbox": [
+                  992,
+                  1788,
+                  1952,
+                  2508
+                ],
+                "sourcePpm": "captures/iridescent-dish-with-olives/on-nr-static.ppm",
+                "sourcePpmSha256": "027ba2f9b8181dcc17ab87c3e4129e5879b52b8b15663e6d98f284904ec1b120",
+                "rgbPixelsSha256": "3e72949c77d82be2c2ce13973bb7177c2e959140c1783f9629920a543f8ef9ee",
+                "sourceLinearSceneSha256": "f079d47b10b2d29448e4f286f11e5dc416f1caa280f7b81dae479803054190b9",
+                "pixelEqualityVerified": true
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "group": "public",
+        "artifact": "docs/images/comparisons/case-gallery.png",
+        "artifactSha256": "eae089dcdbc7207dca848b0f4eaa8c41f7dfb02d88568af66b2c7207078343a5",
+        "dimensions": [
+          1968,
+          3408
+        ],
+        "caseCount": 4,
+        "rows": [
+          {
+            "caseId": "lantern",
+            "title": "Lantern",
+            "result": "results/lantern.json",
+            "resultSha256": "b2542059abeccf253e69ecbf7dfa4ad54544cf483462555cdc1e0dbcbe530517",
+            "panes": [
+              {
+                "mode": "off",
+                "nrEnabled": false,
+                "temporal": true,
+                "pixelBbox": [
+                  16,
+                  156,
+                  976,
+                  876
+                ],
+                "sourcePpm": "captures/lantern/off-nr-static.ppm",
+                "sourcePpmSha256": "f042a2e56c5b15e4528e2fc71d88ce6bbfa846c0dc40bfadc12385b0ab7117e5",
+                "rgbPixelsSha256": "06884c7c38d281f0ff686c9a965640a211567de6dd415468334b8cf73f34648e",
+                "sourceLinearSceneSha256": "6b9fada09e6fb3c8b566884315168c9c6bc89f245e617cdd2e48178fb5ea19f6",
+                "pixelEqualityVerified": true
+              },
+              {
+                "mode": "on",
+                "nrEnabled": true,
+                "temporal": true,
+                "pixelBbox": [
+                  992,
+                  156,
+                  1952,
+                  876
+                ],
+                "sourcePpm": "captures/lantern/on-nr-static.ppm",
+                "sourcePpmSha256": "b1ac8fbf1ef8df938077947daadc9ffce8be8503de07ac1af5ddeaf4ef86bbd3",
+                "rgbPixelsSha256": "ed765f0562d26be1face7299eee907208b406e189db405ffd59c7349a8363ce1",
+                "sourceLinearSceneSha256": "6b9fada09e6fb3c8b566884315168c9c6bc89f245e617cdd2e48178fb5ea19f6",
+                "pixelEqualityVerified": true
+              }
+            ]
+          },
+          {
+            "caseId": "fox",
+            "title": "Fox",
+            "result": "results/fox.json",
+            "resultSha256": "c9fe346b4d3763e6eb40529ca7d4bc781404a890290cde95b789c3771166530e",
+            "panes": [
+              {
+                "mode": "off",
+                "nrEnabled": false,
+                "temporal": true,
+                "pixelBbox": [
+                  16,
+                  972,
+                  976,
+                  1692
+                ],
+                "sourcePpm": "captures/fox/off-nr-static.ppm",
+                "sourcePpmSha256": "591745e222126477b9c5c727f53aa49ea6aeba3c26c37a8ad0e3801e315d4804",
+                "rgbPixelsSha256": "9cfd7b9ff6ee6f352166f8a02b401f5beb50480030cc726e0b66b9492e8d8201",
+                "sourceLinearSceneSha256": "d419272ab83a9ff6cdd01b8001fb04eea0d08fb252099f647869ee5edc090f74",
+                "pixelEqualityVerified": true
+              },
+              {
+                "mode": "on",
+                "nrEnabled": true,
+                "temporal": true,
+                "pixelBbox": [
+                  992,
+                  972,
+                  1952,
+                  1692
+                ],
+                "sourcePpm": "captures/fox/on-nr-static.ppm",
+                "sourcePpmSha256": "11a856abb2dd4ffaa363143dd9db8dab2346056158dbf84aeb7c89f6985db162",
+                "rgbPixelsSha256": "fe6fcf655d438c78dc1c34935867d7839ff14a21e8fe9340bd5302605b82b3cf",
+                "sourceLinearSceneSha256": "d419272ab83a9ff6cdd01b8001fb04eea0d08fb252099f647869ee5edc090f74",
+                "pixelEqualityVerified": true
+              }
+            ]
+          },
+          {
+            "caseId": "alpha-blend-mode-test",
+            "title": "Alpha Blend Mode Test",
+            "result": "results/alpha-blend-mode-test.json",
+            "resultSha256": "9c11c5692b1a56341a27e1498aca18d41946a0b363b6ce8bc0e7200cc201f74f",
+            "panes": [
+              {
+                "mode": "off",
+                "nrEnabled": false,
+                "temporal": true,
+                "pixelBbox": [
+                  16,
+                  1788,
+                  976,
+                  2508
+                ],
+                "sourcePpm": "captures/alpha-blend-mode-test/off-nr-static.ppm",
+                "sourcePpmSha256": "27e57661ef7cf0e36ad77748b99db1b59b295414e0371024bd5c0e446a636a96",
+                "rgbPixelsSha256": "d14cc9dbb7e8d34986f296c2657f2844ab50d3a11b581b2067feb28cb66f6347",
+                "sourceLinearSceneSha256": "e1cec3381174aa3a838a3151f70228e6d28a0b9cb5fc092c71be937178cbb2ba",
+                "pixelEqualityVerified": true
+              },
+              {
+                "mode": "on",
+                "nrEnabled": true,
+                "temporal": true,
+                "pixelBbox": [
+                  992,
+                  1788,
+                  1952,
+                  2508
+                ],
+                "sourcePpm": "captures/alpha-blend-mode-test/on-nr-static.ppm",
+                "sourcePpmSha256": "92292ce3aa1362c7e28759895c9978027905632bcbd478001df97cbbd5e777e0",
+                "rgbPixelsSha256": "6fa54274778780d8b25844cf0db42ee6fc3bbecbb02dce3cf44c33bc1cd6ccba",
+                "sourceLinearSceneSha256": "e1cec3381174aa3a838a3151f70228e6d28a0b9cb5fc092c71be937178cbb2ba",
+                "pixelEqualityVerified": true
+              }
+            ]
+          },
+          {
+            "caseId": "transmission-test",
+            "title": "Transmission Test",
+            "result": "results/transmission-test.json",
+            "resultSha256": "cbff566bc71e4da5aaf1020aa6cfa49681cd4e3e3990c75d48cc1f04ed33ca72",
+            "panes": [
+              {
+                "mode": "off",
+                "nrEnabled": false,
+                "temporal": true,
+                "pixelBbox": [
+                  16,
+                  2604,
+                  976,
+                  3324
+                ],
+                "sourcePpm": "captures/transmission-test/off-nr-static.ppm",
+                "sourcePpmSha256": "577fbf0733ade79e84d4970c07babec42e7ef81546969e765e821112f67b3c73",
+                "rgbPixelsSha256": "45041150b51facdab8cb40cf7a733278969cb3ab05f9509c2da8604e18ddff2f",
+                "sourceLinearSceneSha256": "cc68b9a6a4abe7361c9fc9bb2677534c15299f586c27bbd7cebc2a91a59b238f",
+                "pixelEqualityVerified": true
+              },
+              {
+                "mode": "on",
+                "nrEnabled": true,
+                "temporal": true,
+                "pixelBbox": [
+                  992,
+                  2604,
+                  1952,
+                  3324
+                ],
+                "sourcePpm": "captures/transmission-test/on-nr-static.ppm",
+                "sourcePpmSha256": "c0cd627dcb4ba02a07694a0fa049feab39a179db994e82e9e9d6e31875e78dae",
+                "rgbPixelsSha256": "c963b2e8905af4d988d548618f5f59a1d494e2d9ba1bdf99053eb6d1a529d52a",
+                "sourceLinearSceneSha256": "cc68b9a6a4abe7361c9fc9bb2677534c15299f586c27bbd7cebc2a91a59b238f",
+                "pixelEqualityVerified": true
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "group": "character",
+        "artifact": "docs/images/comparisons/character-views.png",
+        "artifactSha256": "b8b4f758a6ec1e93f04f65c1b37a580e6f2afc1a26389221a7996a128f967049",
+        "dimensions": [
+          1968,
+          2592
+        ],
+        "caseCount": 3,
+        "rows": [
+          {
+            "caseId": "character-front",
+            "title": "Character front",
+            "result": "results/character-front.json",
+            "resultSha256": "903dc23e648a56d1ed22a1b2a844767bb8086b03c695ddbcdd420d4962a80be7",
+            "panes": [
+              {
+                "mode": "off",
+                "nrEnabled": false,
+                "temporal": true,
+                "pixelBbox": [
+                  16,
+                  156,
+                  976,
+                  876
+                ],
+                "sourcePpm": "captures/character-front/off-nr-static.ppm",
+                "sourcePpmSha256": "21c2921bed8655e8494e8753ed6da31c267c55581f8c7f8c98a827561da71b94",
+                "rgbPixelsSha256": "f6e02594788b1d4810f693a96c00a10b043a2bacffeba84e09297c3351d5cbd4",
+                "sourceLinearSceneSha256": "a35650f0f2045758e29d106e17491248300e4530039b240bd2a2a5bec0ce5e3b",
+                "pixelEqualityVerified": true
+              },
+              {
+                "mode": "on",
+                "nrEnabled": true,
+                "temporal": true,
+                "pixelBbox": [
+                  992,
+                  156,
+                  1952,
+                  876
+                ],
+                "sourcePpm": "captures/character-front/on-nr-static.ppm",
+                "sourcePpmSha256": "4ca2c91de7c7f4e1853a94b176e640424bb706270651aa89542406d69f1ab29e",
+                "rgbPixelsSha256": "e30654927c6fff45327a4278923becb67fd9fa1307e9a6c5e9dc70c158171c8e",
+                "sourceLinearSceneSha256": "a35650f0f2045758e29d106e17491248300e4530039b240bd2a2a5bec0ce5e3b",
+                "pixelEqualityVerified": true
+              }
+            ]
+          },
+          {
+            "caseId": "character-profile",
+            "title": "Character profile",
+            "result": "results/character-profile.json",
+            "resultSha256": "103de535510b9c85b260228987c8b511e9d085e99e0f4532b32f3f75438f10bc",
+            "panes": [
+              {
+                "mode": "off",
+                "nrEnabled": false,
+                "temporal": true,
+                "pixelBbox": [
+                  16,
+                  972,
+                  976,
+                  1692
+                ],
+                "sourcePpm": "captures/character-profile/off-nr-static.ppm",
+                "sourcePpmSha256": "d1c9fb0756e71b2cfba302d22b0a1674724c9b0f981f7810204883e10396e3e1",
+                "rgbPixelsSha256": "ec64a9f57e149c50ff96d042b0a3f3f1a00a45c5e9d7cbfcd874fe615b5d29a6",
+                "sourceLinearSceneSha256": "a81089fc8aa7992b30a29777a8b25fa3fc42f262e9f8d7c62a799e7314ca1abd",
+                "pixelEqualityVerified": true
+              },
+              {
+                "mode": "on",
+                "nrEnabled": true,
+                "temporal": true,
+                "pixelBbox": [
+                  992,
+                  972,
+                  1952,
+                  1692
+                ],
+                "sourcePpm": "captures/character-profile/on-nr-static.ppm",
+                "sourcePpmSha256": "737b15999b02d75fd303a22f1e09780a99343dead6e39ebbf1b3caaf736f6929",
+                "rgbPixelsSha256": "b364de0bdf29211423738f03696de758a7029a415f114262657ad14183cbef96",
+                "sourceLinearSceneSha256": "a81089fc8aa7992b30a29777a8b25fa3fc42f262e9f8d7c62a799e7314ca1abd",
+                "pixelEqualityVerified": true
+              }
+            ]
+          },
+          {
+            "caseId": "character-rear",
+            "title": "Character rear",
+            "result": "results/character-rear.json",
+            "resultSha256": "10e54f94b055e7c3b1a8d221536e1339d2bc2fc357ba8275bc14a6e886a5dca7",
+            "panes": [
+              {
+                "mode": "off",
+                "nrEnabled": false,
+                "temporal": true,
+                "pixelBbox": [
+                  16,
+                  1788,
+                  976,
+                  2508
+                ],
+                "sourcePpm": "captures/character-rear/off-nr-static.ppm",
+                "sourcePpmSha256": "f4e824661fc1ce39b61a050a75661cf05bd6824194bfab665c962ed5e8fb7985",
+                "rgbPixelsSha256": "eda7805e69c10f13269d1510ff391a9cd2f37d9ad03b54c76479097bb385fd6d",
+                "sourceLinearSceneSha256": "dd9cdabb423316c2fb92e4c01aa023747cb6c4117ed254169861ec64afda40f4",
+                "pixelEqualityVerified": true
+              },
+              {
+                "mode": "on",
+                "nrEnabled": true,
+                "temporal": true,
+                "pixelBbox": [
+                  992,
+                  1788,
+                  1952,
+                  2508
+                ],
+                "sourcePpm": "captures/character-rear/on-nr-static.ppm",
+                "sourcePpmSha256": "82d456293758e118124fd87868dbbc041a1ae510211e00ec97dcd6066ae19c0b",
+                "rgbPixelsSha256": "d221678fa5d7e9a20d391c33593e52c9b0cea22874ec46cb4d1bfde9e5c7be13",
+                "sourceLinearSceneSha256": "dd9cdabb423316c2fb92e4c01aa023747cb6c4117ed254169861ec64afda40f4",
+                "pixelEqualityVerified": true
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "group": "hdr",
+        "artifact": "docs/images/comparisons/environment-presets.png",
+        "artifactSha256": "042ab84f6965343a9c60862e2464aa6dd25d14cfcb63931bca4861ccbc160de4",
+        "dimensions": [
+          1968,
+          3408
+        ],
+        "caseCount": 4,
+        "rows": [
+          {
+            "caseId": "hdr-studio-small-09",
+            "title": "Studio Small 09",
+            "result": "results/hdr-studio-small-09.json",
+            "resultSha256": "40fca2b660f93d3a62452907f170799c03b37915aeb2f718b12e6cbc0afe27cc",
+            "panes": [
+              {
+                "mode": "off",
+                "nrEnabled": false,
+                "temporal": true,
+                "pixelBbox": [
+                  16,
+                  156,
+                  976,
+                  876
+                ],
+                "sourcePpm": "captures/hdr-studio-small-09/off-nr-static.ppm",
+                "sourcePpmSha256": "0520dd7d8d07335d78c13035e9787b44792be65ff6512c27818d951a0783e796",
+                "rgbPixelsSha256": "61c2add99b4bcbbdc890ab2dd1405b8025f273fa6b9460c4e9560284613abb23",
+                "sourceLinearSceneSha256": "6670d4fb5288085edec784f1e9e1b322b522778e66019158eac5165ee5b0468b",
+                "pixelEqualityVerified": true
+              },
+              {
+                "mode": "on",
+                "nrEnabled": true,
+                "temporal": true,
+                "pixelBbox": [
+                  992,
+                  156,
+                  1952,
+                  876
+                ],
+                "sourcePpm": "captures/hdr-studio-small-09/on-nr-static.ppm",
+                "sourcePpmSha256": "d8325faf43538ea72bca5d23742185a7abde4483639d06b04321e2d12cba5cce",
+                "rgbPixelsSha256": "bb1922c5ca6d0086806b9c1d1aeb1886e6cbbb0c2a5b24a7c67fdc34666476ce",
+                "sourceLinearSceneSha256": "6670d4fb5288085edec784f1e9e1b322b522778e66019158eac5165ee5b0468b",
+                "pixelEqualityVerified": true
+              }
+            ]
+          },
+          {
+            "caseId": "hdr-kloofendal-daylight",
+            "title": "Kloofendal Daylight",
+            "result": "results/hdr-kloofendal-daylight.json",
+            "resultSha256": "346a1c3026d8b8148e7c05b6f66b5ea2c0ed36ee3c7a231302242f5d8a9da76d",
+            "panes": [
+              {
+                "mode": "off",
+                "nrEnabled": false,
+                "temporal": true,
+                "pixelBbox": [
+                  16,
+                  972,
+                  976,
+                  1692
+                ],
+                "sourcePpm": "captures/hdr-kloofendal-daylight/off-nr-static.ppm",
+                "sourcePpmSha256": "bdac85b3efff8ca0815a70eda41a95c13eb9f2bd719395ab374af39b450a40d0",
+                "rgbPixelsSha256": "46e96e9300e83e3a6ebb19ddf335ec0d8d4d57dfd261c30aec1bee8c2c436036",
+                "sourceLinearSceneSha256": "4447599a44315bd1a2ae0c534e66cf025e02a25ef3577f0ba4fba6f9d168d117",
+                "pixelEqualityVerified": true
+              },
+              {
+                "mode": "on",
+                "nrEnabled": true,
+                "temporal": true,
+                "pixelBbox": [
+                  992,
+                  972,
+                  1952,
+                  1692
+                ],
+                "sourcePpm": "captures/hdr-kloofendal-daylight/on-nr-static.ppm",
+                "sourcePpmSha256": "ab36bf8742f35392c30059f2acd45f5534baae5a618be90380e11e6269909779",
+                "rgbPixelsSha256": "981c54086308e52cc627c303e040b31afe42484ef00d99f13026ba3acdfd21f3",
+                "sourceLinearSceneSha256": "4447599a44315bd1a2ae0c534e66cf025e02a25ef3577f0ba4fba6f9d168d117",
+                "pixelEqualityVerified": true
+              }
+            ]
+          },
+          {
+            "caseId": "hdr-chalk-quarry-sunset",
+            "title": "Chalk Quarry Sunset",
+            "result": "results/hdr-chalk-quarry-sunset.json",
+            "resultSha256": "521b1efffac79c959cecc9d96880e60e1aa723e2fbcee5c3aef6e0c2d849daca",
+            "panes": [
+              {
+                "mode": "off",
+                "nrEnabled": false,
+                "temporal": true,
+                "pixelBbox": [
+                  16,
+                  1788,
+                  976,
+                  2508
+                ],
+                "sourcePpm": "captures/hdr-chalk-quarry-sunset/off-nr-static.ppm",
+                "sourcePpmSha256": "a3eb6d4a2e43e0bd510dd9923da97b44f2a7a7d39109229015cb7815b8d9f324",
+                "rgbPixelsSha256": "f1b6534515a4137a7c78ba4275f2cdd4d61877ad0fe452f2942f0910f398a5c8",
+                "sourceLinearSceneSha256": "836caad12b6ded55a11117d2bfad20edf890bc5823c0765707e8d59e1d9f409e",
+                "pixelEqualityVerified": true
+              },
+              {
+                "mode": "on",
+                "nrEnabled": true,
+                "temporal": true,
+                "pixelBbox": [
+                  992,
+                  1788,
+                  1952,
+                  2508
+                ],
+                "sourcePpm": "captures/hdr-chalk-quarry-sunset/on-nr-static.ppm",
+                "sourcePpmSha256": "68684cc0d3d047f47e05ab721d89523d7631ebf014351b8c2bda4117bcbdb863",
+                "rgbPixelsSha256": "c00f8b689a12efd5861134db38baeee6d5631e06951826141dc7d06873b1d80f",
+                "sourceLinearSceneSha256": "836caad12b6ded55a11117d2bfad20edf890bc5823c0765707e8d59e1d9f409e",
+                "pixelEqualityVerified": true
+              }
+            ]
+          },
+          {
+            "caseId": "hdr-entrance-hall",
+            "title": "Entrance Hall",
+            "result": "results/hdr-entrance-hall.json",
+            "resultSha256": "77c82695d320bb34d88f7a1d60a2b4721a57a90f02b3c5aecc044cd4f885fe4b",
+            "panes": [
+              {
+                "mode": "off",
+                "nrEnabled": false,
+                "temporal": true,
+                "pixelBbox": [
+                  16,
+                  2604,
+                  976,
+                  3324
+                ],
+                "sourcePpm": "captures/hdr-entrance-hall/off-nr-static.ppm",
+                "sourcePpmSha256": "124e1b98012ce5eddec72d1be35c378af2680f028b3df6f27a83a6002bb79973",
+                "rgbPixelsSha256": "079a0359a6db2831e3d41f21357a260e8c1aeebb61e8ada79e413a83d546d396",
+                "sourceLinearSceneSha256": "d2d4ea522fba31e443f93a1b1fe0256d7428cf5b737eb808ea3c718b2ad4dd19",
+                "pixelEqualityVerified": true
+              },
+              {
+                "mode": "on",
+                "nrEnabled": true,
+                "temporal": true,
+                "pixelBbox": [
+                  992,
+                  2604,
+                  1952,
+                  3324
+                ],
+                "sourcePpm": "captures/hdr-entrance-hall/on-nr-static.ppm",
+                "sourcePpmSha256": "ee8ccb64cd6f9358b2fc4bedced424c753162688a4c5d4558c8070a33e73d0f6",
+                "rgbPixelsSha256": "264a1131542d2c37292ff1c5c0e28850946239455bdeede2a6445d5f7c1cf0ee",
+                "sourceLinearSceneSha256": "d2d4ea522fba31e443f93a1b1fe0256d7428cf5b737eb808ea3c718b2ad4dd19",
+                "pixelEqualityVerified": true
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "verification": {
+      "expectedPanes": 28,
+      "verifiedPanes": 28,
+      "allSavedPngPanesEqualSourcePpmRgb": true
+    }
+  },
+  "cases": [
+    {
+      "id": "a-beautiful-game",
+      "group": "realistic",
+      "title": "A Beautiful Game",
+      "model": "assets/realistic-scenes/a-beautiful-game/Model.glb",
+      "modelSha256": "bd7133b4b322aae97c589b8839dae8155ad2546acb35ae32a127e722a959d007",
+      "view": "docs/verification/nr-comparison-views/a-beautiful-game/scene/view.json",
+      "viewSha256": "044243df418a3480f8f6bb23c0a8e216b8f889de3bd5fffbabea958dc2beeab9",
+      "environment": "assets/environments/studio_small_09_1k.hdr",
+      "environmentSha256": "e7cfda5f4e98e623db12b8bfd0184e048488e4855d9c83e2751fb44a32e80c45",
+      "identicalLinearScene": true,
+      "identicalCameraMatrices": "identical recorded text (default stream precision); linear HDR input also byte-identical",
+      "outputMeanAbsoluteDifference8Bit": 5.57094425154321,
+      "outputs": [
+        {
+          "nrEnabled": false,
+          "temporal": true,
+          "frame": 40,
+          "animationClip": 0,
+          "animationTimeSeconds": 0.0,
+          "fixedDtSeconds": 0.016666668,
+          "resolution": [
+            960,
+            720
+          ],
+          "networkSampleEnabled": false,
+          "lastNetworkGpuMs": 0.0,
+          "ppmSha256": "787c45a89ad134aa4c0fe30a43459e175dd02d48f0018dc2751ad80b875e9175",
+          "rgbPixelsSha256": "daf94340d4139b39a2929809baabb2b2403e45d04cff4690b266ac7e0c4df815",
+          "linearSceneSha256": "2b468fe5b47e14d02e3f773ac97a96c5d899e83b289622b2e746049c980dff5d",
+          "cameraMatricesSha256": "4c1adaaadff3fb007db02e41866d1b73676fd2ae58005cd2489a9d3f0012ff82",
+          "logSha256": "f485a04edb40d7ef24121db3ece816d60f6a4d501a88b36bbe82bd99c6c97d8e",
+          "timingScope": "Last available enabled/disabled GPU timing sample; not an exact frame-40 benchmark"
+        },
+        {
+          "nrEnabled": true,
+          "temporal": true,
+          "frame": 40,
+          "animationClip": 0,
+          "animationTimeSeconds": 0.0,
+          "fixedDtSeconds": 0.016666668,
+          "resolution": [
+            960,
+            720
+          ],
+          "networkSampleEnabled": true,
+          "lastNetworkGpuMs": 2.617676,
+          "ppmSha256": "731d3434a83e0ae0cf4c8355b470ab79d66ca1d01dcbe6c219825def0e1b1656",
+          "rgbPixelsSha256": "34637f2b960b5fea8fcea16cf4ebe496d4a9ab30b4b485109a4fea1f2fb0ee56",
+          "linearSceneSha256": "2b468fe5b47e14d02e3f773ac97a96c5d899e83b289622b2e746049c980dff5d",
+          "cameraMatricesSha256": "4c1adaaadff3fb007db02e41866d1b73676fd2ae58005cd2489a9d3f0012ff82",
+          "logSha256": "e26982b7c7464960923ce95fb9863d1bfc106b1f279172e83fd6d607b700b6f8",
+          "timingScope": "Last available enabled/disabled GPU timing sample; not an exact frame-40 benchmark"
+        }
+      ],
+      "sceneView": {
+        "model": "../../../../../assets/realistic-scenes/a-beautiful-game/Model.glb",
+        "background": "#dbe4ee",
+        "backgroundEnvironment": false,
+        "msaa": 4,
+        "name": "A Beautiful Game",
+        "environment": "../../../../../assets/environments/studio_small_09_1k.hdr",
+        "sun": {
+          "direction": [
+            0.5,
+            0.8,
+            0.3
+          ],
+          "intensity": 1
+        },
+        "camera": {
+          "position": [
+            0.75,
+            0.7,
+            0.8
+          ],
+          "target": [
+            0,
+            0.03,
+            0
+          ],
+          "fov": 40,
+          "near": 0.001,
+          "far": 100
+        }
+      },
+      "cameraMatrixText": "frame 40\n2.06061 0 0 0\n0 2.74748 0 0\n0 0 -1 -0.002\n0 0 -1 0\n0.729537 -5.80039e-09 -0.683941 -2.31051e-08\n-0.356588 0.853329 -0.380361 -0.0256\n0.583627 0.521373 0.622535 -1.30071\n0 0 0 1\n",
+      "reproduce": {
+        "cwd": "repository root",
+        "environment": {
+          "SDL_VIDEODRIVER": "x11",
+          "LD_LIBRARY_PATH": "$PWD/build/lib"
+        },
+        "commands": [
+          "build/demo/dlss5-demo --scenes docs/verification/nr-comparison-views/a-beautiful-game --model models/nr --kernels build/shaders --width 960 --height 720 --frames 40 --capture reports-local/a-beautiful-game-off --orbit 0 --animation 0 --temporal 1 --nr 0",
+          "build/demo/dlss5-demo --scenes docs/verification/nr-comparison-views/a-beautiful-game --model models/nr --kernels build/shaders --width 960 --height 720 --frames 40 --capture reports-local/a-beautiful-game-on --orbit 0 --animation 0 --temporal 1 --nr 1"
+        ],
+        "preparation": "mkdir -p reports-local; use fresh capture prefixes or remove their previous -cameras.txt files before rerunning"
+      }
+    },
+    {
+      "id": "gothic-cloister-corner",
+      "group": "realistic",
+      "title": "Gothic Cloister Corner",
+      "model": "assets/realistic-scenes/gothic-cloister-corner/Model.glb",
+      "modelSha256": "63702faac4b64738954e07cadea627b81fb87de29e1f35998d665f257c30f393",
+      "view": "docs/verification/nr-comparison-views/gothic-cloister-corner/scene/view.json",
+      "viewSha256": "850385458bcde5487d590b5250c813af91501a8d360e95a93219193ead0d3cec",
+      "environment": null,
+      "environmentSha256": null,
+      "identicalLinearScene": true,
+      "identicalCameraMatrices": "identical recorded text (default stream precision); linear HDR input also byte-identical",
+      "outputMeanAbsoluteDifference8Bit": 8.607570408950616,
+      "outputs": [
+        {
+          "nrEnabled": false,
+          "temporal": true,
+          "frame": 40,
+          "animationClip": 0,
+          "animationTimeSeconds": 0.0,
+          "fixedDtSeconds": 0.016666668,
+          "resolution": [
+            960,
+            720
+          ],
+          "networkSampleEnabled": false,
+          "lastNetworkGpuMs": 0.0,
+          "ppmSha256": "5d5611cf76f2ae33bb67381502f134bee63e24e648bef0d0cbe1c9e63edc87f9",
+          "rgbPixelsSha256": "f0157ec72eafa17f8011bcfbdcf928f56b086d163825b29da3369aa613168ddf",
+          "linearSceneSha256": "8b1cae946a9d25b34e0731ba5fbcbeb4b7f66bf5cc24b9ae9aa6b3c03c58162a",
+          "cameraMatricesSha256": "5adc63b9264554f2f89790d9335778829860aae81d11dd8655bbb2a772487326",
+          "logSha256": "071d2ea4998ed6fc6da2df47bae0b91550eef8c58d5bdc7d2302e64e4d838267",
+          "timingScope": "Last available enabled/disabled GPU timing sample; not an exact frame-40 benchmark"
+        },
+        {
+          "nrEnabled": true,
+          "temporal": true,
+          "frame": 40,
+          "animationClip": 0,
+          "animationTimeSeconds": 0.0,
+          "fixedDtSeconds": 0.016666668,
+          "resolution": [
+            960,
+            720
+          ],
+          "networkSampleEnabled": true,
+          "lastNetworkGpuMs": 2.746338,
+          "ppmSha256": "08d3433303d48fc9b60ee2f794d5e573b0ee8e608f716d402d1e987d61850684",
+          "rgbPixelsSha256": "31ea400f26e3059488bf09a9d7c2792c7a1f72d1a10deae582ac584c276a93da",
+          "linearSceneSha256": "8b1cae946a9d25b34e0731ba5fbcbeb4b7f66bf5cc24b9ae9aa6b3c03c58162a",
+          "cameraMatricesSha256": "5adc63b9264554f2f89790d9335778829860aae81d11dd8655bbb2a772487326",
+          "logSha256": "0ec0bf6d8ba94e76a25b63f933c297f96b311ff53895b91e6385901c9db1d202",
+          "timingScope": "Last available enabled/disabled GPU timing sample; not an exact frame-40 benchmark"
+        }
+      ],
+      "sceneView": {
+        "model": "../../../../../assets/realistic-scenes/gothic-cloister-corner/Model.glb",
+        "background": "#dbe4ee",
+        "backgroundEnvironment": false,
+        "msaa": 4,
+        "name": "Gothic Cloister Corner",
+        "camera": {
+          "position": [
+            -26,
+            9,
+            35
+          ],
+          "target": [
+            -2,
+            11,
+            2
+          ],
+          "fov": 50,
+          "near": 0.1,
+          "far": 2000
+        },
+        "moveSpeed": 15
+      },
+      "cameraMatrixText": "frame 40\n1.60838 0 0 0\n0 2.14451 0 0\n0 0 -1 -0.2\n0 0 -1 0\n0.808736 -9.55899e-10 0.588172 0.441091\n-0.0287945 0.998801 0.0395924 -11.1236\n-0.587467 -0.0489559 0.807766 -43.1053\n0 0 0 1\n",
+      "reproduce": {
+        "cwd": "repository root",
+        "environment": {
+          "SDL_VIDEODRIVER": "x11",
+          "LD_LIBRARY_PATH": "$PWD/build/lib"
+        },
+        "commands": [
+          "build/demo/dlss5-demo --scenes docs/verification/nr-comparison-views/gothic-cloister-corner --model models/nr --kernels build/shaders --width 960 --height 720 --frames 40 --capture reports-local/gothic-cloister-corner-off --orbit 0 --animation 0 --temporal 1 --nr 0",
+          "build/demo/dlss5-demo --scenes docs/verification/nr-comparison-views/gothic-cloister-corner --model models/nr --kernels build/shaders --width 960 --height 720 --frames 40 --capture reports-local/gothic-cloister-corner-on --orbit 0 --animation 0 --temporal 1 --nr 1"
+        ],
+        "preparation": "mkdir -p reports-local; use fresh capture prefixes or remove their previous -cameras.txt files before rerunning"
+      }
+    },
+    {
+      "id": "iridescent-dish-with-olives",
+      "group": "realistic",
+      "title": "Iridescent Dish with Olives",
+      "model": "assets/realistic-scenes/iridescent-dish-with-olives/Model.glb",
+      "modelSha256": "1540b4a36b790a907f4824cfe848ba481b3da3cc8070172b7b3ba178f78a7ed1",
+      "view": "docs/verification/nr-comparison-views/iridescent-dish-with-olives/scene/view.json",
+      "viewSha256": "7253a3d7ea1a6731953731dfb07fde22e99dd1c9194a60409ae8aa037dd588ed",
+      "environment": "assets/environments/studio_small_09_1k.hdr",
+      "environmentSha256": "e7cfda5f4e98e623db12b8bfd0184e048488e4855d9c83e2751fb44a32e80c45",
+      "identicalLinearScene": true,
+      "identicalCameraMatrices": "identical recorded text (default stream precision); linear HDR input also byte-identical",
+      "outputMeanAbsoluteDifference8Bit": 6.301420717592593,
+      "outputs": [
+        {
+          "nrEnabled": false,
+          "temporal": true,
+          "frame": 40,
+          "animationClip": 0,
+          "animationTimeSeconds": 0.666666687,
+          "fixedDtSeconds": 0.016666668,
+          "resolution": [
+            960,
+            720
+          ],
+          "networkSampleEnabled": false,
+          "lastNetworkGpuMs": 0.0,
+          "ppmSha256": "3f15581a4abbf7c1d2ac52921e65e9be8bf376ad561565017f16e987551c8042",
+          "rgbPixelsSha256": "0efabae7e648a87e255a38e186b4f0294b932a3ebd73ad7b9c7533ea9b1d960f",
+          "linearSceneSha256": "f079d47b10b2d29448e4f286f11e5dc416f1caa280f7b81dae479803054190b9",
+          "cameraMatricesSha256": "2bf24ff86b78dcd92b298566f28454b6250cd04c761cc723a197c2fb7ae49f16",
+          "logSha256": "da46947d7550aea4f08fc228e3b90eac3472f9162d56bf436a1c1c2ad765d3b0",
+          "timingScope": "Last available enabled/disabled GPU timing sample; not an exact frame-40 benchmark"
+        },
+        {
+          "nrEnabled": true,
+          "temporal": true,
+          "frame": 40,
+          "animationClip": 0,
+          "animationTimeSeconds": 0.666666687,
+          "fixedDtSeconds": 0.016666668,
+          "resolution": [
+            960,
+            720
+          ],
+          "networkSampleEnabled": true,
+          "lastNetworkGpuMs": 3.187744,
+          "ppmSha256": "027ba2f9b8181dcc17ab87c3e4129e5879b52b8b15663e6d98f284904ec1b120",
+          "rgbPixelsSha256": "3e72949c77d82be2c2ce13973bb7177c2e959140c1783f9629920a543f8ef9ee",
+          "linearSceneSha256": "f079d47b10b2d29448e4f286f11e5dc416f1caa280f7b81dae479803054190b9",
+          "cameraMatricesSha256": "2bf24ff86b78dcd92b298566f28454b6250cd04c761cc723a197c2fb7ae49f16",
+          "logSha256": "39e4abb47156c727552f62670270c12d277266e9a0a96b9f47fa565fa9c50a99",
+          "timingScope": "Last available enabled/disabled GPU timing sample; not an exact frame-40 benchmark"
+        }
+      ],
+      "sceneView": {
+        "model": "../../../../../assets/realistic-scenes/iridescent-dish-with-olives/Model.glb",
+        "background": "#dbe4ee",
+        "backgroundEnvironment": false,
+        "msaa": 4,
+        "name": "Iridescent Dish with Olives",
+        "environment": "../../../../../assets/environments/studio_small_09_1k.hdr",
+        "sun": {
+          "direction": [
+            0.5,
+            0.8,
+            0.3
+          ],
+          "intensity": 1
+        },
+        "camera": {
+          "position": [
+            0.92,
+            0.56,
+            0
+          ],
+          "target": [
+            0,
+            0.15,
+            0
+          ],
+          "fov": 28,
+          "near": 0.001,
+          "far": 100
+        }
+      },
+      "cameraMatrixText": "frame 40\n3.00809 0 0 0\n0 4.01078 0 0\n0 0 -1 -0.002\n0 0 -1 0\n-4.37114e-08 -8.32352e-16 -1 4.02145e-08\n-0.407059 0.913402 1.77931e-08 -0.13701\n0.913402 0.407059 -3.99261e-08 -1.06828\n0 0 0 1\n",
+      "reproduce": {
+        "cwd": "repository root",
+        "environment": {
+          "SDL_VIDEODRIVER": "x11",
+          "LD_LIBRARY_PATH": "$PWD/build/lib"
+        },
+        "commands": [
+          "build/demo/dlss5-demo --scenes docs/verification/nr-comparison-views/iridescent-dish-with-olives --model models/nr --kernels build/shaders --width 960 --height 720 --frames 40 --capture reports-local/iridescent-dish-with-olives-off --orbit 0 --animation 0 --temporal 1 --nr 0",
+          "build/demo/dlss5-demo --scenes docs/verification/nr-comparison-views/iridescent-dish-with-olives --model models/nr --kernels build/shaders --width 960 --height 720 --frames 40 --capture reports-local/iridescent-dish-with-olives-on --orbit 0 --animation 0 --temporal 1 --nr 1"
+        ],
+        "preparation": "mkdir -p reports-local; use fresh capture prefixes or remove their previous -cameras.txt files before rerunning"
+      }
+    },
+    {
+      "id": "lantern",
+      "group": "public",
+      "title": "Lantern",
+      "model": "assets/cases/lantern/Model.glb",
+      "modelSha256": "a79458c4b02d695187a952f23a63b8bf278e7bc3d316a3c2a314f2d6974181f1",
+      "view": "docs/verification/nr-comparison-views/lantern/scene/view.json",
+      "viewSha256": "04507694f9b05ae6706b00ae142d8b78ddf323dc93d688c6ad2191283a0d7a1a",
+      "environment": "assets/environments/studio_small_09_1k.hdr",
+      "environmentSha256": "e7cfda5f4e98e623db12b8bfd0184e048488e4855d9c83e2751fb44a32e80c45",
+      "identicalLinearScene": true,
+      "identicalCameraMatrices": "identical recorded text (default stream precision); linear HDR input also byte-identical",
+      "outputMeanAbsoluteDifference8Bit": 1.1899464699074074,
+      "outputs": [
+        {
+          "nrEnabled": false,
+          "temporal": true,
+          "frame": 40,
+          "animationClip": 0,
+          "animationTimeSeconds": 0.0,
+          "fixedDtSeconds": 0.016666668,
+          "resolution": [
+            960,
+            720
+          ],
+          "networkSampleEnabled": false,
+          "lastNetworkGpuMs": 0.0,
+          "ppmSha256": "f042a2e56c5b15e4528e2fc71d88ce6bbfa846c0dc40bfadc12385b0ab7117e5",
+          "rgbPixelsSha256": "06884c7c38d281f0ff686c9a965640a211567de6dd415468334b8cf73f34648e",
+          "linearSceneSha256": "6b9fada09e6fb3c8b566884315168c9c6bc89f245e617cdd2e48178fb5ea19f6",
+          "cameraMatricesSha256": "953763bc13e9054a627eb4465ef92b00c56e3483345e4774473874f75747e8a8",
+          "logSha256": "a1e038047d8cb16de554758b1a06bfad6f5ad19ecfba3ef7033908bff91a036f",
+          "timingScope": "Last available enabled/disabled GPU timing sample; not an exact frame-40 benchmark"
+        },
+        {
+          "nrEnabled": true,
+          "temporal": true,
+          "frame": 40,
+          "animationClip": 0,
+          "animationTimeSeconds": 0.0,
+          "fixedDtSeconds": 0.016666668,
+          "resolution": [
+            960,
+            720
+          ],
+          "networkSampleEnabled": true,
+          "lastNetworkGpuMs": 2.62915,
+          "ppmSha256": "b1ac8fbf1ef8df938077947daadc9ffce8be8503de07ac1af5ddeaf4ef86bbd3",
+          "rgbPixelsSha256": "ed765f0562d26be1face7299eee907208b406e189db405ffd59c7349a8363ce1",
+          "linearSceneSha256": "6b9fada09e6fb3c8b566884315168c9c6bc89f245e617cdd2e48178fb5ea19f6",
+          "cameraMatricesSha256": "953763bc13e9054a627eb4465ef92b00c56e3483345e4774473874f75747e8a8",
+          "logSha256": "a5aa520df06561b64b7e551c21fc024eeea65187f74f19a7a87045ab4ed71e5f",
+          "timingScope": "Last available enabled/disabled GPU timing sample; not an exact frame-40 benchmark"
+        }
+      ],
+      "sceneView": {
+        "name": "Lantern",
+        "model": "../../../../../assets/cases/lantern/Model.glb",
+        "background": "#dbe4ee",
+        "msaa": 4,
+        "environment": "../../../../../assets/environments/studio_small_09_1k.hdr",
+        "backgroundEnvironment": false,
+        "sun": {
+          "direction": [
+            0.5,
+            0.8,
+            0.3
+          ],
+          "intensity": 1.0
+        }
+      },
+      "cameraMatrixText": "frame 40\n1.81066 0 0 0\n0 2.41421 0 0\n0 0 -1 -0.151664\n0 0 -1 0\n1 0 0 -3.82315\n0 1 0 -13.016\n0 0 1 -39.6317\n0 0 0 1\n",
+      "reproduce": {
+        "cwd": "repository root",
+        "environment": {
+          "SDL_VIDEODRIVER": "x11",
+          "LD_LIBRARY_PATH": "$PWD/build/lib"
+        },
+        "commands": [
+          "build/demo/dlss5-demo --scenes docs/verification/nr-comparison-views/lantern --model models/nr --kernels build/shaders --width 960 --height 720 --frames 40 --capture reports-local/lantern-off --orbit 0 --animation 0 --temporal 1 --nr 0",
+          "build/demo/dlss5-demo --scenes docs/verification/nr-comparison-views/lantern --model models/nr --kernels build/shaders --width 960 --height 720 --frames 40 --capture reports-local/lantern-on --orbit 0 --animation 0 --temporal 1 --nr 1"
+        ],
+        "preparation": "mkdir -p reports-local; use fresh capture prefixes or remove their previous -cameras.txt files before rerunning"
+      }
+    },
+    {
+      "id": "fox",
+      "group": "public",
+      "title": "Fox",
+      "model": "assets/cases/fox/Model.glb",
+      "modelSha256": "d97044e701822bac5a62696459b27d7b375aada5de8574ed4362edbba94771f7",
+      "view": "docs/verification/nr-comparison-views/fox/scene/view.json",
+      "viewSha256": "e6ed22ccaa2cf7c1675834baf03b14ca39c9267a5f879e42e6df1b1c07ca8955",
+      "environment": null,
+      "environmentSha256": null,
+      "identicalLinearScene": true,
+      "identicalCameraMatrices": "identical recorded text (default stream precision); linear HDR input also byte-identical",
+      "outputMeanAbsoluteDifference8Bit": 1.4977941743827161,
+      "outputs": [
+        {
+          "nrEnabled": false,
+          "temporal": true,
+          "frame": 40,
+          "animationClip": 2,
+          "animationTimeSeconds": 0.666666687,
+          "fixedDtSeconds": 0.016666668,
+          "resolution": [
+            960,
+            720
+          ],
+          "networkSampleEnabled": false,
+          "lastNetworkGpuMs": 0.0,
+          "ppmSha256": "591745e222126477b9c5c727f53aa49ea6aeba3c26c37a8ad0e3801e315d4804",
+          "rgbPixelsSha256": "9cfd7b9ff6ee6f352166f8a02b401f5beb50480030cc726e0b66b9492e8d8201",
+          "linearSceneSha256": "d419272ab83a9ff6cdd01b8001fb04eea0d08fb252099f647869ee5edc090f74",
+          "cameraMatricesSha256": "b84e0347f70b7403fa1f9609671f6c6ae0d16b90f38b89c4fc9e0087c368818b",
+          "logSha256": "c82b6ed4b6aa51bd9d461a16a866a8286a7c2496940d475e7f2c080943a5139c",
+          "timingScope": "Last available enabled/disabled GPU timing sample; not an exact frame-40 benchmark"
+        },
+        {
+          "nrEnabled": true,
+          "temporal": true,
+          "frame": 40,
+          "animationClip": 2,
+          "animationTimeSeconds": 0.666666687,
+          "fixedDtSeconds": 0.016666668,
+          "resolution": [
+            960,
+            720
+          ],
+          "networkSampleEnabled": true,
+          "lastNetworkGpuMs": 3.245117,
+          "ppmSha256": "11a856abb2dd4ffaa363143dd9db8dab2346056158dbf84aeb7c89f6985db162",
+          "rgbPixelsSha256": "fe6fcf655d438c78dc1c34935867d7839ff14a21e8fe9340bd5302605b82b3cf",
+          "linearSceneSha256": "d419272ab83a9ff6cdd01b8001fb04eea0d08fb252099f647869ee5edc090f74",
+          "cameraMatricesSha256": "b84e0347f70b7403fa1f9609671f6c6ae0d16b90f38b89c4fc9e0087c368818b",
+          "logSha256": "5d958b3c8aaef90836881d14aa38f1472ae3b767edfe0cdc8c0e69943f65bf35",
+          "timingScope": "Last available enabled/disabled GPU timing sample; not an exact frame-40 benchmark"
+        }
+      ],
+      "sceneView": {
+        "name": "Fox Animation",
+        "model": "../../../../../assets/cases/fox/Model.glb",
+        "background": "#dbe4ee",
+        "msaa": 4,
+        "camera": {
+          "position": [
+            160,
+            80,
+            140
+          ],
+          "target": [
+            0,
+            40,
+            -10
+          ],
+          "fov": 40,
+          "near": 1,
+          "far": 2000
+        }
+      },
+      "cameraMatrixText": "frame 40\n2.06061 0 0 0\n0 2.74748 0 0\n0 0 -1 -2\n0 0 -1 0\n0.683939 -8.62054e-10 -0.72954 -7.29462\n-0.1309 0.983771 -0.122718 -40.5771\n0.7177 0.179429 0.672839 -223.384\n0 0 0 1\n",
+      "reproduce": {
+        "cwd": "repository root",
+        "environment": {
+          "SDL_VIDEODRIVER": "x11",
+          "LD_LIBRARY_PATH": "$PWD/build/lib"
+        },
+        "commands": [
+          "build/demo/dlss5-demo --scenes docs/verification/nr-comparison-views/fox --model models/nr --kernels build/shaders --width 960 --height 720 --frames 40 --capture reports-local/fox-off --orbit 0 --animation 2 --temporal 1 --nr 0",
+          "build/demo/dlss5-demo --scenes docs/verification/nr-comparison-views/fox --model models/nr --kernels build/shaders --width 960 --height 720 --frames 40 --capture reports-local/fox-on --orbit 0 --animation 2 --temporal 1 --nr 1"
+        ],
+        "preparation": "mkdir -p reports-local; use fresh capture prefixes or remove their previous -cameras.txt files before rerunning"
+      }
+    },
+    {
+      "id": "alpha-blend-mode-test",
+      "group": "public",
+      "title": "Alpha Blend Mode Test",
+      "model": "assets/cases/alpha-blend-mode-test/Model.glb",
+      "modelSha256": "37c3577d143071b42dd46e9d942b157837eb25c6340112171d7faecaa987b14e",
+      "view": "docs/verification/nr-comparison-views/alpha-blend-mode-test/scene/view.json",
+      "viewSha256": "2581a6ea03bd63d200111638406aa86dfe565c95b45642e6afd95d25d536b000",
+      "environment": "assets/environments/studio_small_09_1k.hdr",
+      "environmentSha256": "e7cfda5f4e98e623db12b8bfd0184e048488e4855d9c83e2751fb44a32e80c45",
+      "identicalLinearScene": true,
+      "identicalCameraMatrices": "identical recorded text (default stream precision); linear HDR input also byte-identical",
+      "outputMeanAbsoluteDifference8Bit": 1.3208333333333335,
+      "outputs": [
+        {
+          "nrEnabled": false,
+          "temporal": true,
+          "frame": 40,
+          "animationClip": 0,
+          "animationTimeSeconds": 0.0,
+          "fixedDtSeconds": 0.016666668,
+          "resolution": [
+            960,
+            720
+          ],
+          "networkSampleEnabled": false,
+          "lastNetworkGpuMs": 0.0,
+          "ppmSha256": "27e57661ef7cf0e36ad77748b99db1b59b295414e0371024bd5c0e446a636a96",
+          "rgbPixelsSha256": "d14cc9dbb7e8d34986f296c2657f2844ab50d3a11b581b2067feb28cb66f6347",
+          "linearSceneSha256": "e1cec3381174aa3a838a3151f70228e6d28a0b9cb5fc092c71be937178cbb2ba",
+          "cameraMatricesSha256": "e834914fc71e6f22f8dfa0da69c9685685eaaeff85abeea65b033a076b37eb8f",
+          "logSha256": "3dd0f5dc6315eb879c4d050ac9fc77ee8727a4191f9ae8bfc885a3c6d09940f5",
+          "timingScope": "Last available enabled/disabled GPU timing sample; not an exact frame-40 benchmark"
+        },
+        {
+          "nrEnabled": true,
+          "temporal": true,
+          "frame": 40,
+          "animationClip": 0,
+          "animationTimeSeconds": 0.0,
+          "fixedDtSeconds": 0.016666668,
+          "resolution": [
+            960,
+            720
+          ],
+          "networkSampleEnabled": true,
+          "lastNetworkGpuMs": 2.630615,
+          "ppmSha256": "92292ce3aa1362c7e28759895c9978027905632bcbd478001df97cbbd5e777e0",
+          "rgbPixelsSha256": "6fa54274778780d8b25844cf0db42ee6fc3bbecbb02dce3cf44c33bc1cd6ccba",
+          "linearSceneSha256": "e1cec3381174aa3a838a3151f70228e6d28a0b9cb5fc092c71be937178cbb2ba",
+          "cameraMatricesSha256": "e834914fc71e6f22f8dfa0da69c9685685eaaeff85abeea65b033a076b37eb8f",
+          "logSha256": "c233929afc6a901a7489e25a4b0c0f3bc8fc03975e8bbc69e1191a4c64a407b4",
+          "timingScope": "Last available enabled/disabled GPU timing sample; not an exact frame-40 benchmark"
+        }
+      ],
+      "sceneView": {
+        "name": "Alpha Blend Modes",
+        "model": "../../../../../assets/cases/alpha-blend-mode-test/Model.glb",
+        "background": "#dbe4ee",
+        "msaa": 4,
+        "environment": "../../../../../assets/environments/studio_small_09_1k.hdr",
+        "backgroundEnvironment": false,
+        "sun": {
+          "direction": [
+            0.5,
+            0.8,
+            0.3
+          ],
+          "intensity": 1.0
+        },
+        "camera": {
+          "position": [
+            0,
+            1.8,
+            11
+          ],
+          "target": [
+            0,
+            1.1,
+            0
+          ],
+          "fov": 36,
+          "near": 0.02,
+          "far": 100
+        }
+      },
+      "cameraMatrixText": "frame 40\n2.30826 0 0 0\n0 3.07768 0 0\n0 0 -1 -0.04\n0 0 -1 0\n1 0 0 -0\n0 0.997981 -0.0635079 -1.09778\n0 0.0635079 0.997981 -11.0921\n0 0 0 1\n",
+      "reproduce": {
+        "cwd": "repository root",
+        "environment": {
+          "SDL_VIDEODRIVER": "x11",
+          "LD_LIBRARY_PATH": "$PWD/build/lib"
+        },
+        "commands": [
+          "build/demo/dlss5-demo --scenes docs/verification/nr-comparison-views/alpha-blend-mode-test --model models/nr --kernels build/shaders --width 960 --height 720 --frames 40 --capture reports-local/alpha-blend-mode-test-off --orbit 0 --animation 0 --temporal 1 --nr 0",
+          "build/demo/dlss5-demo --scenes docs/verification/nr-comparison-views/alpha-blend-mode-test --model models/nr --kernels build/shaders --width 960 --height 720 --frames 40 --capture reports-local/alpha-blend-mode-test-on --orbit 0 --animation 0 --temporal 1 --nr 1"
+        ],
+        "preparation": "mkdir -p reports-local; use fresh capture prefixes or remove their previous -cameras.txt files before rerunning"
+      }
+    },
+    {
+      "id": "transmission-test",
+      "group": "public",
+      "title": "Transmission Test",
+      "model": "assets/cases/transmission-test/Model.glb",
+      "modelSha256": "dd9732dae5517f8605ad4324d78b077b969c3e8357c056280d0a4e4b67797d15",
+      "view": "docs/verification/nr-comparison-views/transmission-test/scene/view.json",
+      "viewSha256": "59bd91a0510f3afcc31832f4b4a6ce31ba1a12c22927dfe1acfc44f26b27eab0",
+      "environment": "assets/environments/studio_small_09_1k.hdr",
+      "environmentSha256": "e7cfda5f4e98e623db12b8bfd0184e048488e4855d9c83e2751fb44a32e80c45",
+      "identicalLinearScene": true,
+      "identicalCameraMatrices": "identical recorded text (default stream precision); linear HDR input also byte-identical",
+      "outputMeanAbsoluteDifference8Bit": 5.609143518518518,
+      "outputs": [
+        {
+          "nrEnabled": false,
+          "temporal": true,
+          "frame": 40,
+          "animationClip": 0,
+          "animationTimeSeconds": 0.0,
+          "fixedDtSeconds": 0.016666668,
+          "resolution": [
+            960,
+            720
+          ],
+          "networkSampleEnabled": false,
+          "lastNetworkGpuMs": 0.0,
+          "ppmSha256": "577fbf0733ade79e84d4970c07babec42e7ef81546969e765e821112f67b3c73",
+          "rgbPixelsSha256": "45041150b51facdab8cb40cf7a733278969cb3ab05f9509c2da8604e18ddff2f",
+          "linearSceneSha256": "cc68b9a6a4abe7361c9fc9bb2677534c15299f586c27bbd7cebc2a91a59b238f",
+          "cameraMatricesSha256": "1393002bd4c2522108804eb2477aa6c2dee30d8b2bfb785fdb2deab280c53fb8",
+          "logSha256": "e25ce0853e5a58677ff9be12921b5b8243878a9d588c6328356bf373ac541e44",
+          "timingScope": "Last available enabled/disabled GPU timing sample; not an exact frame-40 benchmark"
+        },
+        {
+          "nrEnabled": true,
+          "temporal": true,
+          "frame": 40,
+          "animationClip": 0,
+          "animationTimeSeconds": 0.0,
+          "fixedDtSeconds": 0.016666668,
+          "resolution": [
+            960,
+            720
+          ],
+          "networkSampleEnabled": true,
+          "lastNetworkGpuMs": 3.211914,
+          "ppmSha256": "c0cd627dcb4ba02a07694a0fa049feab39a179db994e82e9e9d6e31875e78dae",
+          "rgbPixelsSha256": "c963b2e8905af4d988d548618f5f59a1d494e2d9ba1bdf99053eb6d1a529d52a",
+          "linearSceneSha256": "cc68b9a6a4abe7361c9fc9bb2677534c15299f586c27bbd7cebc2a91a59b238f",
+          "cameraMatricesSha256": "1393002bd4c2522108804eb2477aa6c2dee30d8b2bfb785fdb2deab280c53fb8",
+          "logSha256": "e02adb55d6f792596769a9b4666c33fcadc914ebcb680936050cdcc4ea169c37",
+          "timingScope": "Last available enabled/disabled GPU timing sample; not an exact frame-40 benchmark"
+        }
+      ],
+      "sceneView": {
+        "name": "Transmission",
+        "model": "../../../../../assets/cases/transmission-test/Model.glb",
+        "background": "#dbe4ee",
+        "msaa": 4,
+        "environment": "../../../../../assets/environments/studio_small_09_1k.hdr",
+        "backgroundEnvironment": false,
+        "sun": {
+          "direction": [
+            0.5,
+            0.8,
+            0.3
+          ],
+          "intensity": 1.0
+        },
+        "camera": {
+          "position": [
+            -0.07675539702177048,
+            0.3394200801849365,
+            1.802846074104309
+          ],
+          "target": [
+            -0.1460739566888924,
+            0.08672148038825939,
+            0.022020993295372104
+          ],
+          "fov": 34.515876027228366,
+          "near": 5.606882768915966e-05,
+          "far": 3.0837855339050293
+        }
+      },
+      "cameraMatrixText": "frame 40\n2.41421 0 0 0\n0 3.21895 0 0\n0 0 -1 -0.000112138\n0 0 -1 0\n0.999243 -2.69046e-11 -0.0388955 0.14682\n-0.00546047 0.990097 -0.140282 -0.0835711\n0.0385103 0.140388 0.989347 -1.82834\n0 0 0 1\n",
+      "reproduce": {
+        "cwd": "repository root",
+        "environment": {
+          "SDL_VIDEODRIVER": "x11",
+          "LD_LIBRARY_PATH": "$PWD/build/lib"
+        },
+        "commands": [
+          "build/demo/dlss5-demo --scenes docs/verification/nr-comparison-views/transmission-test --model models/nr --kernels build/shaders --width 960 --height 720 --frames 40 --capture reports-local/transmission-test-off --orbit 0 --animation 0 --temporal 1 --nr 0",
+          "build/demo/dlss5-demo --scenes docs/verification/nr-comparison-views/transmission-test --model models/nr --kernels build/shaders --width 960 --height 720 --frames 40 --capture reports-local/transmission-test-on --orbit 0 --animation 0 --temporal 1 --nr 1"
+        ],
+        "preparation": "mkdir -p reports-local; use fresh capture prefixes or remove their previous -cameras.txt files before rerunning"
+      }
+    },
+    {
+      "id": "character-front",
+      "group": "character",
+      "title": "Character front",
+      "model": "assets/test-static.glb",
+      "modelSha256": "90ea40a9c98084312351cb4b3e37a84f7b34ee3aa0adbe7194af477cc531a389",
+      "view": "docs/verification/nr-comparison-views/character-front/scene/view.json",
+      "viewSha256": "8a2fa4feddd3cbf40f62d882e2e3890daace8e49bffc87f267f72f996dbc4383",
+      "environment": "assets/environments/studio_small_09_1k.hdr",
+      "environmentSha256": "e7cfda5f4e98e623db12b8bfd0184e048488e4855d9c83e2751fb44a32e80c45",
+      "identicalLinearScene": true,
+      "identicalCameraMatrices": "identical recorded text (default stream precision); linear HDR input also byte-identical",
+      "outputMeanAbsoluteDifference8Bit": 4.754961419753086,
+      "outputs": [
+        {
+          "nrEnabled": false,
+          "temporal": true,
+          "frame": 40,
+          "animationClip": 0,
+          "animationTimeSeconds": 0.0,
+          "fixedDtSeconds": 0.016666668,
+          "resolution": [
+            960,
+            720
+          ],
+          "networkSampleEnabled": false,
+          "lastNetworkGpuMs": 0.0,
+          "ppmSha256": "21c2921bed8655e8494e8753ed6da31c267c55581f8c7f8c98a827561da71b94",
+          "rgbPixelsSha256": "f6e02594788b1d4810f693a96c00a10b043a2bacffeba84e09297c3351d5cbd4",
+          "linearSceneSha256": "a35650f0f2045758e29d106e17491248300e4530039b240bd2a2a5bec0ce5e3b",
+          "cameraMatricesSha256": "ab7b0663e5c6c68b93c5afdfac512854048ba1fcb088195acc1835e246dc6491",
+          "logSha256": "58414b48cfbee211bec504d2f165bdb4a1c279cbd81b92188b570dbc63a5b5b4",
+          "timingScope": "Last available enabled/disabled GPU timing sample; not an exact frame-40 benchmark"
+        },
+        {
+          "nrEnabled": true,
+          "temporal": true,
+          "frame": 40,
+          "animationClip": 0,
+          "animationTimeSeconds": 0.0,
+          "fixedDtSeconds": 0.016666668,
+          "resolution": [
+            960,
+            720
+          ],
+          "networkSampleEnabled": true,
+          "lastNetworkGpuMs": 3.352539,
+          "ppmSha256": "4ca2c91de7c7f4e1853a94b176e640424bb706270651aa89542406d69f1ab29e",
+          "rgbPixelsSha256": "e30654927c6fff45327a4278923becb67fd9fa1307e9a6c5e9dc70c158171c8e",
+          "linearSceneSha256": "a35650f0f2045758e29d106e17491248300e4530039b240bd2a2a5bec0ce5e3b",
+          "cameraMatricesSha256": "ab7b0663e5c6c68b93c5afdfac512854048ba1fcb088195acc1835e246dc6491",
+          "logSha256": "9f851a0499836d78e0c72c9e8db0d3e352f470cd8fc46b0e1f1289588897975c",
+          "timingScope": "Last available enabled/disabled GPU timing sample; not an exact frame-40 benchmark"
+        }
+      ],
+      "sceneView": {
+        "name": "Character front",
+        "model": "../../../../../assets/test-static.glb",
+        "environment": "../../../../../assets/environments/studio_small_09_1k.hdr",
+        "background": "#dbe4ee",
+        "backgroundEnvironment": false,
+        "msaa": 4,
+        "sun": {
+          "direction": [
+            0.5,
+            0.8,
+            0.3
+          ],
+          "intensity": 1
+        },
+        "camera": {
+          "position": [
+            0.22,
+            1.58,
+            0.88
+          ],
+          "target": [
+            0,
+            1.48,
+            0.06
+          ],
+          "fov": 40,
+          "near": 0.005,
+          "far": 60
+        }
+      },
+      "cameraMatrixText": "frame 40\n2.06061 0 0 0\n0 2.74748 0 0\n0 0 -1 -0.01\n0 0 -1 0\n0.965843 7.37577e-11 -0.259129 0.0155477\n-0.0303121 0.993135 -0.112981 -1.46306\n0.25735 0.116977 0.959212 -1.08555\n0 0 0 1\n",
+      "reproduce": {
+        "cwd": "repository root",
+        "environment": {
+          "SDL_VIDEODRIVER": "x11",
+          "LD_LIBRARY_PATH": "$PWD/build/lib"
+        },
+        "commands": [
+          "build/demo/dlss5-demo --scenes docs/verification/nr-comparison-views/character-front --model models/nr --kernels build/shaders --width 960 --height 720 --frames 40 --capture reports-local/character-front-off --orbit 0 --animation 0 --temporal 1 --nr 0",
+          "build/demo/dlss5-demo --scenes docs/verification/nr-comparison-views/character-front --model models/nr --kernels build/shaders --width 960 --height 720 --frames 40 --capture reports-local/character-front-on --orbit 0 --animation 0 --temporal 1 --nr 1"
+        ],
+        "preparation": "mkdir -p reports-local; use fresh capture prefixes or remove their previous -cameras.txt files before rerunning"
+      }
+    },
+    {
+      "id": "character-profile",
+      "group": "character",
+      "title": "Character profile",
+      "model": "assets/test-static.glb",
+      "modelSha256": "90ea40a9c98084312351cb4b3e37a84f7b34ee3aa0adbe7194af477cc531a389",
+      "view": "docs/verification/nr-comparison-views/character-profile/scene/view.json",
+      "viewSha256": "d7ff3531dae0af6fee0726a736bc9e24312906ba4b5a60c00fe5179258bc8ad8",
+      "environment": "assets/environments/studio_small_09_1k.hdr",
+      "environmentSha256": "e7cfda5f4e98e623db12b8bfd0184e048488e4855d9c83e2751fb44a32e80c45",
+      "identicalLinearScene": true,
+      "identicalCameraMatrices": "identical recorded text (default stream precision); linear HDR input also byte-identical",
+      "outputMeanAbsoluteDifference8Bit": 4.4441116898148145,
+      "outputs": [
+        {
+          "nrEnabled": false,
+          "temporal": true,
+          "frame": 40,
+          "animationClip": 0,
+          "animationTimeSeconds": 0.0,
+          "fixedDtSeconds": 0.016666668,
+          "resolution": [
+            960,
+            720
+          ],
+          "networkSampleEnabled": false,
+          "lastNetworkGpuMs": 0.0,
+          "ppmSha256": "d1c9fb0756e71b2cfba302d22b0a1674724c9b0f981f7810204883e10396e3e1",
+          "rgbPixelsSha256": "ec64a9f57e149c50ff96d042b0a3f3f1a00a45c5e9d7cbfcd874fe615b5d29a6",
+          "linearSceneSha256": "a81089fc8aa7992b30a29777a8b25fa3fc42f262e9f8d7c62a799e7314ca1abd",
+          "cameraMatricesSha256": "93abdbea5914ae6380ac39fc5261e32232822a9dbfa2c0bf11f5e50ee8d37207",
+          "logSha256": "9580eeb8d0d8c00d285af91bf1b48c39602155fc98d8b2829d6f3c30be971118",
+          "timingScope": "Last available enabled/disabled GPU timing sample; not an exact frame-40 benchmark"
+        },
+        {
+          "nrEnabled": true,
+          "temporal": true,
+          "frame": 40,
+          "animationClip": 0,
+          "animationTimeSeconds": 0.0,
+          "fixedDtSeconds": 0.016666668,
+          "resolution": [
+            960,
+            720
+          ],
+          "networkSampleEnabled": true,
+          "lastNetworkGpuMs": 2.796387,
+          "ppmSha256": "737b15999b02d75fd303a22f1e09780a99343dead6e39ebbf1b3caaf736f6929",
+          "rgbPixelsSha256": "b364de0bdf29211423738f03696de758a7029a415f114262657ad14183cbef96",
+          "linearSceneSha256": "a81089fc8aa7992b30a29777a8b25fa3fc42f262e9f8d7c62a799e7314ca1abd",
+          "cameraMatricesSha256": "93abdbea5914ae6380ac39fc5261e32232822a9dbfa2c0bf11f5e50ee8d37207",
+          "logSha256": "7ecf08236bf8ea7dd04b695a04fd4fca7f2a0b3e510eb252ed24681726fa01cd",
+          "timingScope": "Last available enabled/disabled GPU timing sample; not an exact frame-40 benchmark"
+        }
+      ],
+      "sceneView": {
+        "name": "Character profile",
+        "model": "../../../../../assets/test-static.glb",
+        "environment": "../../../../../assets/environments/studio_small_09_1k.hdr",
+        "background": "#dbe4ee",
+        "backgroundEnvironment": false,
+        "msaa": 4,
+        "sun": {
+          "direction": [
+            0.5,
+            0.8,
+            0.3
+          ],
+          "intensity": 1
+        },
+        "camera": {
+          "position": [
+            0.9,
+            1.6,
+            0.08
+          ],
+          "target": [
+            0,
+            1.5,
+            0.06
+          ],
+          "fov": 40,
+          "near": 0.005,
+          "far": 60
+        }
+      },
+      "cameraMatrixText": "frame 40\n2.06061 0 0 0\n0 2.74748 0 0\n0 0 -1 -0.01\n0 0 -1 0\n0.0222167 -1.82182e-10 -0.999753 0.0599852\n-0.110377 0.993887 -0.00245283 -1.49068\n0.993641 0.110405 0.0220809 -1.07269\n0 0 0 1\n",
+      "reproduce": {
+        "cwd": "repository root",
+        "environment": {
+          "SDL_VIDEODRIVER": "x11",
+          "LD_LIBRARY_PATH": "$PWD/build/lib"
+        },
+        "commands": [
+          "build/demo/dlss5-demo --scenes docs/verification/nr-comparison-views/character-profile --model models/nr --kernels build/shaders --width 960 --height 720 --frames 40 --capture reports-local/character-profile-off --orbit 0 --animation 0 --temporal 1 --nr 0",
+          "build/demo/dlss5-demo --scenes docs/verification/nr-comparison-views/character-profile --model models/nr --kernels build/shaders --width 960 --height 720 --frames 40 --capture reports-local/character-profile-on --orbit 0 --animation 0 --temporal 1 --nr 1"
+        ],
+        "preparation": "mkdir -p reports-local; use fresh capture prefixes or remove their previous -cameras.txt files before rerunning"
+      }
+    },
+    {
+      "id": "character-rear",
+      "group": "character",
+      "title": "Character rear",
+      "model": "assets/test-static.glb",
+      "modelSha256": "90ea40a9c98084312351cb4b3e37a84f7b34ee3aa0adbe7194af477cc531a389",
+      "view": "docs/verification/nr-comparison-views/character-rear/scene/view.json",
+      "viewSha256": "d9556d21b5ab7a295277d616c82de10afef69796804a6bf5bf52234167c0a341",
+      "environment": "assets/environments/studio_small_09_1k.hdr",
+      "environmentSha256": "e7cfda5f4e98e623db12b8bfd0184e048488e4855d9c83e2751fb44a32e80c45",
+      "identicalLinearScene": true,
+      "identicalCameraMatrices": "identical recorded text (default stream precision); linear HDR input also byte-identical",
+      "outputMeanAbsoluteDifference8Bit": 3.362559799382716,
+      "outputs": [
+        {
+          "nrEnabled": false,
+          "temporal": true,
+          "frame": 40,
+          "animationClip": 0,
+          "animationTimeSeconds": 0.0,
+          "fixedDtSeconds": 0.016666668,
+          "resolution": [
+            960,
+            720
+          ],
+          "networkSampleEnabled": false,
+          "lastNetworkGpuMs": 0.0,
+          "ppmSha256": "f4e824661fc1ce39b61a050a75661cf05bd6824194bfab665c962ed5e8fb7985",
+          "rgbPixelsSha256": "eda7805e69c10f13269d1510ff391a9cd2f37d9ad03b54c76479097bb385fd6d",
+          "linearSceneSha256": "dd9cdabb423316c2fb92e4c01aa023747cb6c4117ed254169861ec64afda40f4",
+          "cameraMatricesSha256": "778e3667e62150927a46a48a6f19ab9b05d7914ee2f1ffa18365bdcef32badb2",
+          "logSha256": "03c652215453d3fe2f14ac4f5f8f25d10fb3b679e7e03383533778af2ba3298a",
+          "timingScope": "Last available enabled/disabled GPU timing sample; not an exact frame-40 benchmark"
+        },
+        {
+          "nrEnabled": true,
+          "temporal": true,
+          "frame": 40,
+          "animationClip": 0,
+          "animationTimeSeconds": 0.0,
+          "fixedDtSeconds": 0.016666668,
+          "resolution": [
+            960,
+            720
+          ],
+          "networkSampleEnabled": true,
+          "lastNetworkGpuMs": 4.760254,
+          "ppmSha256": "82d456293758e118124fd87868dbbc041a1ae510211e00ec97dcd6066ae19c0b",
+          "rgbPixelsSha256": "d221678fa5d7e9a20d391c33593e52c9b0cea22874ec46cb4d1bfde9e5c7be13",
+          "linearSceneSha256": "dd9cdabb423316c2fb92e4c01aa023747cb6c4117ed254169861ec64afda40f4",
+          "cameraMatricesSha256": "778e3667e62150927a46a48a6f19ab9b05d7914ee2f1ffa18365bdcef32badb2",
+          "logSha256": "da456a801efce56d28aef59d8c8a05fd3afa5624c3be0466e855b744348fe4c7",
+          "timingScope": "Last available enabled/disabled GPU timing sample; not an exact frame-40 benchmark"
+        }
+      ],
+      "sceneView": {
+        "name": "Character rear",
+        "model": "../../../../../assets/test-static.glb",
+        "environment": "../../../../../assets/environments/studio_small_09_1k.hdr",
+        "background": "#dbe4ee",
+        "backgroundEnvironment": false,
+        "msaa": 4,
+        "sun": {
+          "direction": [
+            0.5,
+            0.8,
+            0.3
+          ],
+          "intensity": 1
+        },
+        "camera": {
+          "position": [
+            0.15,
+            1.58,
+            -0.82
+          ],
+          "target": [
+            0,
+            1.48,
+            0.06
+          ],
+          "fov": 40,
+          "near": 0.005,
+          "far": 60
+        }
+      },
+      "cameraMatrixText": "frame 40\n2.06061 0 0 0\n0 2.74748 0 0\n0 0 -1 -0.01\n0 0 -1 0\n-0.985782 -2.83811e-10 -0.168031 0.0100818\n-0.018706 0.993784 0.109742 -1.47738\n0.166987 0.111324 -0.979654 -1.00426\n0 0 0 1\n",
+      "reproduce": {
+        "cwd": "repository root",
+        "environment": {
+          "SDL_VIDEODRIVER": "x11",
+          "LD_LIBRARY_PATH": "$PWD/build/lib"
+        },
+        "commands": [
+          "build/demo/dlss5-demo --scenes docs/verification/nr-comparison-views/character-rear --model models/nr --kernels build/shaders --width 960 --height 720 --frames 40 --capture reports-local/character-rear-off --orbit 0 --animation 0 --temporal 1 --nr 0",
+          "build/demo/dlss5-demo --scenes docs/verification/nr-comparison-views/character-rear --model models/nr --kernels build/shaders --width 960 --height 720 --frames 40 --capture reports-local/character-rear-on --orbit 0 --animation 0 --temporal 1 --nr 1"
+        ],
+        "preparation": "mkdir -p reports-local; use fresh capture prefixes or remove their previous -cameras.txt files before rerunning"
+      }
+    },
+    {
+      "id": "hdr-studio-small-09",
+      "group": "hdr",
+      "title": "Studio Small 09",
+      "model": "assets/test-static.glb",
+      "modelSha256": "90ea40a9c98084312351cb4b3e37a84f7b34ee3aa0adbe7194af477cc531a389",
+      "view": "docs/verification/nr-comparison-views/hdr-studio-small-09/scene/view.json",
+      "viewSha256": "c757aec7de94e07a9ef62f7b0b6379ba20c73d790aa3d74cf8113cca41a4c0ab",
+      "environment": "assets/environments/studio_small_09_1k.hdr",
+      "environmentSha256": "e7cfda5f4e98e623db12b8bfd0184e048488e4855d9c83e2751fb44a32e80c45",
+      "identicalLinearScene": true,
+      "identicalCameraMatrices": "identical recorded text (default stream precision); linear HDR input also byte-identical",
+      "outputMeanAbsoluteDifference8Bit": 9.35470100308642,
+      "outputs": [
+        {
+          "nrEnabled": false,
+          "temporal": true,
+          "frame": 40,
+          "animationClip": 0,
+          "animationTimeSeconds": 0.0,
+          "fixedDtSeconds": 0.016666668,
+          "resolution": [
+            960,
+            720
+          ],
+          "networkSampleEnabled": false,
+          "lastNetworkGpuMs": 0.0,
+          "ppmSha256": "0520dd7d8d07335d78c13035e9787b44792be65ff6512c27818d951a0783e796",
+          "rgbPixelsSha256": "61c2add99b4bcbbdc890ab2dd1405b8025f273fa6b9460c4e9560284613abb23",
+          "linearSceneSha256": "6670d4fb5288085edec784f1e9e1b322b522778e66019158eac5165ee5b0468b",
+          "cameraMatricesSha256": "ab7b0663e5c6c68b93c5afdfac512854048ba1fcb088195acc1835e246dc6491",
+          "logSha256": "f338258eebee0beaa4793405e8de2b550bb40bccf6f400ba10018d4e7449bdb8",
+          "timingScope": "Last available enabled/disabled GPU timing sample; not an exact frame-40 benchmark"
+        },
+        {
+          "nrEnabled": true,
+          "temporal": true,
+          "frame": 40,
+          "animationClip": 0,
+          "animationTimeSeconds": 0.0,
+          "fixedDtSeconds": 0.016666668,
+          "resolution": [
+            960,
+            720
+          ],
+          "networkSampleEnabled": true,
+          "lastNetworkGpuMs": 2.779297,
+          "ppmSha256": "d8325faf43538ea72bca5d23742185a7abde4483639d06b04321e2d12cba5cce",
+          "rgbPixelsSha256": "bb1922c5ca6d0086806b9c1d1aeb1886e6cbbb0c2a5b24a7c67fdc34666476ce",
+          "linearSceneSha256": "6670d4fb5288085edec784f1e9e1b322b522778e66019158eac5165ee5b0468b",
+          "cameraMatricesSha256": "ab7b0663e5c6c68b93c5afdfac512854048ba1fcb088195acc1835e246dc6491",
+          "logSha256": "b44e789fe4d7084effafee6ef24894d927f578ec5ea918a7599fe26b71d83999",
+          "timingScope": "Last available enabled/disabled GPU timing sample; not an exact frame-40 benchmark"
+        }
+      ],
+      "sceneView": {
+        "name": "Studio Small 09",
+        "camera": {
+          "position": [
+            0.22,
+            1.58,
+            0.88
+          ],
+          "target": [
+            0.0,
+            1.48,
+            0.06
+          ],
+          "fov": 40.0,
+          "near": 0.005,
+          "far": 60
+        },
+        "background": "#000000",
+        "msaa": 4,
+        "backgroundEnvironment": true,
+        "environmentIntensity": 0.73,
+        "environmentRotation": 0.4,
+        "exposure": 1,
+        "sun": {
+          "direction": [
+            0.5,
+            0.8,
+            0.3
+          ],
+          "intensity": 1
+        },
+        "model": "../../../../../assets/test-static.glb",
+        "environment": "../../../../../assets/environments/studio_small_09_1k.hdr"
+      },
+      "cameraMatrixText": "frame 40\n2.06061 0 0 0\n0 2.74748 0 0\n0 0 -1 -0.01\n0 0 -1 0\n0.965843 7.37577e-11 -0.259129 0.0155477\n-0.0303121 0.993135 -0.112981 -1.46306\n0.25735 0.116977 0.959212 -1.08555\n0 0 0 1\n",
+      "reproduce": {
+        "cwd": "repository root",
+        "environment": {
+          "SDL_VIDEODRIVER": "x11",
+          "LD_LIBRARY_PATH": "$PWD/build/lib"
+        },
+        "commands": [
+          "build/demo/dlss5-demo --scenes docs/verification/nr-comparison-views/hdr-studio-small-09 --model models/nr --kernels build/shaders --width 960 --height 720 --frames 40 --capture reports-local/hdr-studio-small-09-off --orbit 0 --animation 0 --temporal 1 --nr 0",
+          "build/demo/dlss5-demo --scenes docs/verification/nr-comparison-views/hdr-studio-small-09 --model models/nr --kernels build/shaders --width 960 --height 720 --frames 40 --capture reports-local/hdr-studio-small-09-on --orbit 0 --animation 0 --temporal 1 --nr 1"
+        ],
+        "preparation": "mkdir -p reports-local; use fresh capture prefixes or remove their previous -cameras.txt files before rerunning"
+      },
+      "viewNote": "New explicit comparison view: near=0.005/far=60, IBL=0.73, rotation=0.4 rad, HDR background; earlier single-sided HDR screenshots used inherited fitBounds clips and are not reused."
+    },
+    {
+      "id": "hdr-kloofendal-daylight",
+      "group": "hdr",
+      "title": "Kloofendal Daylight",
+      "model": "assets/test-static.glb",
+      "modelSha256": "90ea40a9c98084312351cb4b3e37a84f7b34ee3aa0adbe7194af477cc531a389",
+      "view": "docs/verification/nr-comparison-views/hdr-kloofendal-daylight/scene/view.json",
+      "viewSha256": "ae8cc2c0e359a043f8764612b8cc9ef85c23406bebab87aeef61ef131cb24af6",
+      "environment": "assets/environments/kloofendal_48d_partly_cloudy_1k.hdr",
+      "environmentSha256": "5477b7dbb2aea4a6947cb36b96339c119f90bf36a03b039af3254b5e6a22896d",
+      "identicalLinearScene": true,
+      "identicalCameraMatrices": "identical recorded text (default stream precision); linear HDR input also byte-identical",
+      "outputMeanAbsoluteDifference8Bit": 9.215272472993826,
+      "outputs": [
+        {
+          "nrEnabled": false,
+          "temporal": true,
+          "frame": 40,
+          "animationClip": 0,
+          "animationTimeSeconds": 0.0,
+          "fixedDtSeconds": 0.016666668,
+          "resolution": [
+            960,
+            720
+          ],
+          "networkSampleEnabled": false,
+          "lastNetworkGpuMs": 0.0,
+          "ppmSha256": "bdac85b3efff8ca0815a70eda41a95c13eb9f2bd719395ab374af39b450a40d0",
+          "rgbPixelsSha256": "46e96e9300e83e3a6ebb19ddf335ec0d8d4d57dfd261c30aec1bee8c2c436036",
+          "linearSceneSha256": "4447599a44315bd1a2ae0c534e66cf025e02a25ef3577f0ba4fba6f9d168d117",
+          "cameraMatricesSha256": "ab7b0663e5c6c68b93c5afdfac512854048ba1fcb088195acc1835e246dc6491",
+          "logSha256": "3cc3806ac0308bbe78e2059d5c84f5cb9765f4a9a6d892fc8765abd083368d0d",
+          "timingScope": "Last available enabled/disabled GPU timing sample; not an exact frame-40 benchmark"
+        },
+        {
+          "nrEnabled": true,
+          "temporal": true,
+          "frame": 40,
+          "animationClip": 0,
+          "animationTimeSeconds": 0.0,
+          "fixedDtSeconds": 0.016666668,
+          "resolution": [
+            960,
+            720
+          ],
+          "networkSampleEnabled": true,
+          "lastNetworkGpuMs": 3.296631,
+          "ppmSha256": "ab36bf8742f35392c30059f2acd45f5534baae5a618be90380e11e6269909779",
+          "rgbPixelsSha256": "981c54086308e52cc627c303e040b31afe42484ef00d99f13026ba3acdfd21f3",
+          "linearSceneSha256": "4447599a44315bd1a2ae0c534e66cf025e02a25ef3577f0ba4fba6f9d168d117",
+          "cameraMatricesSha256": "ab7b0663e5c6c68b93c5afdfac512854048ba1fcb088195acc1835e246dc6491",
+          "logSha256": "72b44d45a2aae933b568b5e3035bdf54691d009f12c63c6d39661ba56150efa1",
+          "timingScope": "Last available enabled/disabled GPU timing sample; not an exact frame-40 benchmark"
+        }
+      ],
+      "sceneView": {
+        "name": "Kloofendal Daylight",
+        "camera": {
+          "position": [
+            0.22,
+            1.58,
+            0.88
+          ],
+          "target": [
+            0.0,
+            1.48,
+            0.06
+          ],
+          "fov": 40.0,
+          "near": 0.005,
+          "far": 60
+        },
+        "background": "#000000",
+        "msaa": 4,
+        "backgroundEnvironment": true,
+        "environmentIntensity": 0.73,
+        "environmentRotation": 0.4,
+        "exposure": 1,
+        "sun": {
+          "direction": [
+            0.5,
+            0.8,
+            0.3
+          ],
+          "intensity": 1
+        },
+        "model": "../../../../../assets/test-static.glb",
+        "environment": "../../../../../assets/environments/kloofendal_48d_partly_cloudy_1k.hdr"
+      },
+      "cameraMatrixText": "frame 40\n2.06061 0 0 0\n0 2.74748 0 0\n0 0 -1 -0.01\n0 0 -1 0\n0.965843 7.37577e-11 -0.259129 0.0155477\n-0.0303121 0.993135 -0.112981 -1.46306\n0.25735 0.116977 0.959212 -1.08555\n0 0 0 1\n",
+      "reproduce": {
+        "cwd": "repository root",
+        "environment": {
+          "SDL_VIDEODRIVER": "x11",
+          "LD_LIBRARY_PATH": "$PWD/build/lib"
+        },
+        "commands": [
+          "build/demo/dlss5-demo --scenes docs/verification/nr-comparison-views/hdr-kloofendal-daylight --model models/nr --kernels build/shaders --width 960 --height 720 --frames 40 --capture reports-local/hdr-kloofendal-daylight-off --orbit 0 --animation 0 --temporal 1 --nr 0",
+          "build/demo/dlss5-demo --scenes docs/verification/nr-comparison-views/hdr-kloofendal-daylight --model models/nr --kernels build/shaders --width 960 --height 720 --frames 40 --capture reports-local/hdr-kloofendal-daylight-on --orbit 0 --animation 0 --temporal 1 --nr 1"
+        ],
+        "preparation": "mkdir -p reports-local; use fresh capture prefixes or remove their previous -cameras.txt files before rerunning"
+      },
+      "viewNote": "New explicit comparison view: near=0.005/far=60, IBL=0.73, rotation=0.4 rad, HDR background; earlier single-sided HDR screenshots used inherited fitBounds clips and are not reused."
+    },
+    {
+      "id": "hdr-chalk-quarry-sunset",
+      "group": "hdr",
+      "title": "Chalk Quarry Sunset",
+      "model": "assets/test-static.glb",
+      "modelSha256": "90ea40a9c98084312351cb4b3e37a84f7b34ee3aa0adbe7194af477cc531a389",
+      "view": "docs/verification/nr-comparison-views/hdr-chalk-quarry-sunset/scene/view.json",
+      "viewSha256": "1812fdaa07aeebf4a13370ff96f37104ebe59a345956e6fb475c3b43579692ba",
+      "environment": "assets/environments/sunset_in_the_chalk_quarry_1k.hdr",
+      "environmentSha256": "84c2d65672c7f49c955c1cf1c9e05253547dd227073f821a47c0546e317be4a0",
+      "identicalLinearScene": true,
+      "identicalCameraMatrices": "identical recorded text (default stream precision); linear HDR input also byte-identical",
+      "outputMeanAbsoluteDifference8Bit": 7.102985146604937,
+      "outputs": [
+        {
+          "nrEnabled": false,
+          "temporal": true,
+          "frame": 40,
+          "animationClip": 0,
+          "animationTimeSeconds": 0.0,
+          "fixedDtSeconds": 0.016666668,
+          "resolution": [
+            960,
+            720
+          ],
+          "networkSampleEnabled": false,
+          "lastNetworkGpuMs": 0.0,
+          "ppmSha256": "a3eb6d4a2e43e0bd510dd9923da97b44f2a7a7d39109229015cb7815b8d9f324",
+          "rgbPixelsSha256": "f1b6534515a4137a7c78ba4275f2cdd4d61877ad0fe452f2942f0910f398a5c8",
+          "linearSceneSha256": "836caad12b6ded55a11117d2bfad20edf890bc5823c0765707e8d59e1d9f409e",
+          "cameraMatricesSha256": "ab7b0663e5c6c68b93c5afdfac512854048ba1fcb088195acc1835e246dc6491",
+          "logSha256": "8626f23029dedcafff4e61ebe2a57999506e38af3bfcce1234f58e23f31b0eaf",
+          "timingScope": "Last available enabled/disabled GPU timing sample; not an exact frame-40 benchmark"
+        },
+        {
+          "nrEnabled": true,
+          "temporal": true,
+          "frame": 40,
+          "animationClip": 0,
+          "animationTimeSeconds": 0.0,
+          "fixedDtSeconds": 0.016666668,
+          "resolution": [
+            960,
+            720
+          ],
+          "networkSampleEnabled": true,
+          "lastNetworkGpuMs": 2.621582,
+          "ppmSha256": "68684cc0d3d047f47e05ab721d89523d7631ebf014351b8c2bda4117bcbdb863",
+          "rgbPixelsSha256": "c00f8b689a12efd5861134db38baeee6d5631e06951826141dc7d06873b1d80f",
+          "linearSceneSha256": "836caad12b6ded55a11117d2bfad20edf890bc5823c0765707e8d59e1d9f409e",
+          "cameraMatricesSha256": "ab7b0663e5c6c68b93c5afdfac512854048ba1fcb088195acc1835e246dc6491",
+          "logSha256": "c5d2cea7746254f4541210399230e4586dad275a138427645323ea9fa18de9b5",
+          "timingScope": "Last available enabled/disabled GPU timing sample; not an exact frame-40 benchmark"
+        }
+      ],
+      "sceneView": {
+        "name": "Chalk Quarry Sunset",
+        "camera": {
+          "position": [
+            0.22,
+            1.58,
+            0.88
+          ],
+          "target": [
+            0.0,
+            1.48,
+            0.06
+          ],
+          "fov": 40.0,
+          "near": 0.005,
+          "far": 60
+        },
+        "background": "#000000",
+        "msaa": 4,
+        "backgroundEnvironment": true,
+        "environmentIntensity": 0.73,
+        "environmentRotation": 0.4,
+        "exposure": 1,
+        "sun": {
+          "direction": [
+            0.5,
+            0.8,
+            0.3
+          ],
+          "intensity": 1
+        },
+        "model": "../../../../../assets/test-static.glb",
+        "environment": "../../../../../assets/environments/sunset_in_the_chalk_quarry_1k.hdr"
+      },
+      "cameraMatrixText": "frame 40\n2.06061 0 0 0\n0 2.74748 0 0\n0 0 -1 -0.01\n0 0 -1 0\n0.965843 7.37577e-11 -0.259129 0.0155477\n-0.0303121 0.993135 -0.112981 -1.46306\n0.25735 0.116977 0.959212 -1.08555\n0 0 0 1\n",
+      "reproduce": {
+        "cwd": "repository root",
+        "environment": {
+          "SDL_VIDEODRIVER": "x11",
+          "LD_LIBRARY_PATH": "$PWD/build/lib"
+        },
+        "commands": [
+          "build/demo/dlss5-demo --scenes docs/verification/nr-comparison-views/hdr-chalk-quarry-sunset --model models/nr --kernels build/shaders --width 960 --height 720 --frames 40 --capture reports-local/hdr-chalk-quarry-sunset-off --orbit 0 --animation 0 --temporal 1 --nr 0",
+          "build/demo/dlss5-demo --scenes docs/verification/nr-comparison-views/hdr-chalk-quarry-sunset --model models/nr --kernels build/shaders --width 960 --height 720 --frames 40 --capture reports-local/hdr-chalk-quarry-sunset-on --orbit 0 --animation 0 --temporal 1 --nr 1"
+        ],
+        "preparation": "mkdir -p reports-local; use fresh capture prefixes or remove their previous -cameras.txt files before rerunning"
+      },
+      "viewNote": "New explicit comparison view: near=0.005/far=60, IBL=0.73, rotation=0.4 rad, HDR background; earlier single-sided HDR screenshots used inherited fitBounds clips and are not reused."
+    },
+    {
+      "id": "hdr-entrance-hall",
+      "group": "hdr",
+      "title": "Entrance Hall",
+      "model": "assets/test-static.glb",
+      "modelSha256": "90ea40a9c98084312351cb4b3e37a84f7b34ee3aa0adbe7194af477cc531a389",
+      "view": "docs/verification/nr-comparison-views/hdr-entrance-hall/scene/view.json",
+      "viewSha256": "1430714db09f9c0bbaed63e4e5af6c08178b6fa26be223e1fbcf00683c362119",
+      "environment": "assets/environments/entrance_hall_1k.hdr",
+      "environmentSha256": "33a4537d666e156f19b0e47c8a2d56ee52d48dfa52d46b04fbbca617c97aee80",
+      "identicalLinearScene": true,
+      "identicalCameraMatrices": "identical recorded text (default stream precision); linear HDR input also byte-identical",
+      "outputMeanAbsoluteDifference8Bit": 6.841505111882715,
+      "outputs": [
+        {
+          "nrEnabled": false,
+          "temporal": true,
+          "frame": 40,
+          "animationClip": 0,
+          "animationTimeSeconds": 0.0,
+          "fixedDtSeconds": 0.016666668,
+          "resolution": [
+            960,
+            720
+          ],
+          "networkSampleEnabled": false,
+          "lastNetworkGpuMs": 0.0,
+          "ppmSha256": "124e1b98012ce5eddec72d1be35c378af2680f028b3df6f27a83a6002bb79973",
+          "rgbPixelsSha256": "079a0359a6db2831e3d41f21357a260e8c1aeebb61e8ada79e413a83d546d396",
+          "linearSceneSha256": "d2d4ea522fba31e443f93a1b1fe0256d7428cf5b737eb808ea3c718b2ad4dd19",
+          "cameraMatricesSha256": "ab7b0663e5c6c68b93c5afdfac512854048ba1fcb088195acc1835e246dc6491",
+          "logSha256": "ed2bb3e5a49bd2903fb0ed98c40ff806fc0d921163bab3d3d2c25728b63dfbe8",
+          "timingScope": "Last available enabled/disabled GPU timing sample; not an exact frame-40 benchmark"
+        },
+        {
+          "nrEnabled": true,
+          "temporal": true,
+          "frame": 40,
+          "animationClip": 0,
+          "animationTimeSeconds": 0.0,
+          "fixedDtSeconds": 0.016666668,
+          "resolution": [
+            960,
+            720
+          ],
+          "networkSampleEnabled": true,
+          "lastNetworkGpuMs": 2.78833,
+          "ppmSha256": "ee8ccb64cd6f9358b2fc4bedced424c753162688a4c5d4558c8070a33e73d0f6",
+          "rgbPixelsSha256": "264a1131542d2c37292ff1c5c0e28850946239455bdeede2a6445d5f7c1cf0ee",
+          "linearSceneSha256": "d2d4ea522fba31e443f93a1b1fe0256d7428cf5b737eb808ea3c718b2ad4dd19",
+          "cameraMatricesSha256": "ab7b0663e5c6c68b93c5afdfac512854048ba1fcb088195acc1835e246dc6491",
+          "logSha256": "f28e54419c9e24f250574b105b8fef5dd82c3be183e0be374a6f489ecc247185",
+          "timingScope": "Last available enabled/disabled GPU timing sample; not an exact frame-40 benchmark"
+        }
+      ],
+      "sceneView": {
+        "name": "Entrance Hall",
+        "camera": {
+          "position": [
+            0.22,
+            1.58,
+            0.88
+          ],
+          "target": [
+            0.0,
+            1.48,
+            0.06
+          ],
+          "fov": 40.0,
+          "near": 0.005,
+          "far": 60
+        },
+        "background": "#000000",
+        "msaa": 4,
+        "backgroundEnvironment": true,
+        "environmentIntensity": 0.73,
+        "environmentRotation": 0.4,
+        "exposure": 1,
+        "sun": {
+          "direction": [
+            0.5,
+            0.8,
+            0.3
+          ],
+          "intensity": 1
+        },
+        "model": "../../../../../assets/test-static.glb",
+        "environment": "../../../../../assets/environments/entrance_hall_1k.hdr"
+      },
+      "cameraMatrixText": "frame 40\n2.06061 0 0 0\n0 2.74748 0 0\n0 0 -1 -0.01\n0 0 -1 0\n0.965843 7.37577e-11 -0.259129 0.0155477\n-0.0303121 0.993135 -0.112981 -1.46306\n0.25735 0.116977 0.959212 -1.08555\n0 0 0 1\n",
+      "reproduce": {
+        "cwd": "repository root",
+        "environment": {
+          "SDL_VIDEODRIVER": "x11",
+          "LD_LIBRARY_PATH": "$PWD/build/lib"
+        },
+        "commands": [
+          "build/demo/dlss5-demo --scenes docs/verification/nr-comparison-views/hdr-entrance-hall --model models/nr --kernels build/shaders --width 960 --height 720 --frames 40 --capture reports-local/hdr-entrance-hall-off --orbit 0 --animation 0 --temporal 1 --nr 0",
+          "build/demo/dlss5-demo --scenes docs/verification/nr-comparison-views/hdr-entrance-hall --model models/nr --kernels build/shaders --width 960 --height 720 --frames 40 --capture reports-local/hdr-entrance-hall-on --orbit 0 --animation 0 --temporal 1 --nr 1"
+        ],
+        "preparation": "mkdir -p reports-local; use fresh capture prefixes or remove their previous -cameras.txt files before rerunning"
+      },
+      "viewNote": "New explicit comparison view: near=0.005/far=60, IBL=0.73, rotation=0.4 rad, HDR background; earlier single-sided HDR screenshots used inherited fitBounds clips and are not reused."
+    }
+  ],
+  "rawArtifactsStoredInRepository": false
+}

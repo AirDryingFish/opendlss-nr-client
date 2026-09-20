@@ -1,0 +1,188 @@
+{
+  "date": "2026-11-11",
+  "scope": "Actual native Vulkan/FP8 NR environment-switch integration and rendering smoke test; timings are scenario samples, not a performance benchmark. Preset menu wiring reviewed; menu selection itself was not automated.",
+  "gpu": "NVIDIA GeForce RTX 4080 SUPER",
+  "driver": "595.99.02",
+  "model": "assets/test-static.glb",
+  "modelSha256": "90ea40a9c98084312351cb4b3e37a84f7b34ee3aa0adbe7194af477cc531a389",
+  "cameraOverride": "0.22,1.58,0.88,0,1.48,0.06,40",
+  "resolution": [
+    960,
+    720
+  ],
+  "nrEnabled": true,
+  "temporalEnabled": true,
+  "processing": "Native rendered pixels converted losslessly from PPM to PNG; contact-sheet labels/layout only.",
+  "sourceSha256": {
+    "demo/main.cpp": "2d6817b09a96f273a088ebe3e10db28d8ef68f082fa2d10301ec9ec08e702fd9",
+    "demo/scene.cpp": "fcc671d07886088c8775c4a84580e23167a97ec256854920eb695f9e8e8829cf",
+    "demo/scene.h": "7e687523d15a286157c95f71fd3799c25aa0806751a3d5b6cb9a3ceefc5910be",
+    "demo/environment_presets.h": "ea1b1e3876a7f5a603d4d4356a72109794ff0d243500cc0a0128d22543f7487d",
+    "tests/environment_scenario.h": "897462bdfa70df364eebfd05f63bbb8a64e7ae2497215b09040fdafb87315c6b",
+    "scripts/client_launch.py": "ab16931b743605610453cd92d44752b678f1be41f6dca6f9a3728e0cf69611b4"
+  },
+  "reproduce": "build/demo/dlss5-demo assets/test-static.glb --model models/nr --kernels build/shaders --view 0.22,1.58,0.88,0,1.48,0.06,40 --width 960 --height 720 --nr 1 --temporal 1 --environment-test /tmp/nr-hdr/runtime --frames 240",
+  "nativeScenario": {
+    "complete": true,
+    "error": "",
+    "intensity": 0.73,
+    "rotation": 0.4,
+    "completed_frames": 210,
+    "successful_replacements": 7,
+    "history_resets_requested": 7,
+    "rollback_checks_passed": 2,
+    "a_b_a_replacements": 3,
+    "chain_timeout_detected": false,
+    "captures": 4,
+    "cases": [
+      {
+        "id": "studio-small-09",
+        "name": "Studio Small 09",
+        "environment": "assets/environments/studio_small_09_1k.hdr",
+        "frame": 30,
+        "settled_frames": 30,
+        "output": "docs/images/environments/studio-small-09.png",
+        "network_gpu_ms": 3.36952,
+        "network_samples": 28,
+        "screenshot": "docs/images/environments/studio-small-09.png",
+        "pngSha256": "8cc5bb72b3f3dee28c80df681af6da638b5fc9a2037798009d8005eeeb684e29",
+        "rawPpmSha256": "fb74c373631c6e9a581c1dba15afe02803451a8286765eb2995f7d9983ef1a19",
+        "environmentSha256": "e7cfda5f4e98e623db12b8bfd0184e048488e4855d9c83e2751fb44a32e80c45"
+      },
+      {
+        "id": "kloofendal-daylight",
+        "name": "Kloofendal Daylight",
+        "environment": "assets/environments/kloofendal_48d_partly_cloudy_1k.hdr",
+        "frame": 60,
+        "settled_frames": 30,
+        "output": "docs/images/environments/kloofendal-daylight.png",
+        "network_gpu_ms": 3.18338,
+        "network_samples": 28,
+        "screenshot": "docs/images/environments/kloofendal-daylight.png",
+        "pngSha256": "d88bccd1bf8c8506f5203c9479fed0805f258279acf9a22953c94824a8db2e9a",
+        "rawPpmSha256": "3a9fe2d1e2cb6222aa60f8e2c17f4c6834276ea151640708e80e7badfbcc0050",
+        "environmentSha256": "5477b7dbb2aea4a6947cb36b96339c119f90bf36a03b039af3254b5e6a22896d"
+      },
+      {
+        "id": "chalk-quarry-sunset",
+        "name": "Chalk Quarry Sunset",
+        "environment": "assets/environments/sunset_in_the_chalk_quarry_1k.hdr",
+        "frame": 90,
+        "settled_frames": 30,
+        "output": "docs/images/environments/chalk-quarry-sunset.png",
+        "network_gpu_ms": 3.12445,
+        "network_samples": 28,
+        "screenshot": "docs/images/environments/chalk-quarry-sunset.png",
+        "pngSha256": "0fdbca216ce7e457cf2f9db3dd1a8dda1f26d64c54a8dc451f21f98cd7905a25",
+        "rawPpmSha256": "7f2858cdc297020936913241cec626c2c6874970681aa32d04bc1b5b3fb41e27",
+        "environmentSha256": "84c2d65672c7f49c955c1cf1c9e05253547dd227073f821a47c0546e317be4a0"
+      },
+      {
+        "id": "entrance-hall",
+        "name": "Entrance Hall",
+        "environment": "assets/environments/entrance_hall_1k.hdr",
+        "frame": 120,
+        "settled_frames": 30,
+        "output": "docs/images/environments/entrance-hall.png",
+        "network_gpu_ms": 4.08248,
+        "network_samples": 28,
+        "screenshot": "docs/images/environments/entrance-hall.png",
+        "pngSha256": "5c533c4a4864f595d097f4a81919090236b2e4956e3e8141dc1ae666f8c09e0f",
+        "rawPpmSha256": "fa063e8db934c2d82e9171150be9727185ab08ddfb2ae34edffed805dd3ce581",
+        "environmentSha256": "33a4537d666e156f19b0e47c8a2d56ee52d48dfa52d46b04fbbca617c97aee80"
+      }
+    ],
+    "checks": [
+      {
+        "stage": 0,
+        "frame": 0,
+        "id": "studio-small-09",
+        "path_changed": true,
+        "light_replaced": true,
+        "look_preserved": true,
+        "history_reset_requested": true,
+        "background_environment": false
+      },
+      {
+        "stage": 1,
+        "frame": 30,
+        "id": "kloofendal-daylight",
+        "path_changed": true,
+        "light_replaced": true,
+        "look_preserved": true,
+        "history_reset_requested": true,
+        "background_environment": true
+      },
+      {
+        "stage": 2,
+        "frame": 60,
+        "id": "chalk-quarry-sunset",
+        "path_changed": true,
+        "light_replaced": true,
+        "look_preserved": true,
+        "history_reset_requested": true,
+        "background_environment": true
+      },
+      {
+        "stage": 3,
+        "frame": 90,
+        "id": "entrance-hall",
+        "path_changed": true,
+        "light_replaced": true,
+        "look_preserved": true,
+        "history_reset_requested": true,
+        "background_environment": true
+      },
+      {
+        "stage": 4,
+        "frame": 120,
+        "id": "studio-small-09",
+        "path_changed": true,
+        "light_replaced": true,
+        "look_preserved": true,
+        "history_reset_requested": true,
+        "background_environment": false
+      },
+      {
+        "stage": 5,
+        "frame": 150,
+        "id": "kloofendal-daylight",
+        "path_changed": true,
+        "light_replaced": true,
+        "look_preserved": true,
+        "history_reset_requested": true,
+        "background_environment": false
+      },
+      {
+        "stage": 6,
+        "frame": 180,
+        "id": "studio-small-09",
+        "path_changed": true,
+        "light_replaced": true,
+        "look_preserved": true,
+        "history_reset_requested": true,
+        "background_environment": true
+      }
+    ]
+  },
+  "cpuTests": {
+    "passed": 24,
+    "failed": 0,
+    "filamentNoopRollbackCases": 6
+  },
+  "cliPresetSmoke": {
+    "preset": "chalk-quarry-sunset",
+    "model": "assets/cases/lantern/Model.glb",
+    "renderedFrames": 40,
+    "nrPositiveNetworkTiming": true
+  },
+  "windowFollowAndClicks": "window-follow-hdr-2026-11-11.json",
+  "sourceAssets": {
+    "manifest": "assets/environments/presets.json",
+    "count": 4,
+    "license": "CC0-1.0",
+    "totalBytes": 6454040
+  },
+  "image": "docs/images/environment-presets.png",
+  "compiledSourceCommit": "1f0285a98e921f40d48703a4e3924fb3ad765841"
+}

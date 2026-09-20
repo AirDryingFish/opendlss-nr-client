@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "name": "Alpha Blend Mode Test",
+  "purpose": "OPAQUE, BLEND and MASK alpha modes",
+  "repository": "https://github.com/KhronosGroup/glTF-Sample-Assets",
+  "commit": "8f492390ddc7a2ae221a1369ef560589cf8c70fb",
+  "modelDirectoryUrl": "https://github.com/KhronosGroup/glTF-Sample-Assets/tree/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/AlphaBlendModeTest",
+  "downloadUrl": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/AlphaBlendModeTest/glTF-Binary/AlphaBlendModeTest.glb",
+  "upstreamReadmeUrl": "https://github.com/KhronosGroup/glTF-Sample-Assets/blob/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/AlphaBlendModeTest/README.md",
+  "licenseExpression": "CC-BY-4.0",
+  "attribution": [
+    {
+      "license": "CC-BY-4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/legalcode",
+      "artist": "Ed Mackey",
+      "year": "2018",
+      "owner": "Analytical Graphics, Inc.",
+      "what": "Everything",
+      "text": "Creative Commons Attribution 4.0 International",
+      "spdx": "CC-BY-4.0",
+      "icon": "https://licensebuttons.net/l/by/4.0/88x31.png"
+    }
+  ],
+  "upstreamMetadocumentation": {
+    "attribution": "KhronosGroup/glTF-Sample-Assets contributors",
+    "license": "CC-BY-4.0"
+  },
+  "changes": "None. Model.glb is the upstream glTF-Binary file byte-for-byte; only its local filename differs. Upstream README.md, LICENSE.md and metadata.json are preserved verbatim.",
+  "licenseFiles": [
+    "../LICENSES/CC0-1.0.txt",
+    "../LICENSES/CC-BY-4.0.txt"
+  ],
+  "files": [
+    {
+      "path": "alpha-blend-mode-test/Model.glb",
+      "upstreamPath": "Models/AlphaBlendModeTest/glTF-Binary/AlphaBlendModeTest.glb",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/AlphaBlendModeTest/glTF-Binary/AlphaBlendModeTest.glb",
+      "bytes": 2978812,
+      "sha256": "37c3577d143071b42dd46e9d942b157837eb25c6340112171d7faecaa987b14e",
+      "upstreamGitBlobSha1": "f2483d76fa9c97af61a1c2c5b4f7ce548afcf60b"
+    },
+    {
+      "path": "alpha-blend-mode-test/README.md",
+      "upstreamPath": "Models/AlphaBlendModeTest/README.md",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/AlphaBlendModeTest/README.md",
+      "bytes": 5355,
+      "sha256": "46fc7fc9379cf043985b3555d4d06e8383bdf2195c421ce2c494988c8bfe4bdc"
+    },
+    {
+      "path": "alpha-blend-mode-test/LICENSE.md",
+      "upstreamPath": "Models/AlphaBlendModeTest/LICENSE.md",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/AlphaBlendModeTest/LICENSE.md",
+      "bytes": 789,
+      "sha256": "9f7fca74f2c1da063520099e41854e237cd0874a7a0bcfb5b93f1d0e6d9ce268"
+    },
+    {
+      "path": "alpha-blend-mode-test/metadata.json",
+      "upstreamPath": "Models/AlphaBlendModeTest/metadata.json",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/AlphaBlendModeTest/metadata.json",
+      "bytes": 667,
+      "sha256": "f4e4724b0d62c9e0663dc6f341026ac74fcc9471714bbb217a409c0b6448a1d2"
+    }
+  ],
+  "inspection": {
+    "gltfVersion": "2.0",
+    "embeddedImageMimeTypes": [
+      "image/jpeg",
+      "image/png"
+    ],
+    "extensionsUsed": [],
+    "extensionsRequired": [],
+    "meshes": 9,
+    "skins": 0,
+    "animations": [],
+    "materialCount": 6,
+    "alphaModes": [
+      "BLEND",
+      "MASK",
+      "OPAQUE"
+    ],
+    "normalMappedMaterials": 1,
+    "metallicRoughnessTexturedMaterials": 1,
+    "transmissionMaterials": 0,
+    "cameras": []
+  }
+}

@@ -1,0 +1,301 @@
+{
+  "schemaVersion": 1,
+  "name": "Iridescent Dish with Olives",
+  "purpose": "Photographic-reference tabletop with olives, glass, gold leaf, normal maps and animated lid; iridescence appearance needs renderer verification",
+  "repository": "https://github.com/KhronosGroup/glTF-Sample-Assets",
+  "commit": "8f492390ddc7a2ae221a1369ef560589cf8c70fb",
+  "modelDirectoryUrl": "https://github.com/KhronosGroup/glTF-Sample-Assets/tree/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/IridescentDishWithOlives",
+  "downloadUrl": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/IridescentDishWithOlives/glTF-Binary/IridescentDishWithOlives.glb",
+  "upstreamGitBlobSha1": "0ecd1195d290e331716eed33c769cf8bf090417a",
+  "licenseExpression": "CC-BY-4.0",
+  "attribution": [
+    {
+      "license": "CC-BY-4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/legalcode",
+      "artist": "Eric Chadwick",
+      "year": "2020",
+      "owner": "Wayfair, LLC",
+      "what": "Everything",
+      "text": "Creative Commons Attribution 4.0 International",
+      "spdx": "CC-BY-4.0",
+      "icon": "https://licensebuttons.net/l/by/4.0/88x31.png"
+    }
+  ],
+  "licenseFiles": [
+    "../LICENSES/CC-BY-4.0.txt"
+  ],
+  "changes": "None. Model.glb is the official upstream GLB byte-for-byte; only its local filename differs. Upstream attribution and metadata documents are preserved verbatim.",
+  "retrievedAt": "2026-11-11T08:57:50+00:00",
+  "files": [
+    {
+      "path": "iridescent-dish-with-olives/Model.glb",
+      "upstreamPath": "Models/IridescentDishWithOlives/glTF-Binary/IridescentDishWithOlives.glb",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/IridescentDishWithOlives/glTF-Binary/IridescentDishWithOlives.glb",
+      "bytes": 5742828,
+      "sha256": "1540b4a36b790a907f4824cfe848ba481b3da3cc8070172b7b3ba178f78a7ed1",
+      "upstreamGitBlobSha1": "0ecd1195d290e331716eed33c769cf8bf090417a"
+    },
+    {
+      "path": "iridescent-dish-with-olives/README.md",
+      "upstreamPath": "Models/IridescentDishWithOlives/README.md",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/IridescentDishWithOlives/README.md",
+      "bytes": 6923,
+      "sha256": "bd17aa377efb7a730e8d557063760218f425d3465686a0589ceaa65f9fed4509"
+    },
+    {
+      "path": "iridescent-dish-with-olives/LICENSE.md",
+      "upstreamPath": "Models/IridescentDishWithOlives/LICENSE.md",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/IridescentDishWithOlives/LICENSE.md",
+      "bytes": 795,
+      "sha256": "a0739f7331b5c3da696bc81a49f0382c6db236fdc7c474fd7502a130fba34657"
+    },
+    {
+      "path": "iridescent-dish-with-olives/metadata.json",
+      "upstreamPath": "Models/IridescentDishWithOlives/metadata.json",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/IridescentDishWithOlives/metadata.json",
+      "bytes": 736,
+      "sha256": "3a7b0d739066067e1f0fc16915603075def8b8e736625c9423fbf4fd82a295b3"
+    }
+  ],
+  "inspection": {
+    "gltfVersion": "2.0",
+    "asset": {
+      "version": "2.0",
+      "copyright": "Copyright 2021 Wayfair LLC. CC BY 4.0 International https://creativecommons.org/licenses/by/4.0/",
+      "generator": "Created in 3ds Max, exported with Max2Babylon, edited in Visual Studio Code with glTF Tools"
+    },
+    "embeddedImageMimeTypes": [
+      "image/png"
+    ],
+    "embeddedImageCount": 11,
+    "embeddedImages": [
+      {
+        "index": 0,
+        "name": "",
+        "mimeType": "image/png",
+        "bytes": 418795,
+        "dimensions": [
+          2048,
+          1024
+        ]
+      },
+      {
+        "index": 1,
+        "name": "",
+        "mimeType": "image/png",
+        "bytes": 191297,
+        "dimensions": [
+          512,
+          512
+        ]
+      },
+      {
+        "index": 2,
+        "name": "",
+        "mimeType": "image/png",
+        "bytes": 323206,
+        "dimensions": [
+          512,
+          512
+        ]
+      },
+      {
+        "index": 3,
+        "name": "",
+        "mimeType": "image/png",
+        "bytes": 151821,
+        "dimensions": [
+          512,
+          512
+        ]
+      },
+      {
+        "index": 4,
+        "name": "",
+        "mimeType": "image/png",
+        "bytes": 280389,
+        "dimensions": [
+          2048,
+          1024
+        ]
+      },
+      {
+        "index": 5,
+        "name": "",
+        "mimeType": "image/png",
+        "bytes": 306632,
+        "dimensions": [
+          2048,
+          1024
+        ]
+      },
+      {
+        "index": 6,
+        "name": "",
+        "mimeType": "image/png",
+        "bytes": 699795,
+        "dimensions": [
+          2048,
+          1024
+        ]
+      },
+      {
+        "index": 7,
+        "name": "",
+        "mimeType": "image/png",
+        "bytes": 1434505,
+        "dimensions": [
+          2048,
+          1024
+        ]
+      },
+      {
+        "index": 8,
+        "name": "",
+        "mimeType": "image/png",
+        "bytes": 315078,
+        "dimensions": [
+          2048,
+          1024
+        ]
+      },
+      {
+        "index": 9,
+        "name": "",
+        "mimeType": "image/png",
+        "bytes": 781211,
+        "dimensions": [
+          2048,
+          1024
+        ]
+      },
+      {
+        "index": 10,
+        "name": "",
+        "mimeType": "image/png",
+        "bytes": 1213,
+        "dimensions": [
+          2048,
+          1024
+        ]
+      }
+    ],
+    "extensionsUsed": [
+      "KHR_materials_ior",
+      "KHR_materials_iridescence",
+      "KHR_materials_transmission",
+      "KHR_materials_volume"
+    ],
+    "extensionsRequired": [],
+    "meshes": 4,
+    "nodes": 6,
+    "scenes": 1,
+    "skins": 0,
+    "animations": [
+      "glassCover rotation"
+    ],
+    "materialCount": 4,
+    "alphaModes": [
+      "MASK",
+      "OPAQUE"
+    ],
+    "normalMappedMaterials": 3,
+    "metallicRoughnessTexturedMaterials": 3,
+    "transmissionMaterials": 2,
+    "unlitMaterials": 0,
+    "cameras": [
+      {
+        "perspective": {
+          "yfov": 0.457822353,
+          "zfar": 10000,
+          "znear": 0.1
+        },
+        "type": "perspective",
+        "name": "Camera001"
+      }
+    ],
+    "cameraNodes": [
+      {
+        "node": 5,
+        "name": "Camera001",
+        "camera": 0,
+        "definition": {
+          "perspective": {
+            "yfov": 0.457822353,
+            "zfar": 10000,
+            "znear": 0.1
+          },
+          "type": "perspective",
+          "name": "Camera001"
+        },
+        "worldPosition": [
+          0.8,
+          0.5,
+          0.0
+        ],
+        "worldForward": [
+          -0.8949371241193572,
+          -0.44619151020284986,
+          -0.000824679255507148
+        ],
+        "worldMatrixColumnMajor": [
+          0.0008240000000001579,
+          0.0,
+          -0.9991759999999998,
+          0.0,
+          -0.445824,
+          0.895024,
+          0.0,
+          0.0,
+          0.8941999999999999,
+          0.445824,
+          0.0008240000000001579,
+          0.0,
+          0.8,
+          0.5,
+          0.0,
+          1.0
+        ]
+      }
+    ],
+    "bounds": {
+      "min": [
+        -0.2661104939986962,
+        -2.581076e-05,
+        -0.26611049243586105
+      ],
+      "max": [
+        0.2661104851354254,
+        0.3623647103047129,
+        0.2661104939986962
+      ],
+      "center": [
+        -4.431635391988209e-09,
+        0.18116944977235644,
+        7.814175695397552e-10
+      ],
+      "extent": [
+        0.2661104895670608,
+        0.18119526053235646,
+        0.26611049321727864
+      ],
+      "radius": 0.41768565895581405,
+      "method": "Default scene, static node transforms applied to POSITION accessor bounds; excludes animation and deformation"
+    },
+    "modelStats": {
+      "defaultSceneMeshInstances": 4,
+      "sourcePrimitives": 4,
+      "renderedPrimitives": 4,
+      "sourceVerticesSummedPerPrimitive": 14863,
+      "sourceTriangles": 24448,
+      "renderedTriangles": 24448
+    },
+    "appearanceNotes": [
+      "Iridescence/transmission/volume appearance requires actual native renderer verification."
+    ]
+  },
+  "upstreamMetadocumentation": {
+    "attribution": "KhronosGroup/glTF-Sample-Assets contributors",
+    "license": "CC-BY-4.0"
+  }
+}

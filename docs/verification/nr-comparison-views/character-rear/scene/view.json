@@ -1,0 +1,31 @@
+{
+  "name": "Character rear",
+  "model": "../../../../../assets/test-static.glb",
+  "environment": "../../../../../assets/environments/studio_small_09_1k.hdr",
+  "background": "#dbe4ee",
+  "backgroundEnvironment": false,
+  "msaa": 4,
+  "sun": {
+    "direction": [
+      0.5,
+      0.8,
+      0.3
+    ],
+    "intensity": 1
+  },
+  "camera": {
+    "position": [
+      0.15,
+      1.58,
+      -0.82
+    ],
+    "target": [
+      0,
+      1.48,
+      0.06
+    ],
+    "fov": 40,
+    "near": 0.005,
+    "far": 60
+  }
+}

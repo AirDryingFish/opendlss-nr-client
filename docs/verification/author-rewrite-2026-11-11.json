@@ -1,0 +1,151 @@
+{
+  "date": "2026-11-11",
+  "scope": "All commits, including all four original upstream commits, as explicitly requested by the repository owner.",
+  "owner": {
+    "name": "AirDryingFish",
+    "email": "61225980+AirDryingFish@users.noreply.github.com"
+  },
+  "changedOriginalIdentityCommits": 30,
+  "upstreamCommitIdentitiesRewritten": 4,
+  "preserved": [
+    "Every historical source tree",
+    "Commit messages",
+    "Author and committer timestamps",
+    "Parent topology",
+    "Source attribution and license texts"
+  ],
+  "verificationReferences": "Client source commit references remapped to equivalent commits after identity-only rewrites; external upstream source references retain their original upstream IDs. Recorded source and binary hashes remain unchanged.",
+  "map": [
+    {
+      "before": "369592cdf5153c4375f64358c4fde19af5198c39",
+      "after": "7fdb85676b53bc4a7957b8f906ebf8f7f4cfc4bc"
+    },
+    {
+      "before": "71fb08785633feff3921996019eea6fbbfb6aa52",
+      "after": "57aca23ce1d29802934ba3223850ecf8a101b787"
+    },
+    {
+      "before": "072be7336c310fe56fd579db3b88cdba417e2855",
+      "after": "b8b8492e1b3e3129946af89003e524542a07a1a1"
+    },
+    {
+      "before": "9d08f4184bbcb9d858e2fb7a7834ec0837a9d2f1",
+      "after": "de90f52db1916f3b6474d215a0e690252c7962a8"
+    },
+    {
+      "before": "5184d8e5f173982e5c77b254223d1573c7071859",
+      "after": "73e89c0cb1994e9c64d2d945d3706739f2c2786e"
+    },
+    {
+      "before": "6c1f7eec59cfbb79998646dbdfad97a8ebf7d7e3",
+      "after": "debe3885fc5feefe4e9260568369cecab629fbfe"
+    },
+    {
+      "before": "c9587f728a47bc4b02f841bec6276e936c6db9b6",
+      "after": "fa9f50f28dbede94e0d5fe79d5644f994406929b"
+    },
+    {
+      "before": "dd1e8100ba7da95b515a1298090b51b4e89150cd",
+      "after": "9bf95dd3e613d8673a9379283e61e7185bf85e53"
+    },
+    {
+      "before": "abd1bddb3713c82e9d57dd9813651b055cf34b95",
+      "after": "da29abda1a29c80958ba93a8be68b9c09b869976"
+    },
+    {
+      "before": "e70c41bd7140fdd3643f52bca45e5ccef4ed5b7c",
+      "after": "d22014ecccf39ceb9b57659cdd07384053861237"
+    },
+    {
+      "before": "5f30a4bcac73fadc226bd6fd77d7e50d7abccb6d",
+      "after": "154a8ecdcd9d9d35488dd757eb23f139c91c2eea"
+    },
+    {
+      "before": "7de8d60ba4164f311a63abd4f5fb8515e85797fa",
+      "after": "ea7d5bcadd03c342e4bededfb99f618f6a134b7b"
+    },
+    {
+      "before": "137907be90129e78d2e3ef19d4b5f28a92e88180",
+      "after": "b9c902d7a5fa6bd393b909b1153c253a73aac323"
+    },
+    {
+      "before": "ae37a6d521213221bb46013d9fa323e7882a2ba2",
+      "after": "86966d3cfa977a3d0f04feea1688ba8349c212d3"
+    },
+    {
+      "before": "8d2ebe4d156a81b2bf4451cf823ad9528174720e",
+      "after": "d9ceb4e57d8cdf6a9337b3af61e00048d0198e70"
+    },
+    {
+      "before": "22ce697823031c59a06d45b8f07cb2522c1497e0",
+      "after": "4d76ea39b8c513d8aea8150632d35ca2bed4cfc7"
+    },
+    {
+      "before": "c4c6d2491858962d4c3f93ccaa5851d5e61d4470",
+      "after": "ef086fb2b354e432bafb2b930c2a83db4afa36a5"
+    },
+    {
+      "before": "d0013d17499a6b311010bfcdddb291f812fb2851",
+      "after": "05a48344a9bf3438105b910a18f434456543e7c7"
+    },
+    {
+      "before": "78de95d0580abe556bab2590ab226ba8906bd857",
+      "after": "86c901265a2ece4bb5323334c850bc993953bea7"
+    },
+    {
+      "before": "64543c182a3ad055124b64108f750c90e380430a",
+      "after": "21800fcb0fd69c417474c837ac43dd9c022cf612"
+    },
+    {
+      "before": "9b35057215f72c6db8f40b5b337101c021ae1fb2",
+      "after": "6f1f9efeade0a5c7227a6988ef252006ac44580d"
+    },
+    {
+      "before": "4a1c450beca61128aa34e7a8775548e7d04b4fbc",
+      "after": "0b4e458b0e26867ae5da9a817b1ab2e608cc094a"
+    },
+    {
+      "before": "bed0eed8e4b2b34087df5a47e774adc47a5ad935",
+      "after": "dbc5d042c1d87bda4e4bceb5f09cb6eba9fab28c"
+    },
+    {
+      "before": "fdb5c1cd7410242a24267487a7979b3b3c82622e",
+      "after": "8771948cd9829f4b870255c7283f0b7fde86ed19"
+    },
+    {
+      "before": "12c7066bac91925e046d39ca8659242c6915a298",
+      "after": "0f72a9906d443f9d3c5b20312cc3f2cde01d3a73"
+    },
+    {
+      "before": "2aba486a6924c6eee6df57d5238dce4edd4a411e",
+      "after": "cc840866d9774f21af89631af33bdd310ceb635b"
+    },
+    {
+      "before": "8a019c317a6ff9c3f78b05212969eb59fbb58a7d",
+      "after": "13eb1b39fda171f8bc67f7ff26c4c3d64c22b945"
+    },
+    {
+      "before": "af32677991307faa86dfe7d33a969d439e0e7f3a",
+      "after": "9a69f9e3549ca1412b3713bb8aca6cb600d84ee1"
+    },
+    {
+      "before": "0958ab04ac230557fbd939190b5c630bf52d1d46",
+      "after": "1f0285a98e921f40d48703a4e3924fb3ad765841"
+    },
+    {
+      "before": "75d041c2bd98c2f35508d67d74a30249e1fd7e15",
+      "after": "d33a30fec6b70b0262585511f00a39de8e6e60b7"
+    },
+    {
+      "before": "276077d1086f5c22dc3d9e91600345b784cabe9f",
+      "after": "76bb66adafbb63ae4d057c12c803e9806acda74c"
+    },
+    {
+      "before": "50e5a87066d9146c617aef07197f4e42cb75521d",
+      "after": "c48e500576728444163ccedfdccdfae6ec8bd373"
+    }
+  ],
+  "backup": "Complete pre-rewrite Git bundles retained locally outside the repository.",
+  "historicalRecord": true,
+  "historyNote": "This records the earlier identity rewrite. Its commit IDs belong to the pre-consolidation history; current history starts with init plus local code changes."
+}

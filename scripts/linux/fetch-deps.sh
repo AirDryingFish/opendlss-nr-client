@@ -32,16 +32,7 @@ else
 fi
 mkdir -p "$NR_DEPS_DIR/downloads"
 if [[ -z "${CXX:-}" ]]; then
-  if [[ ! -x "$NR_DEPS_DIR/llvm/usr/bin/clang++-18" ]]; then
-    command -v apt-get >/dev/null || { echo 'Install Clang >=17 and libc++ development files, or provide CC/CXX.' >&2; exit 1; }
-    local_packages=()
-    for package in clang-18 libclang-cpp18 libllvm18 libclang-common-18-dev libclang1-18 llvm-18-linker-tools libc++-18-dev libc++1-18 libc++abi-18-dev libc++abi1-18 libunwind-18-dev libunwind-18 libclang-rt-18-dev; do
-      local_packages+=("$package=1:18.1.3-1ubuntu1")
-    done
-    (cd "$NR_DEPS_DIR/downloads" && apt-get download "${local_packages[@]}")
-    mkdir -p "$NR_DEPS_DIR/llvm"
-    for deb in "$NR_DEPS_DIR"/downloads/*.deb; do dpkg-deb -x "$deb" "$NR_DEPS_DIR/llvm"; done
-  fi
+  nr_install_toolchain "$NR_DEPS_DIR"
 fi
 # Some hosts have a damaged generated glibc syscall header. Test it with the
 # selected compiler and supply a pristine user-local header only when needed.

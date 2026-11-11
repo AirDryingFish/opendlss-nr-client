@@ -9,6 +9,11 @@ int main() {
  d.extensions.insert(requiredExtensions().begin(),requiredExtensions().end());
  d.features.insert(requiredFeatures().begin(),requiredFeatures().end());
  assert(missingRequirements(d).empty());
+ Device noCuda=d; noCuda.features.erase("cudaKernelLaunchFeatures");
+ assert(noCuda.extensions.contains("VK_NV_cuda_kernel_launch"));
+ assert(missingRequirements(noCuda)==std::vector<std::string>{"feature: cudaKernelLaunchFeatures"});
+ assert(firstEligibleDevice(std::vector<Device>{noCuda,d}, [](const Device& gpu){return gpu;})==1);
+ assert(firstEligibleDevice(std::vector<Device>{noCuda}, [](const Device& gpu){return gpu;})==-1);
  Device incomplete=d; incomplete.features.erase("shaderFloat8");
  assert(firstEligibleDevice(std::vector<Device>{incomplete,d}, [](const Device& gpu){return gpu;})==1);
  assert(firstEligibleDevice(std::vector<Device>{incomplete}, [](const Device& gpu){return gpu;})==-1);
@@ -21,5 +26,5 @@ int main() {
  d.vendorId=0x10de; d.subgroupSize=64; assert(!missingRequirements(d).empty());
  d.subgroupSize=32; d.graphicsComputeQueue=false; assert(!missingRequirements(d).empty());
  d.graphicsComputeQueue=true; d.cudaMinor=6; assert(!missingRequirements(d).empty());
- std::cout << "requirements: 9 cases passed\n";
+ std::cout << "requirements: 12 cases passed\n";
 }

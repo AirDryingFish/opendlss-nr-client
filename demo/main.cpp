@@ -275,6 +275,12 @@ int main(int argc, char** argv) {
   setvbuf(stdout, nullptr, _IONBF, 0);
   setvbuf(stderr, nullptr, _IONBF, 0);
   Options options = parseOptions(argc, argv);
+  const auto routing = client::backendRouting([](const char* name) { return std::getenv(name); });
+  const std::string backendLabel = routing.label();
+  if (options.benchmarkFrames) {
+    try { client::requireAcceptanceBackend(routing); }
+    catch (const std::exception& e) { fprintf(stderr,"[benchmark] %s\n",e.what()); return 2; }
+  }
   const std::string exeDir = exeDirectory();
   installCrashReport(exeDir);
   const std::string dataDir = exeDir + "../data";
@@ -713,7 +719,8 @@ int main(int argc, char** argv) {
       ImGui::Begin("DLSS 5 NR - Filament", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
       ImGui::PushItemWidth(140.0f);
       ImGui::Text("%s", nr->deviceName().c_str());
-      ImGui::Text("NR: %s",controls.enabled ? (nr->timingsEnabled() && nr->timings().networkMs > 0 ? "ON (Tensor Core FP8)" : "ON / awaiting GPU sample") : "OFF (scene composite)");
+      ImGui::Text("NR: %s",controls.enabled ? (nr->timingsEnabled() && nr->timings().networkMs > 0 ? "ON (GPU sample available)" : "ON / awaiting GPU sample") : "OFF (scene composite)");
+      ImGui::TextWrapped("Backend: %s",backendLabel.c_str());
       ImGui::Text("%.1f FPS / %.2f ms wall",fpsValue,fpsValue > 0 ? 1000.0f/fpsValue : 0.0f);
       ImGui::Text("CPU submit %.2f ms",cpuFrameMs);
       ImGui::Text("Render / NR: %u x %u",width,height);
@@ -895,7 +902,7 @@ int main(int argc, char** argv) {
       output << std::setprecision(9) << "{\n  \"complete\": true,\n  \"gpu\": " << client::jsonQuote(nr->deviceName())
              << ",\n  \"driver_version_raw\": " << properties.driverVersion
              << ",\n  \"driver_name\": " << client::jsonQuote(driver.driverName) << ",\n  \"driver_info\": " << client::jsonQuote(driver.driverInfo)
-             << ",\n  \"backend\": \"Vulkan VK_NV_cuda_kernel_launch / FP8 Tensor Core PTX\",\n  \"nr_enabled\": true,\n  \"width\": " << width << ", \"height\": " << height
+             << ",\n  \"backend\": " << client::jsonQuote(backendLabel) << ",\n  \"nr_enabled\": true,\n  \"width\": " << width << ", \"height\": " << height
              << ",\n  \"window_width\": " << drawableWidth << ", \"window_height\": " << drawableHeight
              << ",\n  \"scene\": " << client::jsonQuote(scenes[selectedScene].model)
              << ",\n  \"temporal_enabled\": " << (controls.temporal ? "true" : "false")

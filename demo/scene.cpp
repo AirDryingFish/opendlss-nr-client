@@ -261,9 +261,8 @@ LoadedScene::LoadedScene(Engine& engine, const SceneView& view) : engine_(engine
 }
 
 void LoadedScene::loadEnvironment(const std::string& path) {
-  int w = 0, h = 0, n = 0;
-  float* data = stbi_loadf(path.c_str(), &w, &h, &n, 3);
-  if (!data) { fprintf(stderr, "[scene] cannot read the environment %s\n", path.c_str()); return; }
+  int w = 0, h = 0;
+  float* data = client::loadEnvironmentPixels(path,w,h);
   Texture::PixelBufferDescriptor buffer(data, (size_t)w * h * 3 * sizeof(float), Texture::Format::RGB, Texture::Type::FLOAT,
                                         [](void* p, size_t, void*) { stbi_image_free(p); }, nullptr);
   Texture* equirect = Texture::Builder()

@@ -32,6 +32,15 @@ void validateImage(const std::vector<unsigned char>& bytes) {
   stbi_image_free(pixels);
 }
 }
+float* loadEnvironmentPixels(const std::string& path, int& width, int& height) {
+  int channels = 0;
+  float* data = stbi_loadf(path.c_str(), &width, &height, &channels, 3);
+  if (!data) {
+    const char* reason = stbi_failure_reason();
+    throw std::runtime_error("cannot decode HDR environment " + path + (reason ? ": " + std::string(reason) : ""));
+  }
+  return data;
+}
 // Parse and validate before gltfio can encounter its fixed skin palette limit.
 // Check every declared skin, including ones referenced by secondary meshes/scenes.
 void validateSceneFile(const std::string& path) {

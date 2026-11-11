@@ -226,6 +226,9 @@ DeviceRequirements::DeviceRequirements() {
   smFeatures.shaderSMBuiltins = VK_TRUE;
   smFeatures.pNext = features.pNext;
   features.pNext = &smFeatures;
+  cudaLaunch.cudaKernelLaunchFeatures = VK_TRUE;
+  cudaLaunch.pNext = features.pNext;
+  features.pNext = &cudaLaunch;
   extensions = {VK_KHR_COOPERATIVE_MATRIX_EXTENSION_NAME, VK_EXT_SHADER_FLOAT8_EXTENSION_NAME,
                               VK_KHR_PIPELINE_EXECUTABLE_PROPERTIES_EXTENSION_NAME, VK_NV_COOPERATIVE_MATRIX_2_EXTENSION_NAME,
                               VK_NV_CUDA_KERNEL_LAUNCH_EXTENSION_NAME, VK_KHR_SHADER_CLOCK_EXTENSION_NAME,

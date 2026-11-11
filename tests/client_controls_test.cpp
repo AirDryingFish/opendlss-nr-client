@@ -3,9 +3,36 @@
 #include <cmath>
 #include <iostream>
 #include <limits>
+#include <map>
 using namespace client;
 static bool close(double a, double b) { return std::abs(a-b) < 1e-5; }
 int main() {
+  // Mirror upstream getenv/atoi, including empty values, prefixes and presence flags.
+  std::map<std::string,std::string> env;
+  auto lookup = [&](const char* key) -> const char* {
+    const auto it = env.find(key); return it == env.end() ? nullptr : it->second.c_str();
+  };
+  assert(backendRouting(lookup).acceptanceCompatible());
+  assert(backendRouting(lookup).label().find("FP8 Tensor Core PTX") != std::string::npos);
+  for (const char* key : {"DLSS5VK_PTX_GEMM","DLSS5VK_PTX_QKV","DLSS5VK_PTX_BLOCK32","DLSS5VK_PTX_FFN","DLSS5VK_PTX_ATTN","DLSS5VK_PTX_GEMMV","DLSS5VK_PTX_GEMMT","DLSS5VK_CHAIN","DLSS5VK_VIT_CHAIN"}) {
+    for (const char* value : {"0","","false","  +0suffix"}) {
+      env = {{key,value}};
+      const auto route = backendRouting(lookup);
+      assert(!route.acceptanceCompatible());
+      assert(route.label().find("Custom Vulkan routing") != std::string::npos);
+      assert(route.label().find(key) != std::string::npos);
+      bool rejected = false; try { requireAcceptanceBackend(route); } catch (const std::exception& e) { rejected = std::string(e.what()).find(key) != std::string::npos; }
+      assert(rejected);
+    }
+    for (const char* value : {"1","-1","  +2suffix"}) { env = {{key,value}}; assert(backendRouting(lookup).acceptanceCompatible()); }
+  }
+  for (const char* key : {"DLSS5VK_NO_PTX_MLP","DLSS5VK_NO_FUSE_PRE","DLSS5VK_NO_FUSE_POOL","DLSS5VK_NO_FUSE_UPRES","DLSS5VK_NO_FUSE_POST"}) {
+    for (const char* value : {"","0","1"}) { env = {{key,value}}; assert(!backendRouting(lookup).acceptanceCompatible()); }
+  }
+  for (const auto& setting : std::map<std::string,std::string>{{"DLSS5VK_CHAIN_MASK","3"},{"DLSS5VK_DEFER_MAX","128"},{"DLSS5VK_SPLITK","-1"},{"DLSS5VK_ATTN_STREAM","-1"}}) {
+    env = {setting}; assert(backendRouting(lookup).acceptanceCompatible());
+    env[setting.first] = "0"; assert(!backendRouting(lookup).acceptanceCompatible());
+  }
   // Catch accepting truncated/negative/overflow CLI dimensions and short benchmarks.
   assert(parseInteger("1024", 64, 16384) == 1024);
   for (auto s : {"-1", "0", "63", "1024x", "9999999999999999999", ""}) {

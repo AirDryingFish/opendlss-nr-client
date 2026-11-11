@@ -22,7 +22,7 @@ inline const std::vector<std::string>& requiredFeatures() {
   "cooperativeMatrixConversions", "cooperativeMatrixPerElementOperations", "cooperativeMatrixTensorAddressing",
   "cooperativeMatrixBlockLoads", "shaderFloat8", "shaderFloat8CooperativeMatrix",
   "pipelineExecutableInfo", "shaderSubgroupClock", "shaderDeviceClock", "shaderSMBuiltins",
-  "shaderInt16", "shaderInt64"};
+  "shaderInt16", "shaderInt64", "cudaKernelLaunchFeatures"};
  return values;
 }
 inline std::vector<std::string> missingRequirements(const Device& device) {

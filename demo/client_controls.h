@@ -3,12 +3,52 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
+#include <cstdlib>
 #include <fstream>
 #include <stdexcept>
 #include <string>
 #include <vector>
 namespace client {
 void validateSceneFile(const std::string& path);
+// Caller owns the stb allocation; failures carry the requested path into import errors.
+float* loadEnvironmentPixels(const std::string& path, int& width, int& height);
+struct BackendRouting {
+  std::vector<std::string> overrides;
+  bool acceptanceCompatible() const { return overrides.empty(); }
+  std::string label() const {
+    if (acceptanceCompatible()) return "Vulkan VK_NV_cuda_kernel_launch / FP8 Tensor Core PTX";
+    std::string text = "Custom Vulkan routing";
+    for (const auto& value : overrides) text += "; " + value;
+    return text;
+  }
+};
+// Keep these defaults and getenv/atoi semantics aligned with kernels.cpp and
+// nr_graph.cpp. Presence-only NO_* switches are active even when set to "0".
+template<class Lookup> inline BackendRouting backendRouting(Lookup lookup) {
+  BackendRouting result;
+  auto changed = [&](const char* name, int expected, bool boolean) {
+    if (const char* value = lookup(name)) {
+      const int parsed = std::atoi(value);
+      if ((boolean ? int(parsed != 0) : parsed) != expected)
+        result.overrides.push_back(std::string(name) + "=" + value);
+    }
+  };
+  for (const char* name : {"DLSS5VK_PTX_GEMM","DLSS5VK_PTX_QKV","DLSS5VK_PTX_BLOCK32",
+       "DLSS5VK_PTX_FFN","DLSS5VK_PTX_ATTN","DLSS5VK_PTX_GEMMV","DLSS5VK_PTX_GEMMT",
+       "DLSS5VK_CHAIN","DLSS5VK_VIT_CHAIN"}) changed(name,1,true);
+  for (const char* name : {"DLSS5VK_NO_PTX_MLP","DLSS5VK_NO_FUSE_PRE","DLSS5VK_NO_FUSE_POOL",
+       "DLSS5VK_NO_FUSE_UPRES","DLSS5VK_NO_FUSE_POST"})
+    if (const char* value = lookup(name)) result.overrides.push_back(std::string(name) + "=" + value);
+  changed("DLSS5VK_CHAIN_MASK",3,false);
+  changed("DLSS5VK_DEFER_MAX",128,false);
+  changed("DLSS5VK_SPLITK",-1,false);
+  changed("DLSS5VK_ATTN_STREAM",-1,false);
+  return result;
+}
+inline void requireAcceptanceBackend(const BackendRouting& route) {
+  if (!route.acceptanceCompatible())
+    throw std::invalid_argument("acceptance benchmark requires default kernel routing; unset custom routing: " + route.label());
+}
 struct Vec3 { double x,y,z; };
 struct Framing { double distance, nearPlane, farPlane; };
 struct Viewport { int left, bottom; unsigned width, height; };

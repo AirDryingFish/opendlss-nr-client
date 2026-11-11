@@ -31,6 +31,7 @@ inline Probe probe(VkPhysicalDevice gpu){
  }
  vkGetPhysicalDeviceQueueFamilyProperties(gpu,&count,nullptr);std::vector<VkQueueFamilyProperties> queues(count);vkGetPhysicalDeviceQueueFamilyProperties(gpu,&count,queues.data());
  for(const auto& q:queues)if(q.queueCount && (q.queueFlags&VK_QUEUE_GRAPHICS_BIT) && (q.queueFlags&VK_QUEUE_COMPUTE_BIT) && q.timestampValidBits)d.graphicsComputeQueue=true;
+ VkPhysicalDeviceCudaKernelLaunchFeaturesNV cudaLaunch{VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CUDA_KERNEL_LAUNCH_FEATURES_NV};
  VkPhysicalDeviceFeatures2 base{VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2};
  VkPhysicalDeviceVulkan11Features f11{VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES};
  VkPhysicalDeviceVulkan12Features f12{VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES};
@@ -41,6 +42,7 @@ inline Probe probe(VkPhysicalDevice gpu){
  VkPhysicalDevicePipelineExecutablePropertiesFeaturesKHR executable{VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_EXECUTABLE_PROPERTIES_FEATURES_KHR};
  VkPhysicalDeviceShaderClockFeaturesKHR clock{VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CLOCK_FEATURES_KHR};
  VkPhysicalDeviceShaderSMBuiltinsFeaturesNV sm{VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_SM_BUILTINS_FEATURES_NV};
+ if(d.extensions.contains("VK_NV_cuda_kernel_launch"))append(base.pNext,cudaLaunch);
  append(base.pNext,f11);append(base.pNext,f12);append(base.pNext,f13);
  if(d.extensions.contains("VK_KHR_cooperative_matrix"))append(base.pNext,coop);
  if(d.extensions.contains("VK_NV_cooperative_matrix2"))append(base.pNext,coop2);
@@ -59,6 +61,7 @@ inline Probe probe(VkPhysicalDevice gpu){
  FEATURE(coop2,cooperativeMatrixTensorAddressing);FEATURE(coop2,cooperativeMatrixBlockLoads);
  FEATURE(fp8,shaderFloat8);FEATURE(fp8,shaderFloat8CooperativeMatrix);FEATURE(executable,pipelineExecutableInfo);
  FEATURE(clock,shaderSubgroupClock);FEATURE(clock,shaderDeviceClock);FEATURE(sm,shaderSMBuiltins);
+ FEATURE(cudaLaunch,cudaKernelLaunchFeatures);
  FEATURE(base.features,shaderInt16);FEATURE(base.features,shaderInt64);
 #undef FEATURE
  result.missing=nrclient::missingRequirements(d);return result;

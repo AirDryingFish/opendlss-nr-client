@@ -36,6 +36,26 @@ int main(int argc, char** argv) {
   const auto dir = fs::temp_directory_path() / ("nr import with spaces " + std::to_string(std::chrono::steady_clock::now().time_since_epoch().count()));
   fs::create_directories(dir);
   auto write = [&](std::string name,std::string data) { const auto path=dir/name; std::ofstream(path,std::ios::binary)<<data; return path.string(); };
+  // The exact decoder used by LoadedScene must throw before a replacement commits.
+  const auto missingHdr = (dir/"missing environment.hdr").string();
+  const auto corruptHdr = write("corrupt environment.hdr","not an HDR image");
+  auto workingScene = std::string("old scene");
+  for (const auto& hdr : {missingHdr,corruptHdr}) {
+    bool rejected = false;
+    try {
+      int width=0,height=0;
+      auto* pixels = client::loadEnvironmentPixels(hdr,width,height);
+      stbi_image_free(pixels);
+      workingScene = "replacement";
+    } catch (const std::exception& e) { rejected = std::string(e.what()).find(hdr) != std::string::npos; }
+    assert(rejected && workingScene == "old scene");
+  }
+  std::string radiance = "#?RADIANCE\nFORMAT=32-bit_rle_rgbe\n\n-Y 1 +X 1\n";
+  radiance += std::string("\x80\x40\x20\x81",4);
+  int hdrWidth=0,hdrHeight=0;
+  auto* hdrPixels = client::loadEnvironmentPixels(write("valid environment.hdr",radiance),hdrWidth,hdrHeight);
+  assert(hdrPixels && hdrWidth==1 && hdrHeight==1 && hdrPixels[0]>0);
+  stbi_image_free(hdrPixels);
   client::validateSceneFile(write("valid.gltf",skinFixture(256)));
   client::validateSceneFile(write("valid.GlB",makeGlb(skinFixture(256))));
   const unsigned char png[] = {137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,0,1,0,0,0,1,8,6,0,0,0,31,21,196,137,0,0,0,11,73,68,65,84,120,156,99,248,15,4,0,9,251,3,253,251,94,107,43,0,0,0,0,73,69,78,68,174,66,96,130};

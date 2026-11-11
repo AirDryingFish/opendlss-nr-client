@@ -16,7 +16,7 @@ VALUE_FLAGS = {
     '--model', '--kernels', '--scenes', '--capture', '--view', '--width', '-w',
     '--height', '-h', '--frames', '--orbit', '--animation', '--temporal', '--nr',
     '--intensity', '--style', '--style-knobs', '--benchmark-frames',
-    '--benchmark-warmup', '--benchmark-output',
+    '--benchmark-warmup', '--benchmark-output', '--environment-preset',
 }
 
 
@@ -119,6 +119,7 @@ def main(arguments=None):
               'Render/NR resolution follows the actual window size; --width/--height request its initial size.\n'
               'Check only: scripts/check-gpu.sh [--json]\n'
               'Options: --model DIR --width N --height N --nr 0|1 --temporal 0|1\n'
+              'HDR preset: --environment-preset studio-small-09|kloofendal-daylight|chalk-quarry-sunset|entrance-hall\n'
               'Benchmark: --benchmark-warmup 30 --benchmark-frames 120 --benchmark-output result.json')
         return 0
     environment = os.environ.copy()

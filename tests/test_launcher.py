@@ -30,6 +30,9 @@ class LauncherTest(unittest.TestCase):
   self.assertIn(str(root/'assets/test-static.glb'),args)
   self.assertEqual(args[args.index('--width')+1],'1024')
   self.assertIn('--view',args)
+ def test_environment_preset_passed_literally(self):
+  args=self.module().native_arguments(pathlib.Path('/tmp/client root'),['--environment-preset','chalk-quarry-sunset'])
+  self.assertEqual(args[args.index('--environment-preset')+1],'chalk-quarry-sunset')
  def test_invalid_and_missing_option_values(self):
   mod=self.module()
   for args in [['--model'],['--width','-1'],['--height','NaN'],['--unexpected','x'],['a.glb','b.hdr','c.glb']]:

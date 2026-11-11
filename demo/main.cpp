@@ -9,9 +9,12 @@
 #define SDL_MAIN_HANDLED
 #include <SDL.h>
 #include <SDL_syswm.h>
-// SDL_syswm includes X11, whose Success macro collides with Filament enums.
+// SDL_syswm includes X11, whose macros collide with Filament / JSON enums.
 #ifdef Success
 #undef Success
+#endif
+#ifdef Bool
+#undef Bool
 #endif
 
 #include <filagui/ImGuiHelper.h>
@@ -55,7 +58,9 @@ namespace ImGui { IMGUI_API void ClearIniSettings(); }
 #include <vector>
 
 #include "client_controls.h"
+#include "environment_presets.h"
 #include "../tests/ui_resize_scenario.h"
+#include "../tests/environment_scenario.h"
 #include "crash_report.h"
 #include "filament_vulkan.h"
 #include "nr_pass.h"
@@ -75,6 +80,7 @@ struct Options {
   int benchmarkFrames = 0, benchmarkWarmup = 30;
   std::string benchmarkOutput = "benchmark.json";
   std::string uiResizeTestOutput;
+  std::string environmentPreset, environmentTestPrefix;
   float orbitDegreesPerFrame = 0.4f;
   int animation = 0;
   NrControls controls;
@@ -141,7 +147,7 @@ std::string readFile(const std::string& path) {
 const char* kUsage = "usage: dlss5-demo [scene.gltf|.glb [environment.hdr]] --model <nr model dir> [--scenes <dir>] [--width w --height h] "
                      "[--frames n] [--capture prefix] [--orbit deg] [--view px,py,pz,tx,ty,tz[,fov]] [--nr 0|1] [--temporal 0|1] "
                      "[--style 0..3] [--style-knobs exposure,contrast,gamma,saturation,hue,vibrance,strength[,networkStyle]] [--intensity x] "
-                     "[--animation n] [--benchmark-frames N>=120] [--benchmark-warmup N] [--benchmark-output path] [--ui-resize-test output.json]";
+                     "[--animation n] [--environment-preset ID] [--benchmark-frames N>=120] [--benchmark-warmup N] [--benchmark-output path] [--ui-resize-test output.json]";
 
 Options parseOptions(int argc, char** argv) {
   Options o;
@@ -160,6 +166,8 @@ Options parseOptions(int argc, char** argv) {
     else if (a == "--scenes") next(o.scenesDir);
     else if (a == "--capture") next(o.capturePrefix);
     else if (a == "--view") next(o.viewOverride);
+    else if (a == "--environment-preset") next(o.environmentPreset);
+    else if (a == "--environment-test") next(o.environmentTestPrefix);
     else if (a == "--width" || a == "-w") { next(v); o.width = integer(a,v,64,16384); }
     else if (a == "--height" || a == "-h") { next(v); o.height = integer(a,v,64,16384); }
     else if (a == "--frames") { next(v); o.frames = v == "-1" ? -1 : integer(a,v,0,10000000); }
@@ -192,6 +200,9 @@ Options parseOptions(int argc, char** argv) {
     fail("benchmark requires NR on, no scripted capture, and at least warmup + samples + 2 total frames");
   if (!o.uiResizeTestOutput.empty() && (o.benchmarkFrames || !o.capturePrefix.empty() || !o.controls.enabled))
     fail("--ui-resize-test requires NR enabled and no benchmark/capture scenario");
+  if (!o.environmentTestPrefix.empty() && (o.benchmarkFrames || !o.capturePrefix.empty() ||
+      !o.uiResizeTestOutput.empty() || !o.controls.enabled))
+    fail("--environment-test requires NR enabled and no benchmark/capture/resize scenario");
   return o;
 }
 
@@ -294,6 +305,19 @@ int main(int argc, char** argv) {
   const std::string dataDir = exeDir + "../data";
   const std::string kernelDir = options.kernelDir.empty() ? exeDir + "../shaders" : options.kernelDir;
   const std::string scenesDir = options.scenesDir.empty() ? exeDir + "../scenes" : options.scenesDir;
+  std::vector<client::EnvironmentPreset> environmentPresets;
+  std::string environmentError;
+  try { environmentPresets = client::loadEnvironmentPresets(exeDir + "../../assets/environments/presets.json"); }
+  catch (const std::exception& e) { environmentError = e.what(); }
+  const std::string environmentManifestError = environmentError;
+  int requestedEnvironment = -1;
+  if (!options.environmentPreset.empty()) {
+    for (size_t i = 0; i < environmentPresets.size(); ++i)
+      if (environmentPresets[i].id == options.environmentPreset) requestedEnvironment = int(i);
+    if (requestedEnvironment < 0)
+      fail("unknown or unavailable environment preset: " + options.environmentPreset +
+           (environmentError.empty() ? "" : "\n" + environmentError));
+  }
 
   // the model directory: --model, DLSS5VK_MODEL, or models/nr next to the repository (build/demo/../../models/nr)
   std::string modelDir = options.modelDir;
@@ -322,7 +346,8 @@ int main(int argc, char** argv) {
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0) fail(std::string("SDL_Init: ") + SDL_GetError());
   SDL_Window* window = SDL_CreateWindow("DLSS 5 NR - Filament / Vulkan", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                         (int)options.width, (int)options.height, SDL_WINDOW_RESIZABLE |
-                                        (!options.capturePrefix.empty() && std::getenv("DLSS5_DEMO_CAPTURE_HIDDEN") ? SDL_WINDOW_HIDDEN : 0));
+                                        ((!options.capturePrefix.empty() || !options.environmentTestPrefix.empty()) &&
+                                         std::getenv("DLSS5_DEMO_CAPTURE_HIDDEN") ? SDL_WINDOW_HIDDEN : 0));
   if (!window) fail(std::string("SDL_CreateWindow: ") + SDL_GetError());
   SDL_SetWindowMinimumSize(window, 64, 64);
   SDL_StartTextInput();
@@ -432,6 +457,7 @@ int main(int argc, char** argv) {
   bool animate = true;
   int animationIndex = 0;
   std::string importError;
+  int activeEnvironmentPreset = -1;
   auto resetCamera = [&]() {
     const auto framing = client::fitBounds(loaded->boundsRadius(),45,double(width)/height);
     const float3 center = loaded->boundsCenter();
@@ -451,6 +477,7 @@ int main(int argc, char** argv) {
       loaded = std::move(replacement);
       selectedScene = index;
       importError.clear();
+      environmentError = environmentManifestError;
     } catch (const std::exception& e) {
       importError = std::string("cannot load ") + view.model + ": " + e.what();
       fprintf(stderr,"[import] %s\n",importError.c_str());
@@ -459,6 +486,10 @@ int main(int argc, char** argv) {
     sceneView->setScene(loaded->scene());
     exposure = view.exposure; environmentIntensity = view.environmentIntensity; sunIntensity = view.sunIntensity;
     environmentRotation = view.environmentRotation; backgroundEnvironment = view.backgroundEnvironment;
+    activeEnvironmentPreset = -1;
+    for (size_t i = 0; i < environmentPresets.size(); ++i)
+      if (!view.environment.empty() && fs::weakly_canonical(view.environment) == environmentPresets[i].path)
+        activeEnvironmentPreset = int(i);
     backgroundColorSrgb = Color::toSRGB<ACCURATE>(view.background);
     msaa = view.msaa;
     applyMsaa();
@@ -505,6 +536,22 @@ int main(int argc, char** argv) {
   bool running = true;
   bool pendingResize = true;
   int pendingScene = -1;   // a dropdown selection, loaded at the top of the next frame
+  int pendingEnvironment = requestedEnvironment;
+  auto applyEnvironment = [&](int index) {
+    try {
+      loaded->setEnvironment(environmentPresets.at(index).path);
+      activeEnvironmentPreset = index;
+      backgroundEnvironment = true;
+      loaded->setBackgroundEnvironment(true);
+      environmentError.clear();
+      historyReset = true;
+      return true;
+    } catch (const std::exception& e) {
+      environmentError = e.what();
+      fprintf(stderr,"[environment] %s\n",environmentError.c_str());
+      return false;
+    }
+  };
 
   auto capture = [&](const std::string& name) {
     engine->flushAndWait();
@@ -539,6 +586,7 @@ int main(int argc, char** argv) {
   const uint8_t* keys = SDL_GetKeyboardState(nullptr);
 
   UiResizeScenario uiResizeTest(options.uiResizeTestOutput);
+  EnvironmentScenario environmentTest(options.environmentTestPrefix,environmentPresets);
   while (running) {
     if (uiResizeTest.active() && uiResizeTest.timedOut()) break;
     if (benchmarking && std::chrono::duration<double>(std::chrono::steady_clock::now()-benchmarkStart).count() > 300) {
@@ -641,6 +689,17 @@ int main(int argc, char** argv) {
     if (pendingScene >= 0) {
       if (loadScene(pendingScene)) { hasPreviousCamera = false; historyReset = true; animationTime = 0; }
       pendingScene = -1;
+    }
+    // Prefiltering and resource replacement must happen outside an active frame.
+    if (pendingEnvironment >= 0) {
+      const bool applied = applyEnvironment(pendingEnvironment);
+      pendingEnvironment = -1;
+      if (!applied && frameIndex == 0 && requestedEnvironment >= 0) fail(environmentError);
+    }
+    if (environmentTest.active()) {
+      environmentTest.beforeFrame(frameIndex,*loaded,*engine,environmentIntensity,environmentRotation,
+                                  backgroundEnvironment,historyReset,activeEnvironmentPreset);
+      if (environmentTest.done) break;
     }
     // A minimized surface may have zero extent even when SDL retains its old size.
     if (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED) {
@@ -826,6 +885,16 @@ int main(int argc, char** argv) {
           historyReset = true;
         }
         if (ImGui::Checkbox("HDR background", &backgroundEnvironment)) historyReset = true;
+        if (!environmentPresets.empty() && ImGui::BeginCombo("Environment preset",
+            activeEnvironmentPreset >= 0 ? environmentPresets[activeEnvironmentPreset].name.c_str() : "Scene / custom")) {
+          for (int i = 0; i < int(environmentPresets.size()); ++i) {
+            const bool selected = i == activeEnvironmentPreset;
+            if (ImGui::Selectable(environmentPresets[i].name.c_str(),selected)) pendingEnvironment = i;
+            if (selected) ImGui::SetItemDefaultFocus();
+          }
+          ImGui::EndCombo();
+        }
+        if (!environmentError.empty()) ImGui::TextWrapped("HDR: %s",environmentError.c_str());
         ImGui::SliderFloat("Exposure", &exposure, 0.1f, 10.0f);
         ImGui::SliderFloat("IBL", &environmentIntensity, 0.0f, 4.0f);
         if (loaded->view().hasSun) ImGui::SliderFloat("Sun", &sunIntensity, 0.0f, 10.0f);
@@ -857,6 +926,10 @@ int main(int argc, char** argv) {
     nr->endFrame();
     cpuFrameMs = std::chrono::duration<double, std::milli>(std::chrono::high_resolution_clock::now() - cpuStart).count();
     frameIndex++;
+    if (environmentTest.active()) {
+      environmentTest.afterFrame(frameIndex,*nr,*engine);
+      if (environmentTest.done) running = false;
+    }
     if (uiResizeTest.active()) {
       uiResizeTest.frame(window,frameIndex,width,height,controls.enabled,uiView->getViewport());
       if (uiResizeTest.done) running = false;
@@ -905,6 +978,7 @@ int main(int argc, char** argv) {
   engine->flushAndWait();
   int exitCode = 0;
   if (uiResizeTest.active() && !uiResizeTest.write()) exitCode = 4;
+  if (environmentTest.active() && !environmentTest.write()) exitCode = 5;
   if (benchmarking && nr->chainTimedOut()) benchmarkError = "benchmark invalid: GPU chained wait timed out during final drain";
   if (benchmarking) {
     if (!benchmark.complete() || !benchmarkError.empty()) {

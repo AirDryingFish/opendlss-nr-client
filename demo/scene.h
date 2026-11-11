@@ -60,6 +60,9 @@ class LoadedScene {
   float boundsRadius() const { return radius_; }
   size_t renderableCount() const { return renderables_; }
   size_t lightCount() const { return lights_; }
+  // Prepare a replacement HDR environment, then synchronize and commit it. Throws
+  // on load/preparation failure, preserving the current environment and look.
+  void setEnvironment(const std::string& path);
   // the look controls (the UI's): applied to the lights / camera exposure by the app each frame
   void setEnvironmentIntensity(float intensity);
   void setSunIntensity(float intensity);
@@ -70,7 +73,6 @@ class LoadedScene {
 
  private:
   void cleanup();
-  void loadEnvironment(const std::string& path);
   filament::Engine& engine_;
   SceneView view_;
   filament::Scene* scene_ = nullptr;

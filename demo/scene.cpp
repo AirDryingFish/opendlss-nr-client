@@ -227,7 +227,7 @@ LoadedScene::LoadedScene(Engine& engine, const SceneView& view) : engine_(engine
   }
 
   // ---- the lighting
-  if (!view.environment.empty()) loadEnvironment(view.environment);
+  if (!view.environment.empty()) setEnvironment(view.environment);
   const bool fallbackLighting = client::needsFallbackLighting(lights_,!view.environment.empty(),view.hasSun,view.hasLightingSettings);
   if (fallbackLighting) {
     const float3 neutralIrradiance{0.8f,0.8f,0.8f};
@@ -237,7 +237,7 @@ LoadedScene::LoadedScene(Engine& engine, const SceneView& view) : engine_(engine
     fprintf(stderr,"[scene] bare asset: neutral ambient and directional key light\n");
   }
   colorSkybox_ = Skybox::Builder().color({view.background, 1.0f}).build(engine);
-  setBackgroundEnvironment(view.backgroundEnvironment && skybox_);
+  setBackgroundEnvironment(view.backgroundEnvironment);
   if (view.hasSun || fallbackLighting) {
     utils::Entity sun = utils::EntityManager::get().create();
     sun_ = sun.getId();
@@ -260,41 +260,93 @@ LoadedScene::LoadedScene(Engine& engine, const SceneView& view) : engine_(engine
   }
 }
 
-void LoadedScene::loadEnvironment(const std::string& path) {
-  int w = 0, h = 0;
-  float* data = client::loadEnvironmentPixels(path,w,h);
-  Texture::PixelBufferDescriptor buffer(data, (size_t)w * h * 3 * sizeof(float), Texture::Format::RGB, Texture::Type::FLOAT,
-                                        [](void* p, size_t, void*) { stbi_image_free(p); }, nullptr);
-  Texture* equirect = Texture::Builder()
-      .width((uint32_t)w).height((uint32_t)h).levels(0xff)
-      .format(Texture::InternalFormat::R11F_G11F_B10F)
-      .sampler(Texture::Sampler::SAMPLER_2D)
-      .usage(Texture::Usage::DEFAULT | Texture::Usage::GEN_MIPMAPPABLE)
-      .build(engine_);
+void LoadedScene::setEnvironment(const std::string& path) {
+  // Allocate the path before touching the live scene; swapping it at commit
+  // cannot throw after the renderer resources have been replaced.
+  std::string replacementPath = path;
   const auto destroyTexture = [this](Texture* texture) { engine_.destroy(texture); };
-  std::unique_ptr<Texture,decltype(destroyTexture)> equirectOwner(equirect,destroyTexture);
-  equirect->setImage(engine_, 0, std::move(buffer));
-  IBLPrefilterContext context(engine_);
-  IBLPrefilterContext::EquirectangularToCubemap equirectangularToCubemap(context);
-  IBLPrefilterContext::SpecularFilter specularFilter(context);
-  environmentCubemap_ = equirectangularToCubemap(equirect);
-  equirectOwner.reset();
-  reflections_ = specularFilter(environmentCubemap_);
-  indirectLight_ = IndirectLight::Builder().reflections(reflections_).intensity(view_.environmentIntensity).build(engine_);
-  setEnvironmentRotation(view_.environmentRotation);
-  scene_->setIndirectLight(indirectLight_);
-  skybox_ = Skybox::Builder().environment(environmentCubemap_).intensity(view_.environmentIntensity).build(engine_);
+  const auto destroyLight = [this](IndirectLight* light) { engine_.destroy(light); };
+  const auto destroySkybox = [this](Skybox* skybox) { engine_.destroy(skybox); };
+  std::unique_ptr<Texture,decltype(destroyTexture)> cubemap(nullptr,destroyTexture);
+  std::unique_ptr<Texture,decltype(destroyTexture)> reflections(nullptr,destroyTexture);
+  std::unique_ptr<IndirectLight,decltype(destroyLight)> light(nullptr,destroyLight);
+  std::unique_ptr<Skybox,decltype(destroySkybox)> skybox(nullptr,destroySkybox);
+  try {
+    int w = 0, h = 0;
+    float* data = client::loadEnvironmentPixels(path,w,h);
+    Texture::PixelBufferDescriptor buffer(data, (size_t)w * h * 3 * sizeof(float), Texture::Format::RGB, Texture::Type::FLOAT,
+                                          [](void* p, size_t, void*) { stbi_image_free(p); }, nullptr);
+    if (w <= 0 || h <= 0 || uint64_t(w) != uint64_t(h) * 2)
+      throw std::runtime_error("expected a 2:1 equirectangular HDR image");
+    Texture* equirect = Texture::Builder()
+        .width((uint32_t)w).height((uint32_t)h).levels(0xff)
+        .format(Texture::InternalFormat::R11F_G11F_B10F)
+        .sampler(Texture::Sampler::SAMPLER_2D)
+        .usage(Texture::Usage::DEFAULT | Texture::Usage::GEN_MIPMAPPABLE)
+        .build(engine_);
+    std::unique_ptr<Texture,decltype(destroyTexture)> equirectOwner(equirect,destroyTexture);
+    if (!equirect) throw std::runtime_error("cannot create equirectangular texture");
+    equirect->setImage(engine_, 0, std::move(buffer));
+    IBLPrefilterContext context(engine_);
+    IBLPrefilterContext::EquirectangularToCubemap equirectangularToCubemap(context);
+    const IBLPrefilterContext::SpecularFilter::Config filterConfig;
+    IBLPrefilterContext::SpecularFilter specularFilter(context,filterConfig);
+    const auto cubeUsage = Texture::Usage::COLOR_ATTACHMENT | Texture::Usage::SAMPLEABLE | Texture::Usage::GEN_MIPMAPPABLE;
+    // Match the prefilter helpers' default outputs, but own them before calling
+    // into the helpers so an exception during filtering cannot leak a texture.
+    cubemap.reset(Texture::Builder().sampler(Texture::Sampler::SAMPLER_CUBEMAP)
+        .format(Texture::InternalFormat::R11F_G11F_B10F).usage(cubeUsage)
+        .width(256).height(256).levels(0xff).build(engine_));
+    if (!cubemap) throw std::runtime_error("cannot create environment cubemap");
+    equirectangularToCubemap(equirect,cubemap.get());
+    equirectOwner.reset();
+    const uint32_t reflectionSize = std::max(256u,1u << (filterConfig.levelCount - 1u));
+    reflections.reset(Texture::Builder().sampler(Texture::Sampler::SAMPLER_CUBEMAP)
+        .format(Texture::InternalFormat::R11F_G11F_B10F).usage(cubeUsage)
+        .width(reflectionSize).height(reflectionSize).levels(filterConfig.levelCount).build(engine_));
+    if (!reflections) throw std::runtime_error("cannot create filtered environment reflections");
+    specularFilter(cubemap.get(),reflections.get());
+    light.reset(IndirectLight::Builder().reflections(reflections.get()).intensity(view_.environmentIntensity)
+            .rotation(mat3f::rotation(view_.environmentRotation,float3{0,1,0})).build(engine_));
+    if (!light) throw std::runtime_error("cannot create environment light");
+    skybox.reset(Skybox::Builder().environment(cubemap.get()).intensity(view_.environmentIntensity).build(engine_));
+    if (!skybox) throw std::runtime_error("cannot create environment skybox");
+
+    // Finish both the previous scene's use of its environment and the candidate's
+    // prefilter work before replacing or destroying any live resource.
+    engine_.flushAndWait();
+  } catch (const std::exception& e) {
+    throw std::runtime_error("cannot load environment " + replacementPath + ": " + e.what());
+  }
+  Texture* previousCubemap = environmentCubemap_;
+  Texture* previousReflections = reflections_;
+  IndirectLight* previousLight = indirectLight_;
+  Skybox* previousSkybox = skybox_;
+  scene_->setIndirectLight(light.get());
+  scene_->setSkybox(view_.backgroundEnvironment ? skybox.get() : colorSkybox_);
+  environmentCubemap_ = cubemap.release();
+  reflections_ = reflections.release();
+  indirectLight_ = light.release();
+  skybox_ = skybox.release();
+  view_.environment.swap(replacementPath);
+  engine_.destroy(previousSkybox);
+  engine_.destroy(previousLight);
+  engine_.destroy(previousReflections);
+  engine_.destroy(previousCubemap);
 }
 
 void LoadedScene::setEnvironmentIntensity(float intensity) {
-  if (indirectLight_) indirectLight_->setIntensity(intensity);
   // the skybox has no intensity setter: rebuild it when the value changes
   if (skybox_ && std::abs(skybox_->getIntensity() - intensity) > 1e-6f) {
-    bool shown = scene_->getSkybox() == skybox_;
-    engine_.destroy(skybox_);
-    skybox_ = Skybox::Builder().environment(environmentCubemap_).intensity(intensity).build(engine_);
-    if (shown) scene_->setSkybox(skybox_);
+    Skybox* replacement = Skybox::Builder().environment(environmentCubemap_).intensity(intensity).build(engine_);
+    if (!replacement) throw std::runtime_error("cannot update environment skybox intensity");
+    Skybox* previous = skybox_;
+    if (scene_->getSkybox() == previous) scene_->setSkybox(replacement);
+    skybox_ = replacement;
+    engine_.destroy(previous);
   }
+  if (indirectLight_) indirectLight_->setIntensity(intensity);
+  view_.environmentIntensity = intensity;
 }
 
 void LoadedScene::setSunIntensity(float intensity) {
@@ -309,10 +361,12 @@ void LoadedScene::setBackgroundColor(float3 linearColor) {
 }
 
 void LoadedScene::setBackgroundEnvironment(bool environment) {
+  view_.backgroundEnvironment = environment;
   scene_->setSkybox(environment && skybox_ ? skybox_ : colorSkybox_);
 }
 
 void LoadedScene::setEnvironmentRotation(float radians) {
+  view_.environmentRotation = radians;
   if (indirectLight_) indirectLight_->setRotation(mat3f::rotation(radians, float3{0, 1, 0}));
 }
 

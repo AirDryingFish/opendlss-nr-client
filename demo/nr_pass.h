@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 
+#include "client_controls.h"
 #include "gpu_bridge.h"
 #include "kernels.h"
 #include "nr_graph.h"
@@ -51,11 +52,12 @@ class NrPass {
   struct Frame {
     uint32_t parity = 0;
     bool enabled = true;
+    bool collectTimings = false;
     uint8_t params[128];
     float background[16];   // column-major: previous clip <- current clip for points at infinity (see beginFrame)
   };
   // per frame, main thread, before the renderer's frame: rotates the history parity, reads the timings of the frame
-  // that used this parity last, snapshots the controls. `background` (column-major 4x4) maps the current clip space to
+  // that owns this parity's timestamp slot (possibly older than two frames), snapshots the controls. `background` (column-major 4x4) maps the current clip space to
   // the previous frame's for points at infinity: previous projection x view rotation x inverse(current projection x
   // view rotation), the views without their translation. The motion unpack uses it where the renderer drew nothing,
   // or its skybox, which the renderer draws at infinity with a zero motion vector.
@@ -139,13 +141,12 @@ class NrPass {
   VkDescriptorSet unpackSet_ = VK_NULL_HANDLE;
   std::string demoShaderDir_;
   VkCommandPool commandPool_ = VK_NULL_HANDLE;
-  VkCommandBuffer computeCommands_[2][2]{};   // [history parity][NR off, on]: secondary command buffers
+  VkCommandBuffer computeCommands_[2][2][2]{};   // [history parity][NR off/on][unstamped/stamped]
   VkQueryPool queries_[2]{};       // per history parity: read when that parity comes around again
   std::atomic<bool> queriesWritten_[2]{};
   NrTimings timings_;
   bool timingsFresh_ = false, timingsEnabled_ = false;
-  uint32_t timingsFrame_ = 0, queryFrames_[2]{};
-  bool queryEnabled_[2]{};
-  uint64_t queryEndTicks_[2]{};
+  uint32_t timingsFrame_ = 0;
+  client::TimingSlot timingSlots_[2];
   uint32_t frames_ = 0, framesSinceReset_ = 0, historyIndex_ = 0;
 };

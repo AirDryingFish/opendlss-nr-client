@@ -2,6 +2,8 @@
 #pragma once
 #include <algorithm>
 #include <cmath>
+#include <cstdint>
+#include <fstream>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -60,6 +62,51 @@ inline Statistics summarize(std::vector<double> values) {
   std::sort(values.begin(), values.end());
   const auto n = values.size();
   return {(values[(n-1)/2]+values[n/2])*0.5, values[static_cast<size_t>(std::ceil(n*0.95))-1]};
+}
+// A query slot is owned by one submission until its completed result is consumed.
+// Unavailable or repeated pre-reset results must never replace source metadata.
+struct TimingSlot {
+  unsigned sourceFrame = 0;
+  bool enabled = false, pending = false;
+  uint64_t lastEndTick = 0;
+  bool reserve(unsigned frame, bool nrEnabled) {
+    if (pending) return false;
+    sourceFrame=frame; enabled=nrEnabled; pending=true;
+    return true;
+  }
+  bool consume(bool available, uint64_t endTick) {
+    if (!pending || !available || endTick == lastEndTick) return false;
+    pending=false; lastEndTick=endTick;
+    return true;
+  }
+};
+inline bool needsFallbackLighting(size_t authoredLights, bool environment, bool sun, bool explicitSettings) {
+  return authoredLights == 0 && !environment && !sun && !explicitSettings;
+}
+inline int normalizeAnimationIndex(int requested, size_t count) {
+  return count ? int(std::min(size_t(std::max(requested,0)),count-1)) : 0;
+}
+inline std::string jsonQuote(const std::string& value) {
+  std::string out = "\"";
+  for (unsigned char c : value) {
+    switch (c) {
+      case '"': out += "\\\""; break;
+      case '\\': out += "\\\\"; break;
+      case '\n': out += "\\n"; break;
+      case '\r': out += "\\r"; break;
+      case '\t': out += "\\t"; break;
+      default:
+        if (c < 32) { out += "\\u00"; out += "0123456789abcdef"[c >> 4]; out += "0123456789abcdef"[c & 15]; }
+        else out += char(c);
+    }
+  }
+  return out + '"';
+}
+inline void writeTextFile(const std::string& path, const std::string& text) {
+  std::ofstream file(path,std::ios::binary | std::ios::trunc);
+  file.write(text.data(),std::streamsize(text.size()));
+  file.close(); // Buffered write errors can first appear at close.
+  if (!file) throw std::runtime_error("cannot write " + path);
 }
 struct BenchmarkSamples {
   int warmup, target;

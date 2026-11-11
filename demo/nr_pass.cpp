@@ -97,8 +97,8 @@ NrPass::NrPass(const GpuDevice& device, uint32_t width, uint32_t height, const s
   cmdPoolInfo.queueFamilyIndex = context_->queueFamily();
   VK_CHECK(vkCreateCommandPool(device_, &cmdPoolInfo, nullptr, &commandPool_));
   VkCommandBufferAllocateInfo allocate{VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO};
-  allocate.commandPool = commandPool_; allocate.level = VK_COMMAND_BUFFER_LEVEL_SECONDARY; allocate.commandBufferCount = 4;
-  VK_CHECK(vkAllocateCommandBuffers(device_, &allocate, &computeCommands_[0][0]));
+  allocate.commandPool = commandPool_; allocate.level = VK_COMMAND_BUFFER_LEVEL_SECONDARY; allocate.commandBufferCount = 8;
+  VK_CHECK(vkAllocateCommandBuffers(device_, &allocate, &computeCommands_[0][0][0]));
   fprintf(stderr, "[nr] pipelines ready\n");
   createSized(width, height);
 }
@@ -140,6 +140,8 @@ void NrPass::createSized(uint32_t width, uint32_t height) {
   }
   color_ = ExternalView{}; velocity_ = ExternalView{};
   for (auto& w : queriesWritten_) w = false;
+  for (auto& slot : timingSlots_) slot = {};
+  timingsFresh_ = false; timingsEnabled_ = false; timings_ = {};
   framesSinceReset_ = 0;
 }
 
@@ -303,20 +305,20 @@ void NrPass::updateComputeSets() {
 NrPass::Frame NrPass::beginFrame(const NrControls& controls, const float background[16]) {
   historyIndex_ = frames_ & 1u;
   timingsFresh_ = false;
-  // the timestamps of the frame that used this parity last (two frames ago), when the GPU is done with them
-  if (queriesWritten_[historyIndex_].load()) {
+  // A slot may belong to an older frame when GPU query availability lags.
+  // Leave its source metadata immutable and render unstamped frames until consumed.
+  auto& timingSlot = timingSlots_[historyIndex_];
+  if (timingSlot.pending && queriesWritten_[historyIndex_].load()) {
     uint64_t ticks[kStampCount * 2];
     VkResult r = vkGetQueryPoolResults(device_, queries_[historyIndex_], 0, kStampCount, sizeof(ticks), ticks, 16,
                                        VK_QUERY_RESULT_64_BIT | VK_QUERY_RESULT_WITH_AVAILABILITY_BIT);
     bool available = r == VK_SUCCESS;
     for (int i = 0; i < kStampCount && available; ++i) available = ticks[i * 2 + 1] != 0;
-    // A queued GPU reset may not have executed yet. Never count the same
-    // available timestamp twice merely because this parity came around again.
-    if (available && ticks[kPresentEnd * 2] != queryEndTicks_[historyIndex_]) {
-      queryEndTicks_[historyIndex_] = ticks[kPresentEnd * 2];
+    const uint64_t endTick = available ? ticks[kPresentEnd * 2] : 0;
+    if (timingSlot.consume(available,endTick)) {
       timingsFresh_ = true;
-      timingsFrame_ = queryFrames_[historyIndex_];
-      timingsEnabled_ = queryEnabled_[historyIndex_];
+      timingsFrame_ = timingSlot.sourceFrame;
+      timingsEnabled_ = timingSlot.enabled;
       const double period = context_->timestampPeriodNs() * 1e-6;
       auto ms = [&](Stamp s) { return ticks[s * 2] * period; };
       timings_.sceneMs = ms(kSceneEnd) - ms(kFrameStart);
@@ -327,11 +329,11 @@ NrPass::Frame NrPass::beginFrame(const NrControls& controls, const float backgro
       timings_.frameMs = ms(kPresentEnd) - ms(kFrameStart);
     }
   }
-  queryFrames_[historyIndex_] = frames_;
-  queryEnabled_[historyIndex_] = controls.enabled;
   Frame frame;
   frame.parity = historyIndex_;
   frame.enabled = controls.enabled;
+  frame.collectTimings = timingSlot.reserve(frames_,controls.enabled);
+  if (frame.collectTimings) queriesWritten_[historyIndex_] = false;
   memcpy(frame.background, background, sizeof(frame.background));
   ParamsBlock block{};
   block.fullWidth = geometry_.fullWidth; block.fullHeight = geometry_.fullHeight;
@@ -360,7 +362,7 @@ void NrPass::writeStamp(VkCommandBuffer commands, uint32_t parity, Stamp stamp, 
 }
 
 void NrPass::recordStamp(void* commandBuffer, const Frame& frame, Stamp stamp) {
-  writeStamp((VkCommandBuffer)commandBuffer, frame.parity, stamp);
+  if (frame.collectTimings) writeStamp((VkCommandBuffer)commandBuffer, frame.parity, stamp);
 }
 
 // The NR command buffers are recorded once: the graph's ~250 dispatches with their descriptor sets cost ~3.7 ms of
@@ -372,33 +374,35 @@ void NrPass::buildComputeCommands() {
     // the graph's descriptor sets of this parity live in the Context's pool h for the lifetime of the command buffer
     context_->resetDescriptorPool(h);
     for (int enabled = 0; enabled < 2; ++enabled) {
-      VkCommandBuffer commands = computeCommands_[h][enabled];
-      VkCommandBufferInheritanceInfo inheritance{VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO};
-      VkCommandBufferBeginInfo begin{VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
-      begin.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
-      begin.pInheritanceInfo = &inheritance;
-      VK_CHECK(vkBeginCommandBuffer(commands, &begin));
-      if (enabled) {
-        // preprocess -> features
-        vkCmdBindPipeline(commands, VK_PIPELINE_BIND_POINT_COMPUTE, preprocessPipeline_);
-        vkCmdBindDescriptorSets(commands, VK_PIPELINE_BIND_POINT_COMPUTE, computeLayout_, 0, 1, &computeSets_[h][0], 0, nullptr);
-        vkCmdDispatch(commands, (geometry_.fullWidth + 7) / 8, (geometry_.fullHeight + 7) / 8, 1);
-        context_->computeBarrier(commands);
+      for (int timed = 0; timed < 2; ++timed) {
+        VkCommandBuffer commands = computeCommands_[h][enabled][timed];
+        VkCommandBufferInheritanceInfo inheritance{VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO};
+        VkCommandBufferBeginInfo begin{VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
+        begin.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
+        begin.pInheritanceInfo = &inheritance;
+        VK_CHECK(vkBeginCommandBuffer(commands, &begin));
+        if (enabled) {
+          // preprocess -> features
+          vkCmdBindPipeline(commands, VK_PIPELINE_BIND_POINT_COMPUTE, preprocessPipeline_);
+          vkCmdBindDescriptorSets(commands, VK_PIPELINE_BIND_POINT_COMPUTE, computeLayout_, 0, 1, &computeSets_[h][0], 0, nullptr);
+          vkCmdDispatch(commands, (geometry_.fullWidth + 7) / 8, (geometry_.fullHeight + 7) / 8, 1);
+          context_->computeBarrier(commands);
+        }
+        if (timed) writeStamp(commands, h, kPreprocessEnd);
+        if (enabled) graph_->record(commands, *features_);   // the network
+        if (timed) writeStamp(commands, h, kNetworkEnd);
+        // composite -> output (rgba8) + next history
+        vkCmdBindPipeline(commands, VK_PIPELINE_BIND_POINT_COMPUTE, compositePipeline_);
+        vkCmdBindDescriptorSets(commands, VK_PIPELINE_BIND_POINT_COMPUTE, computeLayout_, 0, 1, &computeSets_[h][1], 0, nullptr);
+        vkCmdDispatch(commands, (width_ + 7) / 8, (height_ + 7) / 8, 1);
+        // output: compute write -> the copy to the renderer's texture; next history: compute write -> next frame's reads
+        VkMemoryBarrier memory{VK_STRUCTURE_TYPE_MEMORY_BARRIER};
+        memory.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT; memory.dstAccessMask = VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_TRANSFER_READ_BIT;
+        vkCmdPipelineBarrier(commands, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT | VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+                             0, 1, &memory, 0, nullptr, 0, nullptr);
+        if (timed) writeStamp(commands, h, kCompositeEnd);
+        VK_CHECK(vkEndCommandBuffer(commands));
       }
-      writeStamp(commands, h, kPreprocessEnd);
-      if (enabled) graph_->record(commands, *features_);   // the network
-      writeStamp(commands, h, kNetworkEnd);
-      // composite -> output (rgba8) + next history
-      vkCmdBindPipeline(commands, VK_PIPELINE_BIND_POINT_COMPUTE, compositePipeline_);
-      vkCmdBindDescriptorSets(commands, VK_PIPELINE_BIND_POINT_COMPUTE, computeLayout_, 0, 1, &computeSets_[h][1], 0, nullptr);
-      vkCmdDispatch(commands, (width_ + 7) / 8, (height_ + 7) / 8, 1);
-      // output: compute write -> the copy to the renderer's texture; next history: compute write -> next frame's reads
-      VkMemoryBarrier memory{VK_STRUCTURE_TYPE_MEMORY_BARRIER};
-      memory.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT; memory.dstAccessMask = VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_TRANSFER_READ_BIT;
-      vkCmdPipelineBarrier(commands, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT | VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
-                           0, 1, &memory, 0, nullptr, 0, nullptr);
-      writeStamp(commands, h, kCompositeEnd);
-      VK_CHECK(vkEndCommandBuffer(commands));
     }
   }
 }
@@ -424,7 +428,7 @@ void NrPass::record(void* commandBuffer, const Frame& frame, const GpuImage& col
           VK_ACCESS_MEMORY_WRITE_BIT, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_ACCESS_SHADER_READ_BIT);
   barrier(commands, velocity_.image, (VkImageLayout)velocity.layout, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
           VK_ACCESS_MEMORY_WRITE_BIT, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_ACCESS_SHADER_READ_BIT);
-  writeStamp(commands, h, kSceneEnd);
+  if (frame.collectTimings) writeStamp(commands, h, kSceneEnd);
   // motion vectors: (id, depth, motion bits) -> rgba16f: current -> previous in uv units, and whether it is on screen
   vkCmdBindPipeline(commands, VK_PIPELINE_BIND_POINT_COMPUTE, unpackPipeline_);
   vkCmdBindDescriptorSets(commands, VK_PIPELINE_BIND_POINT_COMPUTE, unpackLayout_, 0, 1, &unpackSet_, 0, nullptr);
@@ -438,7 +442,7 @@ void NrPass::record(void* commandBuffer, const Frame& frame, const GpuImage& col
   motionBarrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT; motionBarrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
   vkCmdPipelineBarrier(commands, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, 0, 1, &motionBarrier, 0, nullptr, 0, nullptr);
   // preprocess -> network -> composite (pre-recorded)
-  vkCmdExecuteCommands(commands, 1, &computeCommands_[h][frame.enabled ? 1 : 0]);
+  vkCmdExecuteCommands(commands, 1, &computeCommands_[h][frame.enabled ? 1 : 0][frame.collectTimings ? 1 : 0]);
   // the composited output -> the renderer's texture (sampled by its present view)
   VkImage target = (VkImage)(uintptr_t)output.image;
   barrier(commands, target, (VkImageLayout)output.layout, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,

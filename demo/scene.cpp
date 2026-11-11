@@ -32,6 +32,7 @@
 #include <utils/EntityManager.h>
 
 #include "json.h"
+#include "client_controls.h"
 
 using namespace filament;
 using namespace filament::math;
@@ -77,6 +78,7 @@ SceneView parseSceneView(const std::string& viewJsonPath, const std::string& dir
   SceneView view;
   view.directory = directory;
   json::Value root = json::Parser(readFile(viewJsonPath)).parse();
+  view.hasLightingSettings = root.has("sun") || root.has("environment") || root.has("environmentIntensity") || root.has("environmentRotation");
   view.name = root.has("name") ? root["name"].str() : fs::path(directory).filename().string();
   view.model = root.has("model") ? (fs::path(directory) / root["model"].str()).string() : findFile(directory, {".gltf", ".glb"});
   view.environment = root.has("environment") ? (fs::path(directory) / root["environment"].str()).string() : findFile(directory, {".hdr"});
@@ -226,10 +228,19 @@ LoadedScene::LoadedScene(Engine& engine, const SceneView& view) : engine_(engine
 
   // ---- the lighting
   if (!view.environment.empty()) loadEnvironment(view.environment);
+  const bool fallbackLighting = client::needsFallbackLighting(lights_,!view.environment.empty(),view.hasSun,view.hasLightingSettings);
+  if (fallbackLighting) {
+    const float3 neutralIrradiance{0.8f,0.8f,0.8f};
+    indirectLight_ = IndirectLight::Builder().irradiance(1,&neutralIrradiance).intensity(view.environmentIntensity).build(engine);
+    scene_->setIndirectLight(indirectLight_);
+    view_.hasSun = true;
+    fprintf(stderr,"[scene] bare asset: neutral ambient and directional key light\n");
+  }
   colorSkybox_ = Skybox::Builder().color({view.background, 1.0f}).build(engine);
   setBackgroundEnvironment(view.backgroundEnvironment && skybox_);
-  if (view.hasSun) {
+  if (view.hasSun || fallbackLighting) {
     utils::Entity sun = utils::EntityManager::get().create();
+    sun_ = sun.getId();
     LightManager::Builder(LightManager::Type::DIRECTIONAL)
         .color({1.0f, 1.0f, 1.0f})
         .intensity(view.sunIntensity)
@@ -237,7 +248,7 @@ LoadedScene::LoadedScene(Engine& engine, const SceneView& view) : engine_(engine
         .castShadows(true)
         .build(engine, sun);
     scene_->addEntity(sun);
-    sun_ = sun.getId();
+    ++lights_;
   }
   fprintf(stderr, "[scene] %s: %zu renderables, %zu lights, %zu animations, bounds radius %.2f\n", view.name.c_str(), renderables_, lights_,
           animator_ ? animator_->getAnimationCount() : 0, radius_);
@@ -261,12 +272,14 @@ void LoadedScene::loadEnvironment(const std::string& path) {
       .sampler(Texture::Sampler::SAMPLER_2D)
       .usage(Texture::Usage::DEFAULT | Texture::Usage::GEN_MIPMAPPABLE)
       .build(engine_);
+  const auto destroyTexture = [this](Texture* texture) { engine_.destroy(texture); };
+  std::unique_ptr<Texture,decltype(destroyTexture)> equirectOwner(equirect,destroyTexture);
   equirect->setImage(engine_, 0, std::move(buffer));
   IBLPrefilterContext context(engine_);
   IBLPrefilterContext::EquirectangularToCubemap equirectangularToCubemap(context);
   IBLPrefilterContext::SpecularFilter specularFilter(context);
   environmentCubemap_ = equirectangularToCubemap(equirect);
-  engine_.destroy(equirect);
+  equirectOwner.reset();
   reflections_ = specularFilter(environmentCubemap_);
   indirectLight_ = IndirectLight::Builder().reflections(reflections_).intensity(view_.environmentIntensity).build(engine_);
   setEnvironmentRotation(view_.environmentRotation);

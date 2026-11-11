@@ -9,6 +9,10 @@
 #define SDL_MAIN_HANDLED
 #include <SDL.h>
 #include <SDL_syswm.h>
+// SDL_syswm includes X11, whose Success macro collides with Filament enums.
+#ifdef Success
+#undef Success
+#endif
 
 #include <filagui/ImGuiHelper.h>
 #include <filament/Camera.h>
@@ -44,6 +48,7 @@
 #include <iomanip>
 #include <stdexcept>
 #include <string>
+#include <sstream>
 #include <vector>
 
 #include "client_controls.h"
@@ -415,6 +420,7 @@ int main(int argc, char** argv) {
   auto loadScene = [&](int index) {
     engine->flushAndWait();
     const SceneView& view = scenes[index];
+    const bool initialLoad = !loaded;
     try {
       client::validateSceneFile(view.model);
       // Construct the replacement before discarding the current scene.
@@ -441,13 +447,14 @@ int main(int argc, char** argv) {
       resetCamera();
     }
     fps.moveSpeed = view.moveSpeed > 0 ? view.moveSpeed : std::max(length(fps.orbitTarget - fps.position), 0.1f);
-    if (!options.viewOverride.empty()) {
+    if (initialLoad && !options.viewOverride.empty()) {
       float v[7] = {0, 0, 0, 0, 0, 0, fps.fov};
       sscanf(options.viewOverride.c_str(), "%f,%f,%f,%f,%f,%f,%f", &v[0], &v[1], &v[2], &v[3], &v[4], &v[5], &v[6]);
       fps.lookAt({v[0], v[1], v[2]}, {v[3], v[4], v[5]});
       fps.fov = v[6];
     }
-    animationIndex = options.animation;
+    const auto* newAnimator = loaded->animator();
+    animationIndex = client::normalizeAnimationIndex(options.animation,newAnimator ? newAnimator->getAnimationCount() : 0);
     nr->resetHistory();
     return true;
   };
@@ -863,13 +870,16 @@ int main(int argc, char** argv) {
   // ---- shutdown
   engine->flushAndWait();
   int exitCode = 0;
+  if (benchmarking && nr->chainTimedOut()) benchmarkError = "benchmark invalid: GPU chained wait timed out during final drain";
   if (benchmarking) {
     if (!benchmark.complete() || !benchmarkError.empty()) {
       if (benchmarkError.empty()) benchmarkError = "benchmark interrupted before collecting all samples";
       fprintf(stderr,"[benchmark] %s (wall %zu, GPU %zu)\n",benchmarkError.c_str(),benchmark.frameMs.size(),benchmark.networkMs.size());
-      std::ofstream output(options.benchmarkOutput);
-      output << "{\n  \"complete\": false,\n  \"error\": " << std::quoted(benchmarkError)
+      std::ostringstream output;
+      output << "{\n  \"complete\": false,\n  \"error\": " << client::jsonQuote(benchmarkError)
              << ",\n  \"wall_samples\": " << benchmark.frameMs.size() << ", \"gpu_samples\": " << benchmark.networkMs.size() << "\n}\n";
+      try { client::writeTextFile(options.benchmarkOutput,output.str()); }
+      catch (const std::exception& e) { fprintf(stderr,"[benchmark] %s\n",e.what()); }
       exitCode = 3;
     } else {
       VkPhysicalDeviceDriverProperties driver{VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PROPERTIES};
@@ -880,21 +890,22 @@ int main(int argc, char** argv) {
       const auto wall = client::summarize(benchmark.frameMs);
       const auto gpu = client::summarize(benchmark.gpuFrameMs);
       const auto network = client::summarize(benchmark.networkMs);
-      std::ofstream output(options.benchmarkOutput);
-      // std::quoted escapes JSON quotes/backslashes in device names and paths.
-      output << std::setprecision(9) << "{\n  \"complete\": true,\n  \"gpu\": " << std::quoted(nr->deviceName())
+      std::ostringstream output;
+      // Escape POSIX path control characters as well as JSON quotes/backslashes.
+      output << std::setprecision(9) << "{\n  \"complete\": true,\n  \"gpu\": " << client::jsonQuote(nr->deviceName())
              << ",\n  \"driver_version_raw\": " << properties.driverVersion
-             << ",\n  \"driver_name\": " << std::quoted(driver.driverName) << ",\n  \"driver_info\": " << std::quoted(driver.driverInfo)
+             << ",\n  \"driver_name\": " << client::jsonQuote(driver.driverName) << ",\n  \"driver_info\": " << client::jsonQuote(driver.driverInfo)
              << ",\n  \"backend\": \"Vulkan VK_NV_cuda_kernel_launch / FP8 Tensor Core PTX\",\n  \"nr_enabled\": true,\n  \"width\": " << width << ", \"height\": " << height
              << ",\n  \"window_width\": " << drawableWidth << ", \"window_height\": " << drawableHeight
-             << ",\n  \"scene\": " << std::quoted(scenes[selectedScene].model)
+             << ",\n  \"scene\": " << client::jsonQuote(scenes[selectedScene].model)
              << ",\n  \"temporal_enabled\": " << (controls.temporal ? "true" : "false")
              << ",\n  \"warmup_frames\": " << options.benchmarkWarmup << ", \"samples\": " << options.benchmarkFrames
              << ",\n  \"frame_wall_ms\": {\"median\": " << wall.median << ", \"p95\": " << wall.p95
              << "},\n  \"frame_gpu_ms\": {\"median\": " << gpu.median << ", \"p95\": " << gpu.p95
              << "},\n  \"network_gpu_ms\": {\"median\": " << network.median << ", \"p95\": " << network.p95 << "}\n}\n";
-      if (!output) { fprintf(stderr,"[benchmark] cannot write %s\n",options.benchmarkOutput.c_str()); exitCode = 3; }
-      else fprintf(stderr,"[benchmark] %s: wall median %.3f P95 %.3f ms, network median %.3f P95 %.3f ms\n",options.benchmarkOutput.c_str(),wall.median,wall.p95,network.median,network.p95);
+      try { client::writeTextFile(options.benchmarkOutput,output.str()); }
+      catch (const std::exception& e) { fprintf(stderr,"[benchmark] %s\n",e.what()); exitCode = 3; }
+      if (exitCode == 0) fprintf(stderr,"[benchmark] %s: wall median %.3f P95 %.3f ms, network median %.3f P95 %.3f ms\n",options.benchmarkOutput.c_str(),wall.median,wall.p95,network.median,network.p95);
     }
   }
   {

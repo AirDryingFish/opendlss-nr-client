@@ -44,6 +44,38 @@ int main() {
   std::vector<double> samples; for (int i=1; i<=120; ++i) samples.push_back(i);
   auto stats = summarize(samples);
   assert(close(stats.median,60.5) && close(stats.p95,114));
+  // Catch overwriting source metadata while a parity's frame0 query is still unavailable at frame2.
+  TimingSlot slot;
+  assert(slot.reserve(0,true));
+  assert(!slot.consume(false,0));
+  assert(!slot.reserve(2,false));
+  assert(slot.sourceFrame == 0 && slot.enabled);
+  assert(slot.consume(true,100));
+  BenchmarkSamples lagged(2,120);
+  lagged.addGpu(slot.sourceFrame,true,slot.enabled,10,2);
+  assert(lagged.networkMs.empty());
+  assert(slot.reserve(4,false));
+  assert(!slot.consume(true,100)); // GPU has not executed reset; previous result remains available.
+  assert(!slot.reserve(6,true));
+  assert(slot.consume(true,200));
+  assert(slot.sourceFrame == 4 && !slot.enabled);
+  assert(slot.reserve(8,true));
+  assert(slot.consume(true,300));
+  lagged.addGpu(slot.sourceFrame,true,slot.enabled,10,2);
+  assert(lagged.networkMs.size() == 1);
+  assert(normalizeAnimationIndex(2,3) == 2);
+  assert(normalizeAnimationIndex(2,1) == 0);
+  assert(normalizeAnimationIndex(2,0) == 0);
+  assert(jsonQuote("a\nb\tc\r\"\\") == "\"a\\nb\\tc\\r\\\"\\\\\"");
+  bool fullRejected = false;
+  try { writeTextFile("/dev/full","small buffered benchmark result"); } catch (...) { fullRejected = true; }
+  assert(fullRejected);
+  // Catch black bare-PBR imports, while preserving authored or explicit lighting.
+  assert(needsFallbackLighting(0,false,false,false));
+  assert(!needsFallbackLighting(1,false,false,false));
+  assert(!needsFallbackLighting(0,true,false,false));
+  assert(!needsFallbackLighting(0,false,true,false));
+  assert(!needsFallbackLighting(0,false,false,true));
   // Catch counting stale/parity-lagged/NR-off GPU timestamps as warm samples.
   BenchmarkSamples benchmark{30,120};
   benchmark.addGpu(29,true,true,10,2);

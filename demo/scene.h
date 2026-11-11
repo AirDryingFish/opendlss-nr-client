@@ -39,6 +39,7 @@ struct SceneView {
   filament::math::float3 background{0, 0, 0};
   bool backgroundEnvironment = false;
   bool hasCamera = false;
+  bool hasLightingSettings = false;
 };
 
 // every directory under `root` with a view.json, sorted by name

@@ -1,5 +1,6 @@
 """CLI tests: catch lost mesh scale, unnormalized weights and wrong normal transforms."""
 import copy
+import hashlib
 import json
 import math
 from pathlib import Path
@@ -99,6 +100,20 @@ class BakeTests(unittest.TestCase):
             self.assertEqual(pa['min'], [850.0, 0.0, 0.0])
             self.assertEqual(pa['max'], [18350.0, 12500.0, 0.0])
             self.assertTrue(all(v.get('byteOffset', 0) % 4 == 0 for v in doc['bufferViews']))
+
+    def test_rejects_hardlinked_output_without_changing_original(self):
+        with tempfile.TemporaryDirectory() as folder:
+            source, output = Path(folder) / 'source.glb', Path(folder) / 'alias.glb'
+            write_fixture(source)
+            original = source.read_bytes()
+            output.hardlink_to(source)
+            self.assertTrue(source.samefile(output))
+            result = self.run_bake(source, output)
+            self.assertNotEqual(result.returncode, 0, result.stdout)
+            self.assertEqual(source.read_bytes(), original)
+            self.assertEqual(hashlib.sha256(source.read_bytes()).digest(),
+                             hashlib.sha256(original).digest())
+            self.assertEqual(output.read_bytes(), original)
 
     def test_rejects_animation_without_writing_output(self):
         with tempfile.TemporaryDirectory() as folder:

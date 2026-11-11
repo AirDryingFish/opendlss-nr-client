@@ -267,7 +267,8 @@ def main():
     parser.add_argument('input', type=Path)
     parser.add_argument('output', type=Path)
     args = parser.parse_args()
-    if args.input.resolve() == args.output.resolve():
+    if (args.input.resolve() == args.output.resolve() or
+            (args.output.exists() and args.output.samefile(args.input))):
         parser.error('Output must differ from the original input')
     try:
         doc, binary = load_glb(args.input)

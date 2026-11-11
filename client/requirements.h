@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 namespace nrclient {
-struct Device { std::string name; uint32_t vendorId=0,apiMajor=0,apiMinor=0,subgroupSize=0; bool graphicsComputeQueue=false; std::set<std::string> extensions,features; };
+struct Device { std::string name; uint32_t vendorId=0,apiMajor=0,apiMinor=0,subgroupSize=0,cudaMajor=0,cudaMinor=0; bool graphicsComputeQueue=false; std::set<std::string> extensions,features; };
 inline const std::vector<std::string>& requiredExtensions() {
  static const std::vector<std::string> values{
   "VK_KHR_cooperative_matrix", "VK_EXT_shader_float8",
@@ -28,6 +28,7 @@ inline const std::vector<std::string>& requiredFeatures() {
 inline std::vector<std::string> missingRequirements(const Device& device) {
  std::vector<std::string> missing;
  if(device.vendorId!=0x10de)missing.emplace_back("NVIDIA GPU required by native PTX backend");
+ if(device.cudaMajor*10+device.cudaMinor<89)missing.emplace_back("CUDA compute capability 8.9 (Ada) or newer required");
  if(device.apiMajor<1 || (device.apiMajor==1 && device.apiMinor<3))missing.emplace_back("Vulkan 1.3 required");
  if(!device.graphicsComputeQueue)missing.emplace_back("graphics + compute queue with timestamps");
  if(device.subgroupSize!=32)missing.emplace_back("subgroup size 32 required");

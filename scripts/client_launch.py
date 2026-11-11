@@ -102,7 +102,7 @@ def main(arguments=None):
               'Benchmark: --benchmark-warmup 30 --benchmark-frames 120 --benchmark-output result.json')
         return 0
     environment = os.environ.copy()
-    environment.setdefault('SDL_VIDEODRIVER', 'x11')
+    environment['SDL_VIDEODRIVER'] = 'x11'
     environment['LD_LIBRARY_PATH'] = str(root / 'build/lib') + (':' + environment['LD_LIBRARY_PATH'] if environment.get('LD_LIBRARY_PATH') else '')
     doctor = root / 'build/nr-doctor'
     if not doctor.is_file():

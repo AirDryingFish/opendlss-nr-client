@@ -1,5 +1,9 @@
+#ifndef VK_ENABLE_BETA_EXTENSIONS
+#define VK_ENABLE_BETA_EXTENSIONS
+#endif
 #include <vulkan/vulkan.h>
 #include "requirements.h"
+#include <algorithm>
 #include <cstdio>
 #include <iomanip>
 #include <iostream>
@@ -24,6 +28,11 @@ Probe probe(VkPhysicalDevice gpu){
  uint32_t count=0;checked(vkEnumerateDeviceExtensionProperties(gpu,nullptr,&count,nullptr),"enumerate extensions");
  std::vector<VkExtensionProperties> extensions(count);checked(vkEnumerateDeviceExtensionProperties(gpu,nullptr,&count,extensions.data()),"enumerate extensions");
  for(const auto& extension:extensions)d.extensions.insert(extension.extensionName);
+ if(d.extensions.contains("VK_NV_cuda_kernel_launch")){
+  VkPhysicalDeviceCudaKernelLaunchPropertiesNV cuda{VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CUDA_KERNEL_LAUNCH_PROPERTIES_NV};
+  properties.pNext=&cuda;vkGetPhysicalDeviceProperties2(gpu,&properties);
+  d.cudaMajor=cuda.computeCapabilityMajor;d.cudaMinor=cuda.computeCapabilityMinor;
+ }
  vkGetPhysicalDeviceQueueFamilyProperties(gpu,&count,nullptr);std::vector<VkQueueFamilyProperties> queues(count);vkGetPhysicalDeviceQueueFamilyProperties(gpu,&count,queues.data());
  for(const auto& q:queues)if(q.queueCount && (q.queueFlags&VK_QUEUE_GRAPHICS_BIT) && (q.queueFlags&VK_QUEUE_COMPUTE_BIT) && q.timestampValidBits)d.graphicsComputeQueue=true;
  VkPhysicalDeviceFeatures2 base{VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2};
@@ -72,7 +81,8 @@ int main(int argc,char** argv){
   if(json){std::cout<<"{\"supported\":"<<(selected>=0?"true":"false")<<",\"backend\":\"native-vulkan-ptx-tensor-core\",\"selectedDevice\":"<<selected<<",\"devices\":[";
    for(size_t i=0;i<results.size();++i){if(i)std::cout<<',';const auto& p=results[i];std::cout<<"{\"name\":"<<quote(p.device.name)<<",\"driver\":"<<quote(p.driver)<<",\"vendorId\":"<<p.device.vendorId<<",\"missing\":[";for(size_t j=0;j<p.missing.size();++j){if(j)std::cout<<',';std::cout<<quote(p.missing[j]);}std::cout<<"]}";}std::cout<<"]}\n";
   }else{
-   for(const auto& p:results){std::cout<<p.device.name<<" / driver "<<p.driver<<'\n';if(p.missing.empty())std::cout<<"  Native NR prerequisites supported. GPU execution is not benchmarked by this check.\n";else for(const auto& missing:p.missing)std::cout<<"  Missing: "<<missing<<'\n';}
+   const bool hasNvidia=std::any_of(results.begin(),results.end(),[](const auto& p){return p.device.vendorId==0x10de;});
+   for(const auto& p:results){if(hasNvidia&&p.device.vendorId!=0x10de)continue;std::cout<<p.device.name<<" / driver "<<p.driver<<" / CUDA capability "<<p.device.cudaMajor<<'.'<<p.device.cudaMinor<<'\n';if(p.missing.empty())std::cout<<"  Native NR prerequisites supported. GPU execution is not benchmarked by this check.\n";else for(const auto& missing:p.missing)std::cout<<"  Missing: "<<missing<<'\n';}
    if(selected<0)std::cout<<"Native NR cannot start. Install a driver exposing the required capabilities, reboot, then rerun scripts/check-gpu.sh. No fallback was used.\n";
   }
   vkDestroyInstance(instance,nullptr);return selected>=0?0:2;

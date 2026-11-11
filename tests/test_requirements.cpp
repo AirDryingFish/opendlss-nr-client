@@ -5,6 +5,7 @@ int main() {
  using namespace nrclient;
  Device d; d.name="test NVIDIA"; d.vendorId=0x10de; d.apiMajor=1; d.apiMinor=3;
  d.graphicsComputeQueue=true; d.subgroupSize=32;
+ d.cudaMajor=8; d.cudaMinor=9;
  d.extensions.insert(requiredExtensions().begin(),requiredExtensions().end());
  d.features.insert(requiredFeatures().begin(),requiredFeatures().end());
  assert(missingRequirements(d).empty());
@@ -16,5 +17,6 @@ int main() {
  assert(!missingRequirements(d).empty());
  d.vendorId=0x10de; d.subgroupSize=64; assert(!missingRequirements(d).empty());
  d.subgroupSize=32; d.graphicsComputeQueue=false; assert(!missingRequirements(d).empty());
- std::cout << "requirements: 6 cases passed\n";
+ d.graphicsComputeQueue=true; d.cudaMinor=6; assert(!missingRequirements(d).empty());
+ std::cout << "requirements: 7 cases passed\n";
 }

@@ -9,6 +9,9 @@ int main() {
  d.extensions.insert(requiredExtensions().begin(),requiredExtensions().end());
  d.features.insert(requiredFeatures().begin(),requiredFeatures().end());
  assert(missingRequirements(d).empty());
+ Device incomplete=d; incomplete.features.erase("shaderFloat8");
+ assert(firstEligibleDevice(std::vector<Device>{incomplete,d}, [](const Device& gpu){return gpu;})==1);
+ assert(firstEligibleDevice(std::vector<Device>{incomplete}, [](const Device& gpu){return gpu;})==-1);
  d.extensions.erase("VK_EXT_shader_float8");
  assert(missingRequirements(d)==std::vector<std::string>{"extension: VK_EXT_shader_float8"});
  d.extensions.insert("VK_EXT_shader_float8"); d.features.erase("shaderFloat8CooperativeMatrix");
@@ -18,5 +21,5 @@ int main() {
  d.vendorId=0x10de; d.subgroupSize=64; assert(!missingRequirements(d).empty());
  d.subgroupSize=32; d.graphicsComputeQueue=false; assert(!missingRequirements(d).empty());
  d.graphicsComputeQueue=true; d.cudaMinor=6; assert(!missingRequirements(d).empty());
- std::cout << "requirements: 7 cases passed\n";
+ std::cout << "requirements: 9 cases passed\n";
 }

@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "vk_context.h"
+#include "../client/vulkan_probe.h"
 
 namespace {
 
@@ -74,25 +75,15 @@ VulkanDevice::VulkanDevice() {
     messenger_ = (uint64_t)messenger;
   }
 
-  // ---- the physical device: the first one exposing the NR kernels' extensions
+  // ---- the physical device: the same full eligibility probe as nr-doctor
   uint32_t count = 0;
   VK_CHECK(vkEnumeratePhysicalDevices(instance, &count, nullptr));
   std::vector<VkPhysicalDevice> devices(count);
   VK_CHECK(vkEnumeratePhysicalDevices(instance, &count, devices.data()));
   vk::DeviceRequirements requirements;
-  VkPhysicalDevice physical = VK_NULL_HANDLE;
-  for (VkPhysicalDevice candidate : devices) {
-    uint32_t extensionCount = 0;
-    vkEnumerateDeviceExtensionProperties(candidate, nullptr, &extensionCount, nullptr);
-    std::vector<VkExtensionProperties> extensions(extensionCount);
-    vkEnumerateDeviceExtensionProperties(candidate, nullptr, &extensionCount, extensions.data());
-    size_t found = 0;
-    for (const char* wanted : requirements.extensions)
-      for (const auto& extension : extensions)
-        if (!strcmp(extension.extensionName, wanted)) { found++; break; }
-    if (found == requirements.extensions.size()) { physical = candidate; break; }
-  }
-  if (!physical) throw std::runtime_error("no Vulkan device with the NR kernels' extensions (cooperative matrices, fp8, CUDA kernel launch)");
+  const int selected = nrclient::selectPhysicalDevice(devices);
+  if (selected < 0) throw std::runtime_error("no Vulkan device satisfies native NR requirements; run scripts/check-gpu.sh");
+  VkPhysicalDevice physical = devices[selected];
   VkPhysicalDeviceProperties properties;
   vkGetPhysicalDeviceProperties(physical, &properties);
   deviceName_ = properties.deviceName;

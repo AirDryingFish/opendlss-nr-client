@@ -1,4 +1,5 @@
 #include "vk_context.h"
+#include "../client/vulkan_probe.h"
 
 #include <algorithm>
 #include <atomic>
@@ -71,23 +72,17 @@ Context::Context() {
   if (!count) throw std::runtime_error("no Vulkan physical devices");
   std::vector<VkPhysicalDevice> devices(count);
   VK_CHECK(vkEnumeratePhysicalDevices(instance_, &count, devices.data()));
-  // Prefer a discrete device exposing FP8 cooperative matrices.
-  for (VkPhysicalDevice candidate : devices) {
-    uint32_t extensionCount = 0;
-    vkEnumerateDeviceExtensionProperties(candidate, nullptr, &extensionCount, nullptr);
-    std::vector<VkExtensionProperties> extensions(extensionCount);
-    vkEnumerateDeviceExtensionProperties(candidate, nullptr, &extensionCount, extensions.data());
-    bool coop = false, fp8 = false;
-    for (const auto& extension : extensions) {
-      if (!strcmp(extension.extensionName, VK_KHR_COOPERATIVE_MATRIX_EXTENSION_NAME)) coop = true;
-      if (!strcmp(extension.extensionName, VK_EXT_SHADER_FLOAT8_EXTENSION_NAME)) fp8 = true;
-      if (getenv("DLSS5VK_LIST_EXTENSIONS") && (strstr(extension.extensionName, "cooperative") || strstr(extension.extensionName, "NV_")))
-        printf("  device extension: %s (v%u)\n", extension.extensionName, extension.specVersion);
-    }
-    if (coop && fp8) { physical_ = candidate; break; }
-  }
-  if (!physical_) throw std::runtime_error("no device with VK_KHR_cooperative_matrix + VK_EXT_shader_float8");
+  const int selected = nrclient::selectPhysicalDevice(devices);
+  if (selected < 0) throw std::runtime_error("no Vulkan device satisfies native NR requirements; run scripts/check-gpu.sh");
+  physical_ = devices[selected];
   if (getenv("DLSS5VK_LIST_EXTENSIONS")) {
+    uint32_t extensionCount = 0;
+    VK_CHECK(vkEnumerateDeviceExtensionProperties(physical_, nullptr, &extensionCount, nullptr));
+    std::vector<VkExtensionProperties> extensions(extensionCount);
+    VK_CHECK(vkEnumerateDeviceExtensionProperties(physical_, nullptr, &extensionCount, extensions.data()));
+    for (const auto& extension : extensions)
+      if (strstr(extension.extensionName, "cooperative") || strstr(extension.extensionName, "NV_"))
+        printf("  device extension: %s (v%u)\n", extension.extensionName, extension.specVersion);
     VkPhysicalDeviceCooperativeMatrix2FeaturesNV cm2{VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COOPERATIVE_MATRIX_2_FEATURES_NV};
     VkPhysicalDeviceFeatures2 f2{VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2};
     f2.pNext = &cm2;

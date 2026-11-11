@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
 """Launch the native renderer with checked resources and literal argument vectors."""
 import json
+import importlib.util
 import os
 from pathlib import Path
 import subprocess
 import sys
+
+# This module is a pure manifest: importing it never invokes shader/PTX generators.
+_spec = importlib.util.spec_from_file_location('kernel_resources', Path(__file__).parent / 'linux/kernel_resources.py')
+_resources = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_resources)
 
 VALUE_FLAGS = {
     '--model', '--kernels', '--scenes', '--capture', '--view', '--width', '-w',
@@ -64,21 +70,34 @@ def check_resources(root, arguments):
     binary = Path(arguments[0])
     if not binary.is_file() or not os.access(binary, os.X_OK):
         raise ValueError('Native renderer is not built. Run scripts/linux/build.sh first.')
-    for option, resource in [('--model', 'manifest.json'), ('--kernels', 'ops.spv')]:
-        directory = Path(arguments[arguments.index(option) + 1])
-        if not (directory / resource).is_file():
-            raise ValueError('Missing ' + str(directory / resource))
-        if option == '--model':
-            with (directory / resource).open(encoding='utf8') as stream:
-                manifest = json.load(stream)
-            if manifest.get('totals', {}).get('blockCount') != 71 or len(manifest.get('tensors', [])) != 153:
-                raise ValueError('Incompatible model: expected 71 blocks and 153 tensors.')
-            for stage in manifest.get('stages', []):
-                target = (directory / 'model' / stage['file']).resolve()
-                if not target.is_relative_to(directory.resolve() / 'model'):
-                    raise ValueError('Model stage path escapes model directory.')
-                if not target.is_file() or target.stat().st_size != stage['packedByteLength']:
-                    raise ValueError('Missing or truncated model stage: ' + str(target))
+    directory = Path(arguments[arguments.index('--model') + 1])
+    manifest_path = directory / 'manifest.json'
+    if not manifest_path.is_file():
+        raise ValueError('Missing ' + str(manifest_path))
+    with manifest_path.open(encoding='utf8') as stream:
+        manifest = json.load(stream)
+    if (not isinstance(manifest, dict) or not isinstance(manifest.get('totals'), dict)
+            or manifest['totals'].get('blockCount') != 71
+            or not isinstance(manifest.get('tensors'), list) or len(manifest['tensors']) != 153
+            or not all(isinstance(tensor, dict) and tensor for tensor in manifest['tensors'])
+            or not isinstance(manifest.get('stages'), list) or len(manifest['stages']) != 11):
+        raise ValueError('Incompatible model manifest: expected 71 blocks, 153 tensors and 11 stages.')
+    for stage in manifest['stages']:
+        if (not isinstance(stage, dict) or not isinstance(stage.get('file'), str) or not stage['file']
+                or type(stage.get('packedByteLength')) is not int or stage['packedByteLength'] <= 0):
+            raise ValueError('Incompatible model stage manifest.')
+        target = (directory / 'model' / stage['file']).resolve()
+        if not target.is_relative_to(directory.resolve() / 'model'):
+            raise ValueError('Model stage path escapes model directory.')
+        if not target.is_file() or target.stat().st_size != stage['packedByteLength']:
+            raise ValueError('Missing or truncated model stage: ' + str(target))
+    kernels = Path(arguments[arguments.index('--kernels') + 1])
+    required = [kernels / (name + '.spv') for name in _resources.SPIRV_MODULES]
+    ptx = Path(os.environ.get('DLSS5VK_PTX_DIR', str(kernels / '../ptx')))
+    required.extend(arg for job in _resources.ptx_jobs(ptx) for arg in job if isinstance(arg, Path))
+    for resource in required:
+        if not resource.is_file():
+            raise ValueError('Missing kernel resource: ' + str(resource))
     # Native code does the stage SHA-256 verification; avoid a second full hash pass here.
     for resource in ('build/data/materials/present.filamat',
                      'build/data/shaders/nr_preprocess.comp.spv',

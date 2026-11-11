@@ -36,4 +36,12 @@ inline std::vector<std::string> missingRequirements(const Device& device) {
  for(const auto& value:requiredFeatures())if(!device.features.contains(value))missing.push_back("feature: "+value);
  return missing;
 }
+// Probe every candidate against the same predicate used by diagnostics.
+template<class Handle, class ProbeDevice>
+int firstEligibleDevice(const std::vector<Handle>& devices, ProbeDevice probe) {
+ for (size_t i=0; i<devices.size(); ++i)
+  if (missingRequirements(probe(devices[i])).empty()) return static_cast<int>(i);
+ return -1;
+}
+
 }

@@ -182,10 +182,13 @@ class Kernels {
   ChainTimeouts chainTimeouts() const;
   void resetChainTimeouts();
   struct Chain {
-    VkDeviceAddress waitRows = 0; uint32_t waitExpected = 0, waitShiftY = 0;   // window-row counters (attention output)
-    VkDeviceAddress waitBands = 0; uint32_t waitMul = 1, waitGroupRows = 64;   // row-band counters (FFN / projection output), signals per row group, the producer's rows per workgroup
-    VkDeviceAddress signal = 0;                                                // counters to increment
-    bool chained = false;                                                      // no barrier after this launch
+    // Explicit initialization keeps nested default arguments valid on Clang/GCC.
+    Chain() : waitRows(0), waitExpected(0), waitShiftY(0), waitBands(0),
+              waitMul(1), waitGroupRows(64), signal(0), chained(false) {}
+    VkDeviceAddress waitRows; uint32_t waitExpected, waitShiftY;   // window-row counters (attention output)
+    VkDeviceAddress waitBands; uint32_t waitMul, waitGroupRows;    // row-band counters, producer rows per workgroup
+    VkDeviceAddress signal;                                     // counters to increment
+    bool chained;                                               // no barrier after this launch
   };
   struct ExpertFfnArgs {
     const Activation* input = nullptr;     // block state, E4 [rows][channels]; also the skip

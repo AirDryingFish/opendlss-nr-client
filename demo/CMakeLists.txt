@@ -17,6 +17,12 @@ endif()
 string(TOLOWER "${CMAKE_SYSTEM_PROCESSOR}" ARCH)
 string(REPLACE "amd64" "x86_64" ARCH "${ARCH}")
 set(FILAMENT_LIB ${FILAMENT}/lib/${ARCH})
+if (UNIX AND NOT APPLE)
+    # Filament installs Linux libraries directly in lib/ on some releases.
+    if (EXISTS "${FILAMENT}/lib/libfilament.a")
+        set(FILAMENT_LIB ${FILAMENT}/lib)
+    endif()
+endif()
 if (MSVC)
     # Filament's static libraries are built with /MT
     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
@@ -43,7 +49,7 @@ add_library(demo_filament_vulkan STATIC filament_vulkan.cpp)
 target_include_directories(demo_filament_vulkan PRIVATE ${FILAMENT}/include ${CMAKE_CURRENT_SOURCE_DIR})
 
 # ---- the application
-set(DEMO_SOURCES main.cpp scene.cpp crash_report.cpp)
+set(DEMO_SOURCES main.cpp scene.cpp crash_report.cpp client_controls.cpp)
 if (APPLE)
     list(APPEND DEMO_SOURCES native_window_cocoa.mm)
 endif()
@@ -51,16 +57,29 @@ add_executable(dlss5-demo ${DEMO_SOURCES})
 # (the NR headers first: main.cpp reaches Vulkan through volk, never through Filament's copy of the headers)
 target_include_directories(dlss5-demo PRIVATE
     ${TOOLS}/Vulkan-Headers/include ${TOOLS}/volk ${ROOT}/src ${CMAKE_CURRENT_SOURCE_DIR}
-    ${FILAMENT}/include ${FILAMENT}/include/SDL2 ${FILAMENT}/include/imgui ${FILAMENT_SRC}/third_party/stb)
+    ${FILAMENT}/include ${FILAMENT}/include/SDL2 ${FILAMENT}/include/imgui ${FILAMENT_SRC}/third_party/stb ${FILAMENT_SRC}/third_party/cgltf)
 target_compile_definitions(dlss5-demo PRIVATE VK_NO_PROTOTYPES VK_ENABLE_BETA_EXTENSIONS)
 set(FILAMENT_LIBS
     filagui imgui gltfio_core uberarchive uberzlib ktxreader basis_transcoder dracodec meshoptimizer image
     filament-iblprefilter filament backend bluevk smol-v filabridge filaflat geometry mikktspace ibl
     utils abseil zstd stb getopt perfetto sdl2)
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    # Filament uses glibc getopt_long rather than installing its Windows shim.
+    list(REMOVE_ITEM FILAMENT_LIBS getopt)
+endif()
 foreach(lib ${FILAMENT_LIBS})
     list(APPEND FILAMENT_LIB_FILES ${FILAMENT_LIB}/${CMAKE_STATIC_LIBRARY_PREFIX}${lib}${CMAKE_STATIC_LIBRARY_SUFFIX})
 endforeach()
-target_link_libraries(dlss5-demo PRIVATE nr demo_filament_vulkan ${FILAMENT_LIB_FILES})
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    # Static Filament archives have mutual dependencies; GNU/LLVM linkers need
+    # a rescan group, unlike MSVC's archive lookup semantics.
+    target_link_libraries(dlss5-demo PRIVATE nr demo_filament_vulkan
+        "-Wl,--start-group" ${FILAMENT_LIB_FILES} "-Wl,--end-group")
+    # resgen assembly contains material data and needs no executable stack.
+    target_link_options(dlss5-demo PRIVATE "-Wl,-z,noexecstack")
+else()
+    target_link_libraries(dlss5-demo PRIVATE nr demo_filament_vulkan ${FILAMENT_LIB_FILES})
+endif()
 if (WIN32)
     target_link_libraries(dlss5-demo PRIVATE Shlwapi user32 gdi32 imm32 version winmm setupapi ole32 oleaut32 advapi32 shell32)
     set_target_properties(dlss5-demo PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE")
@@ -68,6 +87,7 @@ elseif (APPLE)
     target_link_libraries(dlss5-demo PRIVATE "-framework Cocoa" "-framework QuartzCore" "-framework Metal" "-framework IOKit"
         "-framework CoreVideo" "-framework Carbon" "-framework AudioToolbox" "-framework ForceFeedback" iconv)
 else()
-    target_link_libraries(dlss5-demo PRIVATE pthread dl X11)
+    target_compile_definitions(dlss5-demo PRIVATE FILAMENT_SUPPORTS_X11)
+    target_link_libraries(dlss5-demo PRIVATE pthread dl xcb X11)
 endif()
-set_target_properties(dlss5-demo PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${ROOT}/build/demo)
+set_target_properties(dlss5-demo PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${ROOT}/build/demo BUILD_RPATH "$ORIGIN/../lib")

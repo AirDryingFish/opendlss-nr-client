@@ -6,6 +6,7 @@
 
 #include <array>
 #include <cstdint>
+#include <cstring>
 #include <cstdio>
 #include <stdexcept>
 #include <string>

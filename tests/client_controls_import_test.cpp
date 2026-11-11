@@ -46,6 +46,29 @@ int main(int argc, char** argv) {
   try { client::validateSceneFile(write("oversize.gltf",skinFixture(256,true))); }
   catch (const std::exception& e) { rejected = std::string(e.what()).find("256") != std::string::npos; }
   assert(rejected);
+  // KTX2 rejection must cover actual bytes, declared format and BasisU sources.
+  const unsigned char ktxMagic[] = {0xab,0x4b,0x54,0x58,0x20,0x32,0x30,0xbb,0x0d,0x0a,0x1a,0x0a};
+  std::string ktx(reinterpret_cast<const char*>(ktxMagic),sizeof(ktxMagic));
+  ktx.resize(80,'\0');
+  write("compressed.bin",ktx);
+  write("declared.KTX2",std::string(reinterpret_cast<const char*>(png),sizeof(png)));
+  std::string embeddedKtx = imageFixture("{\"bufferView\":0,\"mimeType\":\"image/ktx2\"}");
+  embeddedKtx.pop_back(); embeddedKtx += ",\"buffers\":[{\"byteLength\":80}],\"bufferViews\":[{\"buffer\":0,\"byteLength\":80}]}";
+  std::string basisu = imageFixture("{\"uri\":\"compressed.bin\"}");
+  const auto source = basisu.find("\"textures\":[{\"source\":0}]");
+  basisu.replace(source,std::string("\"textures\":[{\"source\":0}]").size(),"\"textures\":[{\"extensions\":{\"KHR_texture_basisu\":{\"source\":0}}}]");
+  for (const auto& path : {
+      write("ktx-magic.gltf",imageFixture("{\"uri\":\"compressed.bin\"}")),
+      write("ktx-extension.gltf",imageFixture("{\"uri\":\"declared.KTX2\"}")),
+      write("ktx-mime.gltf",imageFixture("{\"uri\":\"texture%20name.png\",\"mimeType\":\"image/ktx2\"}")),
+      write("ktx-basisu.gltf",basisu),
+      write("ktx-embedded.glb",makeGlb(embeddedKtx,ktx)),
+      write("ktx-data.gltf",imageFixture("{\"uri\":\"data:image/ktx2;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVR4nGP4DwQACfsD/fteaysAAAAASUVORK5CYII=\"}"))}) {
+    rejected = false;
+    try { client::validateSceneFile(path); }
+    catch (const std::exception& e) { rejected = std::string(e.what()).find("PNG/JPEG") != std::string::npos; }
+    assert(rejected);
+  }
   write("damaged.png","not an image");
   std::string embedded = imageFixture("{\"bufferView\":0,\"mimeType\":\"image/png\"}");
   embedded.pop_back(); embedded += ",\"buffers\":[{\"byteLength\":3}],\"bufferViews\":[{\"buffer\":0,\"byteLength\":3}]}";

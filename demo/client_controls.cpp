@@ -11,13 +11,19 @@
 namespace client {
 namespace fs = std::filesystem;
 namespace {
+[[noreturn]] void rejectKtx2() {
+  throw std::runtime_error("KTX2 textures are not supported by this client; convert textures to PNG/JPEG before importing.");
+}
+std::string lowercase(std::string value) {
+  std::transform(value.begin(),value.end(),value.begin(),[](unsigned char c){ return char(std::tolower(c)); });
+  return value;
+}
 void validateImage(const std::vector<unsigned char>& bytes) {
-  // KTX2 decoding belongs to Filament's texture provider. Check its container
-  // signature/header here; PNG/JPEG and other stb images are fully decoded.
+  // Filament may swallow provider decode failures. Reject unsupported KTX2
+  // explicitly; PNG/JPEG and other stb images are fully decoded before commit.
   const unsigned char ktxMagic[] = {0xab,0x4b,0x54,0x58,0x20,0x32,0x30,0xbb,0x0d,0x0a,0x1a,0x0a};
   if (bytes.size() >= sizeof(ktxMagic) && std::memcmp(bytes.data(),ktxMagic,sizeof(ktxMagic)) == 0) {
-    if (bytes.size() < 80) throw std::runtime_error("truncated KTX2 image header");
-    return;
+    rejectKtx2();
   }
   if (bytes.empty() || bytes.size() > INT_MAX) throw std::runtime_error("invalid image size");
   int width = 0, height = 0, channels = 0;
@@ -46,19 +52,23 @@ void validateSceneFile(const std::string& path) {
   for (size_t i = 0; i < data->images_count; ++i) {
     const auto& image = data->images[i];
     bool referenced = false;
+    if (image.mime_type && lowercase(image.mime_type) == "image/ktx2") rejectKtx2();
     for (size_t t = 0; t < data->textures_count; ++t) {
       const auto& texture = data->textures[t];
-      referenced |= texture.image == &image || texture.basisu_image == &image || texture.webp_image == &image;
+      if (texture.basisu_image == &image) rejectKtx2();
+      referenced |= texture.image == &image || texture.webp_image == &image;
     }
     std::vector<unsigned char> bytes;
     if (image.uri && std::strncmp(image.uri,"data:",5) != 0) {
       std::string uri = image.uri;
       cgltf_decode_uri(uri.data()); uri.resize(std::strlen(uri.c_str()));
+      if (lowercase(fs::path(uri).extension().string()) == ".ktx2") rejectKtx2();
       const auto imagePath = fs::path(path).parent_path() / uri;
       std::ifstream file(imagePath,std::ios::binary);
       if (!file || file.peek() == std::ifstream::traits_type::eof()) throw std::runtime_error("cannot read glTF image " + imagePath.string());
       if (referenced) bytes.assign(std::istreambuf_iterator<char>(file),{});
     } else if (referenced && image.uri) {
+      if (lowercase(image.uri).rfind("data:image/ktx2;",0) == 0) rejectKtx2();
       const char* comma = std::strchr(image.uri,',');
       if (!comma || std::string(image.uri,size_t(comma-image.uri)).find(";base64") == std::string::npos) throw std::runtime_error("unsupported image data URI");
       const char* payload = comma+1;

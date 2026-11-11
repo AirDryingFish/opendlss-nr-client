@@ -80,6 +80,12 @@ struct TimingSlot {
     return true;
   }
 };
+// Metadata can be invalidated only after query reset commands have completed.
+template<size_t N, typename ResetAndWait>
+inline void resetTimingSlots(TimingSlot (&slots)[N], ResetAndWait resetAndWait) {
+  resetAndWait();
+  for (auto& slot : slots) slot = {};
+}
 inline bool needsFallbackLighting(size_t authoredLights, bool environment, bool sun, bool explicitSettings) {
   return authoredLights == 0 && !environment && !sun && !explicitSettings;
 }

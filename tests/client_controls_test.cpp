@@ -63,6 +63,21 @@ int main() {
   assert(slot.consume(true,300));
   lagged.addGpu(slot.sourceFrame,true,slot.enabled,10,2);
   assert(lagged.networkMs.size() == 1);
+  // Catch recreation clearing identities while old Vulkan results remain available.
+  TimingSlot recreated[2];
+  assert(recreated[0].reserve(10,true));
+  assert(recreated[1].reserve(11,false));
+  bool oldQueryAvailable = true;
+  resetTimingSlots(recreated,[&] {
+    assert(recreated[0].pending && recreated[0].sourceFrame == 10);
+    assert(recreated[1].pending && recreated[1].sourceFrame == 11);
+    oldQueryAvailable = false; // The synchronous setup has reset both query pools.
+  });
+  assert(!oldQueryAvailable && !recreated[0].pending && !recreated[1].pending);
+  assert(recreated[0].reserve(20,true));
+  assert(!recreated[0].consume(oldQueryAvailable,300));
+  assert(recreated[0].consume(true,500));
+  assert(recreated[0].sourceFrame == 20);
   assert(normalizeAnimationIndex(2,3) == 2);
   assert(normalizeAnimationIndex(2,1) == 0);
   assert(normalizeAnimationIndex(2,0) == 0);

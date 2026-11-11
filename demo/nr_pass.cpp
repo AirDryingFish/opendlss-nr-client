@@ -128,19 +128,23 @@ void NrPass::createSized(uint32_t width, uint32_t height) {
                         VK_IMAGE_USAGE_STORAGE_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT,
                         VK_IMAGE_ASPECT_COLOR_BIT);
   {
-    // the storage images live in GENERAL for their whole life
-    VkCommandBuffer commands = context_->beginCommands();
-    for (Image* image : {&sceneMotion_, &history_[0], &history_[1], &output_})
-      transition(commands, *image, VK_IMAGE_LAYOUT_GENERAL, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, 0, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
-                 VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT | VK_ACCESS_TRANSFER_WRITE_BIT);
-    VkClearColorValue zero{}; VkImageSubresourceRange range{VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1};
-    for (Image* image : {&sceneMotion_, &history_[0], &history_[1], &output_})
-      vkCmdClearColorImage(commands, image->image, VK_IMAGE_LAYOUT_GENERAL, &zero, 1, &range);
-    context_->endAndSubmit(commands, true);
+    // Resize/rebuild keeps the pools. Clear their availability before invalidating
+    // slot identities so pre-resize results cannot masquerade as a new frame.
+    client::resetTimingSlots(timingSlots_, [&] {
+      // the storage images live in GENERAL for their whole life
+      VkCommandBuffer commands = context_->beginCommands();
+      for (VkQueryPool query : queries_) vkCmdResetQueryPool(commands,query,0,kStampCount);
+      for (Image* image : {&sceneMotion_, &history_[0], &history_[1], &output_})
+        transition(commands, *image, VK_IMAGE_LAYOUT_GENERAL, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, 0, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
+                   VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT | VK_ACCESS_TRANSFER_WRITE_BIT);
+      VkClearColorValue zero{}; VkImageSubresourceRange range{VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1};
+      for (Image* image : {&sceneMotion_, &history_[0], &history_[1], &output_})
+        vkCmdClearColorImage(commands, image->image, VK_IMAGE_LAYOUT_GENERAL, &zero, 1, &range);
+      context_->endAndSubmit(commands, true);
+    });
   }
   color_ = ExternalView{}; velocity_ = ExternalView{};
   for (auto& w : queriesWritten_) w = false;
-  for (auto& slot : timingSlots_) slot = {};
   timingsFresh_ = false; timingsEnabled_ = false; timings_ = {};
   framesSinceReset_ = 0;
 }

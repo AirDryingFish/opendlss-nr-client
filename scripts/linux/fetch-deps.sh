@@ -25,11 +25,13 @@ clone() {
 clone Vulkan-Headers v1.4.363 https://github.com/KhronosGroup/Vulkan-Headers.git 6802bb4733b63ed5efd3adb308a6c885ef180ea1
 clone volk vulkan-sdk-1.4.357.0 https://github.com/zeux/volk.git 776893306c5d3b22b6185b5d4a258b81d94572bf
 clone filament v1.77.0 https://github.com/google/filament.git b01d8a12f283876b337d678e4c74081ae14e20da
-if git -C "$NR_DEPS_DIR/filament" apply --check "$NR_ROOT/third_party/filament.patch" 2>/dev/null; then
-  git -C "$NR_DEPS_DIR/filament" apply "$NR_ROOT/third_party/filament.patch"
-else
-  git -C "$NR_DEPS_DIR/filament" apply --reverse --check "$NR_ROOT/third_party/filament.patch"
-fi
+for filament_patch in filament.patch filament-material-routing.patch; do
+  if git -C "$NR_DEPS_DIR/filament" apply --check "$NR_ROOT/third_party/$filament_patch" 2>/dev/null; then
+    git -C "$NR_DEPS_DIR/filament" apply "$NR_ROOT/third_party/$filament_patch"
+  else
+    git -C "$NR_DEPS_DIR/filament" apply --reverse --check "$NR_ROOT/third_party/$filament_patch"
+  fi
+done
 mkdir -p "$NR_DEPS_DIR/downloads"
 if [[ -z "${CXX:-}" ]]; then
   nr_install_toolchain "$NR_DEPS_DIR"

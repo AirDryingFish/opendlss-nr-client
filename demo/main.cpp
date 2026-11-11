@@ -321,7 +321,8 @@ int main(int argc, char** argv) {
   SDL_SetMainReady();
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0) fail(std::string("SDL_Init: ") + SDL_GetError());
   SDL_Window* window = SDL_CreateWindow("DLSS 5 NR - Filament / Vulkan", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                                        (int)options.width, (int)options.height, SDL_WINDOW_RESIZABLE);
+                                        (int)options.width, (int)options.height, SDL_WINDOW_RESIZABLE |
+                                        (!options.capturePrefix.empty() && std::getenv("DLSS5_DEMO_CAPTURE_HIDDEN") ? SDL_WINDOW_HIDDEN : 0));
   if (!window) fail(std::string("SDL_CreateWindow: ") + SDL_GetError());
   SDL_SetWindowMinimumSize(window, 64, 64);
   SDL_StartTextInput();

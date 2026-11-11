@@ -1,0 +1,29 @@
+diff --git a/libs/gltfio/materials/transmission.spec.in b/libs/gltfio/materials/transmission.spec.in
+index 4ee755f3..0e0c6e9c 100644
+--- a/libs/gltfio/materials/transmission.spec.in
++++ b/libs/gltfio/materials/transmission.spec.in
+@@ -20,7 +20,9 @@ Specular=optional
+ SpecularTexture=optional
+ SpecularColorTexture=optional
+ 
+-Transmission=optional
++# Refraction changes render-pass ordering even when its shader factor is zero.
++# Do not use this material for ordinary opaque / alpha-blended glTF surfaces.
++Transmission=required
+ Ior=optional
+ TransmissionTexture=optional
+ 
+diff --git a/libs/gltfio/materials/volume.spec.in b/libs/gltfio/materials/volume.spec.in
+index 33f234ad..7c875763 100644
+--- a/libs/gltfio/materials/volume.spec.in
++++ b/libs/gltfio/materials/volume.spec.in
+@@ -24,7 +24,8 @@ Ior=optional
+ TransmissionTexture=optional
+ 
+ # Volume Features
+-Volume=optional
++# This shader has a static screen-space refraction mode, unlike ordinary PBR.
++Volume=required
+ VolumeThicknessTexture=optional
+ 
+ # KHR_materials_specular Features

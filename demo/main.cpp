@@ -849,7 +849,9 @@ int main(int argc, char** argv) {
     auto now = std::chrono::high_resolution_clock::now();
     const double wallFrameMs = std::chrono::duration<double,std::milli>(now-lastTime).count();
     if (benchmarking && frameIndex > 0) benchmark.addFrame(frameIndex-1,wallFrameMs);
-    float dt = std::min(float(wallFrameMs/1000.0), 0.1f);
+    // Scripted captures use the same animation pose with NR on or off, regardless
+    // of GPU speed. Interactive rendering and benchmarks retain real wall time.
+    float dt = options.capturePrefix.empty() ? std::min(float(wallFrameMs/1000.0), 0.1f) : 1.0f/60.0f;
     lastTime = now;
     fpsFrames++;
     if (std::chrono::duration<float>(now - fpsTime).count() >= 0.5f) {
@@ -1052,8 +1054,15 @@ int main(int argc, char** argv) {
     // ---- the scripted verification sequence: static -> orbit -> settle -> NR off, with captures and raw dumps
     if (!options.capturePrefix.empty()) {
       const uint32_t f = frameIndex;
-      if (f == 40) { capture("nr-static"); autoOrbit = true; }
-      if (f == 99 || f == 100) {
+      if (f == 40) {
+        capture("nr-static");
+        nr->saveRaw(options.capturePrefix + "-static-scene.raw", 0);
+        fprintf(stderr,"[capture] frame=%u nr_enabled=%d temporal=%d animation_clip=%d animation_time=%.9f fixed_dt=%.9f extent=%ux%u network_sample_enabled=%d network_ms=%.6f\n",
+                f,int(controls.enabled),int(controls.temporal),animationIndex,animationTime,dt,width,height,
+                int(nr->timingsEnabled()),nr->timings().networkMs);
+        autoOrbit = true;
+      }
+      if (f == 40 || f == 99 || f == 100) {
         // the camera of the frame, for offline checks of the motion vectors (row-major text: projection, view)
         std::ofstream cameras(options.capturePrefix + "-cameras.txt", std::ios::app);
         mat4 p = camera->getProjectionMatrix(), v = camera->getViewMatrix();

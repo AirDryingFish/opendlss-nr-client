@@ -58,9 +58,12 @@ namespace ImGui { IMGUI_API void ClearIniSettings(); }
 #include <vector>
 
 #include "client_controls.h"
+#include "asset_catalog.h"
 #include "environment_presets.h"
+#include "model_file_browser.h"
 #include "../tests/ui_resize_scenario.h"
 #include "../tests/environment_scenario.h"
+#include "../tests/asset_import_scenario.h"
 #include "crash_report.h"
 #include "filament_vulkan.h"
 #include "nr_pass.h"
@@ -80,6 +83,7 @@ struct Options {
   int benchmarkFrames = 0, benchmarkWarmup = 30;
   std::string benchmarkOutput = "benchmark.json";
   std::string uiResizeTestOutput;
+  std::string assetImportTestOutput;
   std::string environmentPreset, environmentTestPrefix;
   float orbitDegreesPerFrame = 0.4f;
   int animation = 0;
@@ -175,6 +179,7 @@ Options parseOptions(int argc, char** argv) {
     else if (a == "--benchmark-warmup") { next(v); o.benchmarkWarmup = integer(a,v,0,1000000); }
     else if (a == "--benchmark-output") next(o.benchmarkOutput);
     else if (a == "--ui-resize-test") next(o.uiResizeTestOutput);
+    else if (a == "--asset-import-test") next(o.assetImportTestOutput);
     else if (a == "--orbit") { next(v); o.orbitDegreesPerFrame = (float)atof(v.c_str()); }
     else if (a == "--animation") { next(v); o.animation = integer(a,v,0,1000000); }
     else if (a == "--temporal") { next(v); o.controls.temporal = atoi(v.c_str()) != 0; }
@@ -203,6 +208,9 @@ Options parseOptions(int argc, char** argv) {
   if (!o.environmentTestPrefix.empty() && (o.benchmarkFrames || !o.capturePrefix.empty() ||
       !o.uiResizeTestOutput.empty() || !o.controls.enabled))
     fail("--environment-test requires NR enabled and no benchmark/capture/resize scenario");
+  if (!o.assetImportTestOutput.empty() && (o.benchmarkFrames || !o.capturePrefix.empty() ||
+      !o.uiResizeTestOutput.empty() || !o.environmentTestPrefix.empty() || !o.controls.enabled))
+    fail("--asset-import-test requires NR enabled and no other verification scenario");
   return o;
 }
 
@@ -305,6 +313,7 @@ int main(int argc, char** argv) {
   const std::string dataDir = exeDir + "../data";
   const std::string kernelDir = options.kernelDir.empty() ? exeDir + "../shaders" : options.kernelDir;
   const std::string scenesDir = options.scenesDir.empty() ? exeDir + "../scenes" : options.scenesDir;
+  const fs::path assetsDir = fs::path(exeDir) / "../../assets";
   std::vector<client::EnvironmentPreset> environmentPresets;
   std::string environmentError;
   try { environmentPresets = client::loadEnvironmentPresets(exeDir + "../../assets/environments/presets.json"); }
@@ -328,14 +337,47 @@ int main(int argc, char** argv) {
 
   // ---- the scenes
   std::vector<SceneView> scenes = scanScenes(scenesDir);
+  const size_t configuredSceneCount = scenes.size();
+  const auto assetCatalog = client::discoverAssets(assetsDir);
+  auto pathKey = [](const std::string& path) {
+    std::error_code error;
+    fs::path absolute = fs::absolute(path.empty() ? fs::path(".") : fs::path(path),error);
+    if (error) return fs::path(path).lexically_normal().string();
+    const fs::path canonical = fs::weakly_canonical(absolute,error);
+    return (error ? absolute : canonical).lexically_normal().string();
+  };
+  auto findScene = [&](const SceneView& candidate) {
+    const std::string model = pathKey(candidate.model), directory = pathKey(candidate.directory);
+    for (size_t i = 0; i < scenes.size(); ++i)
+      if (pathKey(scenes[i].model) == model && pathKey(scenes[i].directory) == directory) return int(i);
+    return -1;
+  };
+  for (const auto& entry : assetCatalog) {
+    SceneView view = sceneFromArguments(entry.model,{});
+    view.name = entry.name;
+    if (findScene(view) < 0) scenes.push_back(std::move(view));
+  }
+  fprintf(stderr,"[assets] %zu models discovered, %zu scenes available\n",assetCatalog.size(),scenes.size());
   int selectedScene = -1;
   if (!options.sceneArg.empty()) {
-    scenes.insert(scenes.begin(), sceneFromArguments(options.sceneArg, options.environmentArg));
-    selectedScene = 0;
+    SceneView requested = sceneFromArguments(options.sceneArg,options.environmentArg);
+    selectedScene = findScene(requested);
+    if (selectedScene >= 0) {
+      requested.name = scenes[selectedScene].name;
+      scenes[selectedScene] = std::move(requested);
+    } else {
+      scenes.insert(scenes.begin(),std::move(requested));
+      selectedScene = 0;
+    }
   } else if (!scenes.empty()) {
     selectedScene = 0;
+    if (!configuredSceneCount) {
+      const std::string defaultModel = pathKey((assetsDir / "test-static.glb").string());
+      for (size_t i = 0; i < scenes.size(); ++i)
+        if (pathKey(scenes[i].model) == defaultModel) { selectedScene = int(i); break; }
+    }
   } else {
-    fail("No scene: pass a glTF (and an .hdr environment) or put scene directories with a view.json under " + scenesDir + "\n\n" + kUsage);
+    fail("No models found: put a GLB/glTF under assets or pass a model path.\n\n" + std::string(kUsage));
   }
 
   try { client::validateSceneFile(scenes[selectedScene].model); }
@@ -424,7 +466,7 @@ int main(int argc, char** argv) {
   uiView->setViewport({0, 0, uint32_t(drawableWidth), uint32_t(drawableHeight)});
   auto imgui = std::make_unique<filagui::ImGuiHelper>(engine, uiView, utils::Path());
   imgui->setDisplaySize(drawableWidth, drawableHeight);
-  if (!options.uiResizeTestOutput.empty()) {
+  if (!options.uiResizeTestOutput.empty() || !options.assetImportTestOutput.empty()) {
     ImGui::GetIO().IniFilename = nullptr;
     ImGui::ClearIniSettings();
     SDL_RaiseWindow(window);
@@ -457,6 +499,7 @@ int main(int argc, char** argv) {
   bool animate = true;
   int animationIndex = 0;
   std::string importError;
+  char modelPath[4096] = {};
   int activeEnvironmentPreset = -1;
   auto resetCamera = [&]() {
     const auto framing = client::fitBounds(loaded->boundsRadius(),45,double(width)/height);
@@ -509,6 +552,7 @@ int main(int argc, char** argv) {
     }
     const auto* newAnimator = loaded->animator();
     animationIndex = client::normalizeAnimationIndex(options.animation,newAnimator ? newAnimator->getAnimationCount() : 0);
+    std::snprintf(modelPath,sizeof(modelPath),"%s",view.model.c_str());
     nr->resetHistory();
     return true;
   };
@@ -524,7 +568,7 @@ int main(int argc, char** argv) {
   bool hasPreviousCamera = false;
   bool autoOrbit = false;
   bool mouseLook = false, mouseOrbit = false, mousePan = false;
-  char modelPath[4096] = {};
+  client::ModelFileBrowser fileBrowser(assetsDir);
   std::string droppedPath;
   const bool benchmarking = options.benchmarkFrames > 0;
   client::BenchmarkSamples benchmark(options.benchmarkWarmup,options.benchmarkFrames);
@@ -584,11 +628,74 @@ int main(int argc, char** argv) {
   uint32_t fpsFrames = 0;
   float animationTime = 0.0f;
   const uint8_t* keys = SDL_GetKeyboardState(nullptr);
+  auto importModel = [&](const std::string& path) {
+    try {
+      SceneView imported = sceneFromArguments(path,options.environmentArg);
+      client::validateSceneFile(imported.model);
+      const int existing = findScene(imported);
+      SceneView previous;
+      if (existing >= 0) {
+        previous = scenes[existing];
+        imported.name = previous.name;
+        scenes[existing] = std::move(imported);
+      } else scenes.push_back(std::move(imported));
+      const int candidate = existing >= 0 ? existing : int(scenes.size())-1;
+      if (!loadScene(candidate)) {
+        if (existing >= 0) scenes[existing] = std::move(previous);
+        else scenes.pop_back();
+        return false;
+      }
+      hasPreviousCamera = false;
+      historyReset = true;
+      animationTime = 0;
+      return true;
+    } catch (const std::exception& e) {
+      importError = e.what();
+      fprintf(stderr,"[import] %s\n",importError.c_str());
+      return false;
+    }
+  };
 
   UiResizeScenario uiResizeTest(options.uiResizeTestOutput);
   EnvironmentScenario environmentTest(options.environmentTestPrefix,environmentPresets);
+  AssetImportScenario assetImportTest(options.assetImportTestOutput,assetsDir);
+  if (assetImportTest.active())
+    fileBrowser.observe = [&](const char* action,const std::string& value) { assetImportTest.observe(action,value); };
+  auto drawModelPicker = [&]() {
+    const ImGuiIO& io = ImGui::GetIO();
+    if (ImGui::InputText("GLB / glTF path",modelPath,sizeof(modelPath),ImGuiInputTextFlags_EnterReturnsTrue)) droppedPath = modelPath;
+    if (ImGui::Button("Load model")) droppedPath = modelPath;
+    ImGui::SameLine();
+    if (ImGui::Button("Browse...")) {
+      mouseLook = mouseOrbit = mousePan = false;
+      SDL_SetRelativeMouseMode(SDL_FALSE);
+      fileBrowser.open(fs::path(loaded->view().model).parent_path());
+    }
+    if (assetImportTest.active()) assetImportTest.observe("browse",{});
+    const bool catalogOpen = ImGui::BeginCombo("Assets / scene",scenes[selectedScene].name.c_str(),ImGuiComboFlags_HeightLargest);
+    if (assetImportTest.active() && std::getenv("DLSS5_DEMO_IMPORT_TRACE") && frameIndex < 80) {
+      const ImVec2 min = ImGui::GetItemRectMin(), max = ImGui::GetItemRectMax();
+      fprintf(stderr,"[asset-ui] frame %u catalog %d mouse %.0f %.0f down %d rect %.0f %.0f %.0f %.0f\n",
+          frameIndex,catalogOpen,io.MousePos.x,io.MousePos.y,io.MouseDown[0],min.x,min.y,max.x,max.y);
+    }
+    if (assetImportTest.active()) assetImportTest.observe("catalog",{});
+    if (catalogOpen) {
+      for (int i = 0; i < (int)scenes.size(); i++) {
+        ImGui::PushID(i);
+        bool selected = i == selectedScene;
+        if (ImGui::Selectable(scenes[i].name.c_str(), selected) && !selected) pendingScene = i;
+        if (assetImportTest.active()) assetImportTest.observe("asset",pathKey(scenes[i].model));
+        if (ImGui::IsItemHovered()) ImGui::SetTooltip("%s",scenes[i].model.c_str());
+        if (selected) ImGui::SetItemDefaultFocus();
+        ImGui::PopID();
+      }
+      ImGui::EndCombo();
+    }
+    ImGui::Text("%zu bundled models",assetCatalog.size());
+  };
   while (running) {
     if (uiResizeTest.active() && uiResizeTest.timedOut()) break;
+    if (assetImportTest.active() && assetImportTest.timedOut()) break;
     if (benchmarking && std::chrono::duration<double>(std::chrono::steady_clock::now()-benchmarkStart).count() > 300) {
       benchmarkError = "benchmark incomplete: time limit exceeded";
       break;
@@ -596,6 +703,13 @@ int main(int argc, char** argv) {
     ImGuiIO& io = ImGui::GetIO();
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
+      if (assetImportTest.active() && std::getenv("DLSS5_DEMO_IMPORT_TRACE") && frameIndex < 600 &&
+          (event.type == SDL_MOUSEMOTION || event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP)) {
+        const bool motion = event.type == SDL_MOUSEMOTION;
+        fprintf(stderr,"[asset-sdl] frame %u type %u which %u pos %d %d\n",frameIndex,event.type,
+            motion ? event.motion.which : event.button.which,motion ? event.motion.x : event.button.x,
+            motion ? event.motion.y : event.button.y);
+      }
       switch (event.type) {
         case SDL_QUIT: running = false; break;
         case SDL_WINDOWEVENT:
@@ -613,13 +727,13 @@ int main(int argc, char** argv) {
             benchmarkError = "benchmark invalid: window minimized during measurement";
           break;
         case SDL_DROPFILE:
-          if (!benchmarking) droppedPath = event.drop.file;
+          if (!benchmarking) { droppedPath = event.drop.file; fileBrowser.cancel(); }
           SDL_free(event.drop.file);
           break;
         case SDL_TEXTINPUT: io.AddInputCharactersUTF8(event.text.text); break;
         case SDL_MOUSEMOTION:
           io.AddMousePosEvent((float)event.motion.x, (float)event.motion.y);
-          if (benchmarking) break;
+          if (benchmarking || fileBrowser.isOpen()) break;
           if (mouseOrbit) fps.orbit(float(event.motion.xrel),float(event.motion.yrel));
           if (mousePan) fps.pan(float(event.motion.xrel),float(event.motion.yrel),float(drawableHeight));
           if (mouseLook) {
@@ -634,7 +748,7 @@ int main(int argc, char** argv) {
           int button = event.button.button == SDL_BUTTON_LEFT ? 0 : event.button.button == SDL_BUTTON_RIGHT ? 1 : 2;
           bool down = event.type == SDL_MOUSEBUTTONDOWN;
           io.AddMouseButtonEvent(button, down);
-          if (!benchmarking && (!io.WantCaptureMouse || !down)) {
+          if (!benchmarking && ((!fileBrowser.isOpen() && !io.WantCaptureMouse) || !down)) {
             if (event.button.button == SDL_BUTTON_LEFT) mouseOrbit = down;
             if (event.button.button == SDL_BUTTON_MIDDLE) mousePan = down;
             if (event.button.button == SDL_BUTTON_RIGHT) mouseLook = down;
@@ -644,7 +758,7 @@ int main(int argc, char** argv) {
         }
         case SDL_MOUSEWHEEL:
           io.AddMouseWheelEvent((float)event.wheel.x, (float)event.wheel.y);
-          if (!benchmarking && !io.WantCaptureMouse) fps.zoom(float(event.wheel.y));
+          if (!benchmarking && !fileBrowser.isOpen() && !io.WantCaptureMouse) fps.zoom(float(event.wheel.y));
           break;
         case SDL_KEYUP:
         case SDL_KEYDOWN:
@@ -654,6 +768,10 @@ int main(int argc, char** argv) {
           if (event.key.keysym.sym == SDLK_DELETE) io.AddKeyEvent(ImGuiKey_Delete,event.type == SDL_KEYDOWN);
           if (event.key.keysym.sym == SDLK_LEFT) io.AddKeyEvent(ImGuiKey_LeftArrow,event.type == SDL_KEYDOWN);
           if (event.key.keysym.sym == SDLK_RIGHT) io.AddKeyEvent(ImGuiKey_RightArrow,event.type == SDL_KEYDOWN);
+          if (event.key.keysym.sym == SDLK_UP) io.AddKeyEvent(ImGuiKey_UpArrow,event.type == SDL_KEYDOWN);
+          if (event.key.keysym.sym == SDLK_DOWN) io.AddKeyEvent(ImGuiKey_DownArrow,event.type == SDL_KEYDOWN);
+          if (event.key.keysym.sym == SDLK_TAB) io.AddKeyEvent(ImGuiKey_Tab,event.type == SDL_KEYDOWN);
+          if (event.key.keysym.sym == SDLK_ESCAPE) io.AddKeyEvent(ImGuiKey_Escape,event.type == SDL_KEYDOWN);
           if (event.key.keysym.sym == SDLK_HOME) io.AddKeyEvent(ImGuiKey_Home,event.type == SDL_KEYDOWN);
           if (event.key.keysym.sym == SDLK_END) io.AddKeyEvent(ImGuiKey_End,event.type == SDL_KEYDOWN);
           if (event.key.keysym.sym == SDLK_RETURN) io.AddKeyEvent(ImGuiKey_Enter,event.type == SDL_KEYDOWN);
@@ -661,7 +779,10 @@ int main(int argc, char** argv) {
           if (event.key.keysym.sym == SDLK_v) io.AddKeyEvent(ImGuiKey_V,event.type == SDL_KEYDOWN);
           if (event.key.keysym.sym == SDLK_c) io.AddKeyEvent(ImGuiKey_C,event.type == SDL_KEYDOWN);
           if (event.key.keysym.sym == SDLK_x) io.AddKeyEvent(ImGuiKey_X,event.type == SDL_KEYDOWN);
-          if (event.type == SDL_KEYUP || io.WantCaptureKeyboard) break;
+          if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE && fileBrowser.isOpen()) {
+            fileBrowser.cancel(); break;
+          }
+          if (event.type == SDL_KEYUP || io.WantCaptureKeyboard || fileBrowser.isOpen()) break;
           if (benchmarking && event.key.keysym.sym != SDLK_ESCAPE) break;
           switch (event.key.keysym.sym) {
             case SDLK_ESCAPE: running = false; break;
@@ -678,12 +799,7 @@ int main(int argc, char** argv) {
     }
     if (!benchmarkError.empty()) break;
     if (!droppedPath.empty()) {
-      try {
-        SceneView imported = sceneFromArguments(droppedPath,options.environmentArg);
-        client::validateSceneFile(imported.model);
-        scenes.push_back(std::move(imported));
-        pendingScene = int(scenes.size())-1;
-      } catch (const std::exception& e) { importError = e.what(); }
+      importModel(droppedPath);
       droppedPath.clear();
     }
     if (pendingScene >= 0) {
@@ -742,7 +858,7 @@ int main(int argc, char** argv) {
     }
 
     // ---- camera: WASD / QE (shift: faster), the mouse look, the scripted orbit
-    if (!benchmarking && !io.WantCaptureKeyboard) {
+    if (!benchmarking && !fileBrowser.isOpen() && !io.WantCaptureKeyboard) {
       float speed = fps.moveSpeed * dt * (keys[SDL_SCANCODE_LSHIFT] ? 4.0f : 1.0f);
       const float3 oldPosition = fps.position;
       float3 f = fps.forward(), r = fps.right();
@@ -823,6 +939,7 @@ int main(int argc, char** argv) {
       }
       if (!importError.empty()) ImGui::TextWrapped("Import: %s",importError.c_str());
       ImGui::TextUnformatted("Resolution follows window");
+      if (ImGui::CollapsingHeader("Model",ImGuiTreeNodeFlags_DefaultOpen)) drawModelPicker();
       if (ImGui::CollapsingHeader("DLSS NR", ImGuiTreeNodeFlags_DefaultOpen)) {
         if (ImGui::Checkbox("Enabled", &controls.enabled)) historyReset = true;
         if (uiResizeTest.active()) uiResizeTest.enabled.observe();
@@ -866,18 +983,8 @@ int main(int argc, char** argv) {
         ImGui::Text("%ux%u, frame %u", nr->width(), nr->height(), nr->frameCount());
       }
       if (ImGui::CollapsingHeader("Scene", ImGuiTreeNodeFlags_DefaultOpen)) {
-        if (ImGui::InputText("GLB / glTF path",modelPath,sizeof(modelPath),ImGuiInputTextFlags_EnterReturnsTrue)) droppedPath = modelPath;
-        if (ImGui::Button("Load model")) droppedPath = modelPath;
         ImGui::TextWrapped("Drop GLB/glTF. Left drag: orbit; middle: pan; wheel: zoom. Right drag: look; WASD/QE: move.");
         if (ImGui::Button("Reset camera (R)")) { resetCamera(); hasPreviousCamera = false; historyReset = true; }
-        if (ImGui::BeginCombo("Demo scene", scenes[selectedScene].name.c_str())) {
-          for (int i = 0; i < (int)scenes.size(); i++) {
-            bool selected = i == selectedScene;
-            if (ImGui::Selectable(scenes[i].name.c_str(), selected) && !selected) pendingScene = i;
-            if (selected) ImGui::SetItemDefaultFocus();
-          }
-          ImGui::EndCombo();
-        }
         ImGui::Text("%zu renderables, %zu lights", loaded->renderableCount(), loaded->lightCount());
         if (ImGui::ColorEdit3("Background color", &backgroundColorSrgb.x)) {
           loaded->setBackgroundColor(Color::toLinear<ACCURATE>(backgroundColorSrgb));
@@ -919,6 +1026,8 @@ int main(int argc, char** argv) {
       }
       ImGui::PopItemWidth();
       ImGui::End();
+      const std::string picked = fileBrowser.draw();
+      if (!picked.empty()) droppedPath = picked;
     });
     renderer->render(uiView);
     queueGpuWork(*engine, {}, [pass, nrFrame](void* commands, std::vector<GpuImage>&) { pass->recordStamp(commands, nrFrame, NrPass::kPresentEnd); });
@@ -926,6 +1035,11 @@ int main(int argc, char** argv) {
     nr->endFrame();
     cpuFrameMs = std::chrono::duration<double, std::milli>(std::chrono::high_resolution_clock::now() - cpuStart).count();
     frameIndex++;
+    if (assetImportTest.active()) {
+      assetImportTest.frame(window,frameIndex,loaded->view().model,scenes.size(),importError,
+                            fileBrowser.isOpen(),controls.enabled,nr->timings().networkMs);
+      if (assetImportTest.done) running = false;
+    }
     if (environmentTest.active()) {
       environmentTest.afterFrame(frameIndex,*nr,*engine);
       if (environmentTest.done) running = false;
@@ -979,6 +1093,7 @@ int main(int argc, char** argv) {
   int exitCode = 0;
   if (uiResizeTest.active() && !uiResizeTest.write()) exitCode = 4;
   if (environmentTest.active() && !environmentTest.write()) exitCode = 5;
+  if (assetImportTest.active() && !assetImportTest.write()) exitCode = 6;
   if (benchmarking && nr->chainTimedOut()) benchmarkError = "benchmark invalid: GPU chained wait timed out during final drain";
   if (benchmarking) {
     if (!benchmark.complete() || !benchmarkError.empty()) {

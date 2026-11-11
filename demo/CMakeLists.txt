@@ -49,7 +49,7 @@ add_library(demo_filament_vulkan STATIC filament_vulkan.cpp)
 target_include_directories(demo_filament_vulkan PRIVATE ${FILAMENT}/include ${CMAKE_CURRENT_SOURCE_DIR})
 
 # ---- the application
-set(DEMO_SOURCES main.cpp scene.cpp crash_report.cpp client_controls.cpp)
+set(DEMO_SOURCES main.cpp scene.cpp crash_report.cpp client_controls.cpp model_file_browser.cpp)
 if (APPLE)
     list(APPEND DEMO_SOURCES native_window_cocoa.mm)
 endif()

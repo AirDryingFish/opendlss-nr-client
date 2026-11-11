@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 NR_ROOT=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)
-NR_WORK=$(cd -- "$NR_ROOT/../.." && pwd)/work
+NR_WORK=${XDG_CACHE_HOME:-$HOME/.cache}/opendlss-nr-client
 NR_DEPS_DIR=${NR_DEPS_DIR:-$NR_WORK/native-build-deps}
 NR_BUILD_DIR=${NR_BUILD_DIR:-$NR_WORK/native-build}
 NR_BUILD_JOBS=${NR_BUILD_JOBS:-4}

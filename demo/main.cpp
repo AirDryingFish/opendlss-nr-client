@@ -32,6 +32,8 @@
 #include <filament/Viewport.h>
 #include <gltfio/Animator.h>
 #include <imgui.h>
+// Test-only reset API; Filament installs the public ImGui header only.
+namespace ImGui { IMGUI_API void ClearIniSettings(); }
 #include <math/mat3.h>
 #include <utils/EntityManager.h>
 #include <utils/Path.h>
@@ -52,6 +54,7 @@
 #include <vector>
 
 #include "client_controls.h"
+#include "../tests/ui_resize_scenario.h"
 #include "crash_report.h"
 #include "filament_vulkan.h"
 #include "nr_pass.h"
@@ -70,6 +73,7 @@ struct Options {
   int frames = -1;
   int benchmarkFrames = 0, benchmarkWarmup = 30;
   std::string benchmarkOutput = "benchmark.json";
+  std::string uiResizeTestOutput;
   float orbitDegreesPerFrame = 0.4f;
   int animation = 0;
   NrControls controls;
@@ -136,7 +140,7 @@ std::string readFile(const std::string& path) {
 const char* kUsage = "usage: dlss5-demo [scene.gltf|.glb [environment.hdr]] --model <nr model dir> [--scenes <dir>] [--width w --height h] "
                      "[--frames n] [--capture prefix] [--orbit deg] [--view px,py,pz,tx,ty,tz[,fov]] [--nr 0|1] [--temporal 0|1] "
                      "[--style 0..3] [--style-knobs exposure,contrast,gamma,saturation,hue,vibrance,strength[,networkStyle]] [--intensity x] "
-                     "[--animation n] [--benchmark-frames N>=120] [--benchmark-warmup N] [--benchmark-output path]";
+                     "[--animation n] [--benchmark-frames N>=120] [--benchmark-warmup N] [--benchmark-output path] [--ui-resize-test output.json]";
 
 Options parseOptions(int argc, char** argv) {
   Options o;
@@ -161,6 +165,7 @@ Options parseOptions(int argc, char** argv) {
     else if (a == "--benchmark-frames") { next(v); o.benchmarkFrames = integer(a,v,120,1000000); }
     else if (a == "--benchmark-warmup") { next(v); o.benchmarkWarmup = integer(a,v,0,1000000); }
     else if (a == "--benchmark-output") next(o.benchmarkOutput);
+    else if (a == "--ui-resize-test") next(o.uiResizeTestOutput);
     else if (a == "--orbit") { next(v); o.orbitDegreesPerFrame = (float)atof(v.c_str()); }
     else if (a == "--animation") { next(v); o.animation = integer(a,v,0,1000000); }
     else if (a == "--temporal") { next(v); o.controls.temporal = atoi(v.c_str()) != 0; }
@@ -184,6 +189,8 @@ Options parseOptions(int argc, char** argv) {
   if (o.benchmarkFrames && (!o.controls.enabled || !o.capturePrefix.empty() ||
       !client::validBenchmark(o.benchmarkFrames,o.benchmarkWarmup,o.frames)))
     fail("benchmark requires NR on, no scripted capture, and at least warmup + samples + 2 total frames");
+  if (!o.uiResizeTestOutput.empty() && (o.benchmarkFrames || !o.capturePrefix.empty() || !o.controls.enabled))
+    fail("--ui-resize-test requires NR enabled and no benchmark/capture scenario");
   return o;
 }
 
@@ -389,6 +396,11 @@ int main(int argc, char** argv) {
   uiView->setViewport({0, 0, uint32_t(drawableWidth), uint32_t(drawableHeight)});
   auto imgui = std::make_unique<filagui::ImGuiHelper>(engine, uiView, utils::Path());
   imgui->setDisplaySize(drawableWidth, drawableHeight);
+  if (!options.uiResizeTestOutput.empty()) {
+    ImGui::GetIO().IniFilename = nullptr;
+    ImGui::ClearIniSettings();
+    SDL_RaiseWindow(window);
+  }
   auto& platform = ImGui::GetPlatformIO();
   platform.Platform_GetClipboardTextFn = [](ImGuiContext*) -> const char* {
     static std::string clipboard;
@@ -524,7 +536,9 @@ int main(int argc, char** argv) {
   float animationTime = 0.0f;
   const uint8_t* keys = SDL_GetKeyboardState(nullptr);
 
+  UiResizeScenario uiResizeTest(options.uiResizeTestOutput);
   while (running) {
+    if (uiResizeTest.active() && uiResizeTest.timedOut()) break;
     if (benchmarking && std::chrono::duration<double>(std::chrono::steady_clock::now()-benchmarkStart).count() > 300) {
       benchmarkError = "benchmark incomplete: time limit exceeded";
       break;
@@ -535,7 +549,10 @@ int main(int argc, char** argv) {
       switch (event.type) {
         case SDL_QUIT: running = false; break;
         case SDL_WINDOWEVENT:
-          if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED || event.window.event == SDL_WINDOWEVENT_RESIZED) pendingResize = true;
+          if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED || event.window.event == SDL_WINDOWEVENT_RESIZED) {
+            pendingResize = true;
+            if (uiResizeTest.active()) ++uiResizeTest.resizeEvents;
+          }
           break;
         case SDL_DROPFILE:
           if (!benchmarking) droppedPath = event.drop.file;
@@ -640,7 +657,7 @@ int main(int argc, char** argv) {
     }
 
     // (the renderer paces the frames: when it asks to skip one, wait a little instead of spinning)
-    if (!renderer->beginFrame(swapChain)) { SDL_Delay(1); continue; }
+    if (!renderer->beginFrame(swapChain)) { if (uiResizeTest.active()) ++uiResizeTest.skipped; SDL_Delay(1); continue; }
     auto now = std::chrono::high_resolution_clock::now();
     const double wallFrameMs = std::chrono::duration<double,std::milli>(now-lastTime).count();
     if (benchmarking && frameIndex > 0) benchmark.addFrame(frameIndex-1,wallFrameMs);
@@ -744,11 +761,13 @@ int main(int argc, char** argv) {
             requestedWidth = uint32_t(customWidth); requestedHeight = uint32_t(customHeight); followWindow = false;
           } else importError = "resolution must be 64..16384 in each dimension";
         }
+        if (uiResizeTest.active()) uiResizeTest.apply.observe();
         if (ImGui::Checkbox("Render follows window",&followWindow) && followWindow) pendingResize = true;
         ImGui::Text("Window: %d x %d",drawableWidth,drawableHeight);
       }
       if (ImGui::CollapsingHeader("DLSS NR", ImGuiTreeNodeFlags_DefaultOpen)) {
         if (ImGui::Checkbox("Enabled", &controls.enabled)) historyReset = true;
+        if (uiResizeTest.active()) uiResizeTest.enabled.observe();
         if (ImGui::Checkbox("Temporal", &controls.temporal)) historyReset = true;
         ImGui::SliderFloat("Intensity", &controls.intensity, 0.0f, 1.0f);
         ImGui::SliderFloat("Tone", &controls.localTone, 0.0f, 1.0f);
@@ -834,6 +853,10 @@ int main(int argc, char** argv) {
     nr->endFrame();
     cpuFrameMs = std::chrono::duration<double, std::milli>(std::chrono::high_resolution_clock::now() - cpuStart).count();
     frameIndex++;
+    if (uiResizeTest.active()) {
+      uiResizeTest.frame(window,frameIndex,width,height,customWidth,customHeight,controls.enabled,uiView->getViewport());
+      if (uiResizeTest.done) running = false;
+    }
 
     // ---- the scripted verification sequence: static -> orbit -> settle -> NR off, with captures and raw dumps
     if (!options.capturePrefix.empty()) {
@@ -877,6 +900,7 @@ int main(int argc, char** argv) {
   // ---- shutdown
   engine->flushAndWait();
   int exitCode = 0;
+  if (uiResizeTest.active() && !uiResizeTest.write()) exitCode = 4;
   if (benchmarking && nr->chainTimedOut()) benchmarkError = "benchmark invalid: GPU chained wait timed out during final drain";
   if (benchmarking) {
     if (!benchmark.complete() || !benchmarkError.empty()) {

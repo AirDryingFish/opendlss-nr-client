@@ -18,6 +18,7 @@
 #include <filament/Texture.h>
 #include <filament/TransformManager.h>
 #include <cstring>
+#include <cgltf.h>
 #include <gltfio/Animator.h>
 #include <gltfio/AssetLoader.h>
 #include <gltfio/FilamentAsset.h>
@@ -153,6 +154,7 @@ SceneView sceneFromArguments(const std::string& model, const std::string& enviro
 // ------------------------------------------------------------------------------------------------------------
 
 LoadedScene::LoadedScene(Engine& engine, const SceneView& view) : engine_(engine), view_(view) {
+  try {
   scene_ = engine.createScene();
   // ---- the glTF through gltfio (ubershaders: every material variant is precompiled in the archive)
   materials_ = gltfio::createUbershaderProvider(&engine, UBERARCHIVE_DEFAULT_DATA, UBERARCHIVE_DEFAULT_SIZE);
@@ -178,7 +180,10 @@ LoadedScene::LoadedScene(Engine& engine, const SceneView& view) : engine_(engine
     std::string ext = fs::path(uri).extension().string();
     std::transform(ext.begin(), ext.end(), ext.begin(), [](unsigned char c) { return (char)std::tolower(c); });
     if (ext == ".bin") continue;
-    std::string path = (base / uri).string();
+    std::string decodedUri = uri;
+    cgltf_decode_uri(decodedUri.data());
+    decodedUri.resize(std::strlen(decodedUri.c_str()));
+    std::string path = (base / decodedUri).string();
     std::ifstream file(path, std::ios::binary);
     if (!file) { fprintf(stderr, "[scene] missing resource %s\n", path.c_str()); continue; }
     auto* buffer = new std::vector<uint8_t>((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
@@ -236,6 +241,12 @@ LoadedScene::LoadedScene(Engine& engine, const SceneView& view) : engine_(engine
   }
   fprintf(stderr, "[scene] %s: %zu renderables, %zu lights, %zu animations, bounds radius %.2f\n", view.name.c_str(), renderables_, lights_,
           animator_ ? animator_->getAnimationCount() : 0, radius_);
+  } catch (...) {
+    // Throwing constructors do not run ~LoadedScene. Release partially created
+    // renderer resources while the previous scene is still alive in the caller.
+    cleanup();
+    throw;
+  }
 }
 
 void LoadedScene::loadEnvironment(const std::string& path) {
@@ -288,8 +299,10 @@ void LoadedScene::setEnvironmentRotation(float radians) {
   if (indirectLight_) indirectLight_->setRotation(mat3f::rotation(radians, float3{0, 1, 0}));
 }
 
-LoadedScene::~LoadedScene() {
-  scene_->removeEntities(asset_->getEntities(), asset_->getEntityCount());
+LoadedScene::~LoadedScene() { cleanup(); }
+
+void LoadedScene::cleanup() {
+  if (scene_ && asset_) scene_->removeEntities(asset_->getEntities(), asset_->getEntityCount());
   if (sun_) {
     utils::Entity sun = utils::Entity::import((int32_t)sun_);
     scene_->remove(sun);
@@ -301,12 +314,15 @@ LoadedScene::~LoadedScene() {
   engine_.destroy(indirectLight_);
   engine_.destroy(reflections_);
   engine_.destroy(environmentCubemap_);
-  assetLoader_->destroyAsset(asset_);
+  if (assetLoader_ && asset_) assetLoader_->destroyAsset(asset_);
   delete resources_;
   delete stb_;
   delete ktx_;
-  materials_->destroyMaterials();
+  if (materials_) materials_->destroyMaterials();
   delete materials_;
-  gltfio::AssetLoader::destroy(&assetLoader_);
+  if (assetLoader_) gltfio::AssetLoader::destroy(&assetLoader_);
   engine_.destroy(scene_);
+  scene_ = nullptr; asset_ = nullptr; materials_ = nullptr; resources_ = nullptr;
+  stb_ = nullptr; ktx_ = nullptr; skybox_ = nullptr; colorSkybox_ = nullptr;
+  indirectLight_ = nullptr; reflections_ = nullptr; environmentCubemap_ = nullptr; sun_ = 0;
 }

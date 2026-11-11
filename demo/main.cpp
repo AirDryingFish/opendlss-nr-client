@@ -41,9 +41,12 @@
 #include <filesystem>
 #include <fstream>
 #include <memory>
+#include <iomanip>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
+#include "client_controls.h"
 #include "crash_report.h"
 #include "filament_vulkan.h"
 #include "nr_pass.h"
@@ -60,6 +63,8 @@ struct Options {
   std::string sceneArg, environmentArg, modelDir, kernelDir, scenesDir, capturePrefix, viewOverride;
   uint32_t width = 1280, height = 720;
   int frames = -1;
+  int benchmarkFrames = 0, benchmarkWarmup = 30;
+  std::string benchmarkOutput = "benchmark.json";
   float orbitDegreesPerFrame = 0.4f;
   int animation = 0;
   NrControls controls;
@@ -79,6 +84,23 @@ struct FirstPersonCamera {
     float3 d = normalize(target - eye);
     pitch = std::asin(std::clamp(d.y, -1.0f, 1.0f));
     yaw = std::atan2(-d.x, -d.z);
+  }
+  void orbit(float dx, float dy) {
+    const float distance = std::max(length(position - orbitTarget), 0.001f);
+    yaw -= dx * 0.006f;
+    pitch = std::clamp(pitch - dy * 0.006f, -1.55f, 1.55f);
+    const auto p = client::orbitEye({orbitTarget.x, orbitTarget.y, orbitTarget.z}, yaw, pitch, distance);
+    position = {float(p.x), float(p.y), float(p.z)};
+  }
+  void pan(float dx, float dy, float height) {
+    const auto offset = client::panOffset(yaw, pitch, dx, dy, length(position-orbitTarget), height);
+    const float3 delta{float(offset.x),float(offset.y),float(offset.z)};
+    position += delta; orbitTarget += delta;
+  }
+  void zoom(float steps) {
+    const float distance = std::max(length(position-orbitTarget),0.001f);
+    const float next = float(client::zoomDistance(distance,steps,std::max(nearPlane*2.0f,0.0001f)));
+    position = orbitTarget - forward() * next;
   }
   void apply(Camera& camera, float aspect) const {
     camera.setProjection(fov, aspect, nearPlane, farPlane, Camera::Fov::VERTICAL);
@@ -109,11 +131,16 @@ std::string readFile(const std::string& path) {
 const char* kUsage = "usage: dlss5-demo [scene.gltf|.glb [environment.hdr]] --model <nr model dir> [--scenes <dir>] [--width w --height h] "
                      "[--frames n] [--capture prefix] [--orbit deg] [--view px,py,pz,tx,ty,tz[,fov]] [--nr 0|1] [--temporal 0|1] "
                      "[--style 0..3] [--style-knobs exposure,contrast,gamma,saturation,hue,vibrance,strength[,networkStyle]] [--intensity x] "
-                     "[--animation n]";
+                     "[--animation n] [--benchmark-frames N>=120] [--benchmark-warmup N] [--benchmark-output path]";
 
 Options parseOptions(int argc, char** argv) {
   Options o;
   std::vector<std::string> positional;
+  auto integer = [](const std::string& flag, const std::string& value, int lo, int hi) {
+    try { return client::parseInteger(value,lo,hi); }
+    catch (const std::exception& e) { fail(flag + ": " + e.what()); }
+    return lo;
+  };
   for (int i = 1; i < argc; i++) {
     std::string a = argv[i];
     auto next = [&](std::string& out) { if (i + 1 >= argc) fail("missing value for " + a + "\n\n" + kUsage); out = argv[++i]; };
@@ -123,11 +150,14 @@ Options parseOptions(int argc, char** argv) {
     else if (a == "--scenes") next(o.scenesDir);
     else if (a == "--capture") next(o.capturePrefix);
     else if (a == "--view") next(o.viewOverride);
-    else if (a == "--width" || a == "-w") { next(v); o.width = (uint32_t)atoi(v.c_str()); }
-    else if (a == "--height" || a == "-h") { next(v); o.height = (uint32_t)atoi(v.c_str()); }
-    else if (a == "--frames") { next(v); o.frames = atoi(v.c_str()); }
+    else if (a == "--width" || a == "-w") { next(v); o.width = integer(a,v,64,16384); }
+    else if (a == "--height" || a == "-h") { next(v); o.height = integer(a,v,64,16384); }
+    else if (a == "--frames") { next(v); o.frames = v == "-1" ? -1 : integer(a,v,0,10000000); }
+    else if (a == "--benchmark-frames") { next(v); o.benchmarkFrames = integer(a,v,120,1000000); }
+    else if (a == "--benchmark-warmup") { next(v); o.benchmarkWarmup = integer(a,v,0,1000000); }
+    else if (a == "--benchmark-output") next(o.benchmarkOutput);
     else if (a == "--orbit") { next(v); o.orbitDegreesPerFrame = (float)atof(v.c_str()); }
-    else if (a == "--animation") { next(v); o.animation = atoi(v.c_str()); }
+    else if (a == "--animation") { next(v); o.animation = integer(a,v,0,1000000); }
     else if (a == "--temporal") { next(v); o.controls.temporal = atoi(v.c_str()) != 0; }
     else if (a == "--nr") { next(v); o.controls.enabled = atoi(v.c_str()) != 0; }
     else if (a == "--intensity") { next(v); o.controls.intensity = (float)atof(v.c_str()); }
@@ -145,6 +175,10 @@ Options parseOptions(int argc, char** argv) {
   }
   if (!positional.empty()) o.sceneArg = positional[0];
   if (positional.size() > 1) o.environmentArg = positional[1];
+  if (positional.size() > 2) fail("too many scene arguments\n" + std::string(kUsage));
+  if (o.benchmarkFrames && (!o.controls.enabled || !o.capturePrefix.empty() ||
+      !client::validBenchmark(o.benchmarkFrames,o.benchmarkWarmup,o.frames)))
+    fail("benchmark requires NR on, no scripted capture, and at least warmup + samples + 2 total frames");
   return o;
 }
 
@@ -261,12 +295,16 @@ int main(int argc, char** argv) {
     fail("No scene: pass a glTF (and an .hdr environment) or put scene directories with a view.json under " + scenesDir + "\n\n" + kUsage);
   }
 
+  try { client::validateSceneFile(scenes[selectedScene].model); }
+  catch (const std::exception& e) { fail(std::string("cannot load scene: ") + e.what()); }
+
   // ---- window
   SDL_SetMainReady();
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0) fail(std::string("SDL_Init: ") + SDL_GetError());
   SDL_Window* window = SDL_CreateWindow("DLSS 5 NR - Filament / Vulkan", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                         (int)options.width, (int)options.height, SDL_WINDOW_RESIZABLE);
   if (!window) fail(std::string("SDL_CreateWindow: ") + SDL_GetError());
+  SDL_StartTextInput();
   SDL_SysWMinfo wmi;
   SDL_VERSION(&wmi.version);
   if (!SDL_GetWindowWMInfo(window, &wmi)) fail("SDL_GetWindowWMInfo failed");
@@ -294,7 +332,8 @@ int main(int argc, char** argv) {
   // ---- views: the scene into its target, the present quad and the UI into the swapchain
   int drawableWidth = 0, drawableHeight = 0;
   SDL_GetWindowSize(window, &drawableWidth, &drawableHeight);
-  uint32_t width = (uint32_t)std::max(drawableWidth, 64), height = (uint32_t)std::max(drawableHeight, 64);   // Geometry::fromValid needs 33+
+  // Requested render size is exact even if the desktop constrains the physical window.
+  uint32_t width = options.width, height = options.height;
   FrameTextures frame;
   frame.create(*engine, width, height);
 
@@ -325,7 +364,8 @@ int main(int argc, char** argv) {
   presentView->setPostProcessingEnabled(false);
   presentView->setShadowingEnabled(false);
   presentView->setFrustumCullingEnabled(false);
-  presentView->setViewport({0, 0, width, height});
+  const auto initialPresent = client::letterbox(width,height,uint32_t(drawableWidth),uint32_t(drawableHeight));
+  presentView->setViewport({initialPresent.left,initialPresent.bottom,initialPresent.width,initialPresent.height});
   PresentQuad quad;
   quad.create(*engine, *presentScene, dataDir + "/materials/present.filamat");
   quad.setTexture(frame.output);
@@ -335,9 +375,18 @@ int main(int argc, char** argv) {
   uiView->setPostProcessingEnabled(false);
   uiView->setShadowingEnabled(false);
   uiView->setBlendMode(View::BlendMode::TRANSLUCENT);
-  uiView->setViewport({0, 0, width, height});
+  uiView->setViewport({0, 0, uint32_t(drawableWidth), uint32_t(drawableHeight)});
   auto imgui = std::make_unique<filagui::ImGuiHelper>(engine, uiView, utils::Path());
-  imgui->setDisplaySize((int)width, (int)height);
+  imgui->setDisplaySize(drawableWidth, drawableHeight);
+  auto& platform = ImGui::GetPlatformIO();
+  platform.Platform_GetClipboardTextFn = [](ImGuiContext*) -> const char* {
+    static std::string clipboard;
+    char* text = SDL_GetClipboardText();
+    clipboard = text ? text : "";
+    SDL_free(text);
+    return clipboard.c_str();
+  };
+  platform.Platform_SetClipboardTextFn = [](ImGuiContext*, const char* text) { SDL_SetClipboardText(text); };
 
   // ---- the NR pass
   fprintf(stderr, "[demo] model %s, kernels %s\n", modelDir.c_str(), kernelDir.c_str());
@@ -355,14 +404,29 @@ int main(int argc, char** argv) {
   bool backgroundEnvironment = false;
   bool animate = true;
   int animationIndex = 0;
+  std::string importError;
+  auto resetCamera = [&]() {
+    const auto framing = client::fitBounds(loaded->boundsRadius(),45,double(width)/height);
+    const float3 center = loaded->boundsCenter();
+    fps.fov = 45; fps.nearPlane = float(framing.nearPlane); fps.farPlane = float(framing.farPlane);
+    fps.lookAt(center + float3{0,0,float(framing.distance)},center);
+    fps.moveSpeed = float(framing.distance);
+  };
   auto loadScene = [&](int index) {
     engine->flushAndWait();
-    loaded.reset();
     const SceneView& view = scenes[index];
     try {
-      loaded = std::make_unique<LoadedScene>(*engine, view);
+      client::validateSceneFile(view.model);
+      // Construct the replacement before discarding the current scene.
+      auto replacement = std::make_unique<LoadedScene>(*engine, view);
+      sceneView->setScene(replacement->scene());
+      loaded = std::move(replacement);
+      selectedScene = index;
+      importError.clear();
     } catch (const std::exception& e) {
-      fail(std::string("cannot load ") + view.model + ": " + e.what());
+      importError = std::string("cannot load ") + view.model + ": " + e.what();
+      fprintf(stderr,"[import] %s\n",importError.c_str());
+      return false;
     }
     sceneView->setScene(loaded->scene());
     exposure = view.exposure; environmentIntensity = view.environmentIntensity; sunIntensity = view.sunIntensity;
@@ -374,10 +438,7 @@ int main(int argc, char** argv) {
       fps.lookAt(view.cameraPosition, view.cameraTarget);
       fps.fov = view.fov; fps.nearPlane = view.nearPlane; fps.farPlane = view.farPlane;
     } else {
-      float3 center = loaded->boundsCenter();
-      float r = loaded->boundsRadius();
-      fps.lookAt(center + float3{0.0f, r * 0.3f, r * 1.8f}, center);
-      fps.fov = 45.0f; fps.nearPlane = std::max(r * 0.005f, 0.001f); fps.farPlane = r * 50.0f;
+      resetCamera();
     }
     fps.moveSpeed = view.moveSpeed > 0 ? view.moveSpeed : std::max(length(fps.orbitTarget - fps.position), 0.1f);
     if (!options.viewOverride.empty()) {
@@ -388,8 +449,9 @@ int main(int argc, char** argv) {
     }
     animationIndex = options.animation;
     nr->resetHistory();
+    return true;
   };
-  loadScene(selectedScene);
+  if (!loadScene(selectedScene)) fail(importError);
 
   // ---- the UI state
   NrControls& controls = options.controls;
@@ -400,7 +462,16 @@ int main(int argc, char** argv) {
   mat4 previousClipFromRotated;
   bool hasPreviousCamera = false;
   bool autoOrbit = false;
-  bool mouseLook = false;
+  bool mouseLook = false, mouseOrbit = false, mousePan = false;
+  bool followWindow = false;
+  int customWidth = int(width), customHeight = int(height);
+  uint32_t requestedWidth = 0, requestedHeight = 0;
+  char modelPath[4096] = {};
+  std::string droppedPath;
+  const bool benchmarking = options.benchmarkFrames > 0;
+  client::BenchmarkSamples benchmark(options.benchmarkWarmup,options.benchmarkFrames);
+  std::string benchmarkError;
+  const auto benchmarkStart = std::chrono::steady_clock::now();
   float fpsValue = 0.0f;
   double cpuFrameMs = 0.0;
   uint32_t frameIndex = 0;
@@ -424,9 +495,11 @@ int main(int argc, char** argv) {
     sceneView->setRenderTarget(frame.target);
     sceneView->setViewport({0, 0, width, height});
     sceneView->setVelocityBuffers(frame.velocity, frame.velocityDepth);
-    presentView->setViewport({0, 0, width, height});
-    uiView->setViewport({0, 0, width, height});
-    imgui->setDisplaySize((int)width, (int)height);
+    // Presentation follows the window; NR/scene keep the exact requested resolution.
+    const auto viewport = client::letterbox(width,height,uint32_t(drawableWidth),uint32_t(drawableHeight));
+    presentView->setViewport({viewport.left,viewport.bottom,viewport.width,viewport.height});
+    uiView->setViewport({0, 0, uint32_t(drawableWidth), uint32_t(drawableHeight)});
+    imgui->setDisplaySize(drawableWidth, drawableHeight);
     quad.setTexture(frame.output);
     nr->resize(width, height);
     historyReset = true;
@@ -439,6 +512,10 @@ int main(int argc, char** argv) {
   const uint8_t* keys = SDL_GetKeyboardState(nullptr);
 
   while (running) {
+    if (benchmarking && std::chrono::duration<double>(std::chrono::steady_clock::now()-benchmarkStart).count() > 300) {
+      benchmarkError = "benchmark incomplete: time limit exceeded";
+      break;
+    }
     ImGuiIO& io = ImGui::GetIO();
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
@@ -447,11 +524,21 @@ int main(int argc, char** argv) {
         case SDL_WINDOWEVENT:
           if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED || event.window.event == SDL_WINDOWEVENT_RESIZED) pendingResize = true;
           break;
+        case SDL_DROPFILE:
+          if (!benchmarking) droppedPath = event.drop.file;
+          SDL_free(event.drop.file);
+          break;
+        case SDL_TEXTINPUT: io.AddInputCharactersUTF8(event.text.text); break;
         case SDL_MOUSEMOTION:
           io.AddMousePosEvent((float)event.motion.x, (float)event.motion.y);
+          if (benchmarking) break;
+          if (mouseOrbit) fps.orbit(float(event.motion.xrel),float(event.motion.yrel));
+          if (mousePan) fps.pan(float(event.motion.xrel),float(event.motion.yrel),float(drawableHeight));
           if (mouseLook) {
+            const float distance = std::max(length(fps.position-fps.orbitTarget),0.001f);
             fps.yaw -= event.motion.xrel * 0.003f;
             fps.pitch = std::clamp(fps.pitch - event.motion.yrel * 0.003f, -1.55f, 1.55f);
+            fps.orbitTarget = fps.position + fps.forward()*distance;
           }
           break;
         case SDL_MOUSEBUTTONDOWN:
@@ -459,21 +546,40 @@ int main(int argc, char** argv) {
           int button = event.button.button == SDL_BUTTON_LEFT ? 0 : event.button.button == SDL_BUTTON_RIGHT ? 1 : 2;
           bool down = event.type == SDL_MOUSEBUTTONDOWN;
           io.AddMouseButtonEvent(button, down);
-          if (event.button.button == SDL_BUTTON_LEFT && !io.WantCaptureMouse) {
-            mouseLook = down;
-            SDL_SetRelativeMouseMode(down ? SDL_TRUE : SDL_FALSE);
+          if (!benchmarking && (!io.WantCaptureMouse || !down)) {
+            if (event.button.button == SDL_BUTTON_LEFT) mouseOrbit = down;
+            if (event.button.button == SDL_BUTTON_MIDDLE) mousePan = down;
+            if (event.button.button == SDL_BUTTON_RIGHT) mouseLook = down;
+            SDL_SetRelativeMouseMode(mouseLook ? SDL_TRUE : SDL_FALSE);
           }
-          if (!down && event.button.button == SDL_BUTTON_LEFT && mouseLook) { mouseLook = false; SDL_SetRelativeMouseMode(SDL_FALSE); }
           break;
         }
-        case SDL_MOUSEWHEEL: io.AddMouseWheelEvent((float)event.wheel.x, (float)event.wheel.y); break;
+        case SDL_MOUSEWHEEL:
+          io.AddMouseWheelEvent((float)event.wheel.x, (float)event.wheel.y);
+          if (!benchmarking && !io.WantCaptureMouse) fps.zoom(float(event.wheel.y));
+          break;
+        case SDL_KEYUP:
         case SDL_KEYDOWN:
-          if (io.WantCaptureKeyboard) break;
+          io.AddKeyEvent(ImGuiMod_Ctrl,(event.key.keysym.mod & KMOD_CTRL) != 0);
+          io.AddKeyEvent(ImGuiMod_Shift,(event.key.keysym.mod & KMOD_SHIFT) != 0);
+          if (event.key.keysym.sym == SDLK_BACKSPACE) io.AddKeyEvent(ImGuiKey_Backspace,event.type == SDL_KEYDOWN);
+          if (event.key.keysym.sym == SDLK_DELETE) io.AddKeyEvent(ImGuiKey_Delete,event.type == SDL_KEYDOWN);
+          if (event.key.keysym.sym == SDLK_LEFT) io.AddKeyEvent(ImGuiKey_LeftArrow,event.type == SDL_KEYDOWN);
+          if (event.key.keysym.sym == SDLK_RIGHT) io.AddKeyEvent(ImGuiKey_RightArrow,event.type == SDL_KEYDOWN);
+          if (event.key.keysym.sym == SDLK_HOME) io.AddKeyEvent(ImGuiKey_Home,event.type == SDL_KEYDOWN);
+          if (event.key.keysym.sym == SDLK_END) io.AddKeyEvent(ImGuiKey_End,event.type == SDL_KEYDOWN);
+          if (event.key.keysym.sym == SDLK_RETURN) io.AddKeyEvent(ImGuiKey_Enter,event.type == SDL_KEYDOWN);
+          if (event.key.keysym.sym == SDLK_a) io.AddKeyEvent(ImGuiKey_A,event.type == SDL_KEYDOWN);
+          if (event.key.keysym.sym == SDLK_v) io.AddKeyEvent(ImGuiKey_V,event.type == SDL_KEYDOWN);
+          if (event.key.keysym.sym == SDLK_c) io.AddKeyEvent(ImGuiKey_C,event.type == SDL_KEYDOWN);
+          if (event.key.keysym.sym == SDLK_x) io.AddKeyEvent(ImGuiKey_X,event.type == SDL_KEYDOWN);
+          if (event.type == SDL_KEYUP || io.WantCaptureKeyboard) break;
+          if (benchmarking && event.key.keysym.sym != SDLK_ESCAPE) break;
           switch (event.key.keysym.sym) {
             case SDLK_ESCAPE: running = false; break;
             case SDLK_n: controls.enabled = !controls.enabled; historyReset = true; break;
             case SDLK_t: controls.temporal = !controls.temporal; historyReset = true; break;
-            case SDLK_r: historyReset = true; break;
+            case SDLK_r: resetCamera(); hasPreviousCamera = false; historyReset = true; break;
             case SDLK_b: backgroundEnvironment = !backgroundEnvironment; break;
             case SDLK_c: capture("frame" + std::to_string(frameIndex)); break;
             default: break;
@@ -482,22 +588,50 @@ int main(int argc, char** argv) {
         default: break;
       }
     }
+    if (!droppedPath.empty()) {
+      try {
+        SceneView imported = sceneFromArguments(droppedPath,options.environmentArg);
+        client::validateSceneFile(imported.model);
+        scenes.push_back(std::move(imported));
+        pendingScene = int(scenes.size())-1;
+      } catch (const std::exception& e) { importError = e.what(); }
+      droppedPath.clear();
+    }
     if (pendingScene >= 0) {
-      selectedScene = pendingScene;
+      if (loadScene(pendingScene)) { hasPreviousCamera = false; historyReset = true; animationTime = 0; }
       pendingScene = -1;
-      loadScene(selectedScene);
+    }
+    if (requestedWidth && requestedHeight) {
+      resize(requestedWidth,requestedHeight);
+      SDL_SetWindowSize(window,int(requestedWidth),int(requestedHeight));
+      requestedWidth = requestedHeight = 0;
+      hasPreviousCamera = false;
     }
     if (pendingResize) {
       pendingResize = false;
       int w = 0, h = 0;
       SDL_GetWindowSize(window, &w, &h);
-      if (w >= 64 && h >= 64 && ((uint32_t)w != width || (uint32_t)h != height)) resize((uint32_t)w, (uint32_t)h);
+      if (w > 0 && h > 0) {
+        if (benchmarking && frameIndex > 0 && (w != drawableWidth || h != drawableHeight)) {
+          benchmarkError = "benchmark invalid: window resized during measurement"; running = false;
+        }
+        drawableWidth = w; drawableHeight = h;
+        const auto viewport = client::letterbox(width,height,uint32_t(w),uint32_t(h));
+        presentView->setViewport({viewport.left,viewport.bottom,viewport.width,viewport.height});
+        uiView->setViewport({0,0,uint32_t(w),uint32_t(h)});
+        imgui->setDisplaySize(w,h);
+        if (followWindow && !benchmarking && w >= 64 && h >= 64 && (uint32_t(w) != width || uint32_t(h) != height)) {
+          resize(uint32_t(w),uint32_t(h)); hasPreviousCamera = false;
+        }
+      }
     }
 
     // (the renderer paces the frames: when it asks to skip one, wait a little instead of spinning)
     if (!renderer->beginFrame(swapChain)) { SDL_Delay(1); continue; }
     auto now = std::chrono::high_resolution_clock::now();
-    float dt = std::min(std::chrono::duration<float>(now - lastTime).count(), 0.1f);
+    const double wallFrameMs = std::chrono::duration<double,std::milli>(now-lastTime).count();
+    if (benchmarking && frameIndex > 0) benchmark.addFrame(frameIndex-1,wallFrameMs);
+    float dt = std::min(float(wallFrameMs/1000.0), 0.1f);
     lastTime = now;
     fpsFrames++;
     if (std::chrono::duration<float>(now - fpsTime).count() >= 0.5f) {
@@ -506,8 +640,9 @@ int main(int argc, char** argv) {
     }
 
     // ---- camera: WASD / QE (shift: faster), the mouse look, the scripted orbit
-    if (!io.WantCaptureKeyboard) {
+    if (!benchmarking && !io.WantCaptureKeyboard) {
       float speed = fps.moveSpeed * dt * (keys[SDL_SCANCODE_LSHIFT] ? 4.0f : 1.0f);
+      const float3 oldPosition = fps.position;
       float3 f = fps.forward(), r = fps.right();
       if (keys[SDL_SCANCODE_W]) fps.position += f * speed;
       if (keys[SDL_SCANCODE_S]) fps.position -= f * speed;
@@ -515,6 +650,7 @@ int main(int argc, char** argv) {
       if (keys[SDL_SCANCODE_A]) fps.position -= r * speed;
       if (keys[SDL_SCANCODE_E]) fps.position.y += speed;
       if (keys[SDL_SCANCODE_Q]) fps.position.y -= speed;
+      fps.orbitTarget += fps.position-oldPosition;
     }
     if (autoOrbit) {
       // the scripted camera motion: a steady yaw (the verification's reprojection check assumes a pure rotation)
@@ -547,9 +683,13 @@ int main(int argc, char** argv) {
     previousClipFromRotated = clipFromRotated;
 
     // ---- the frame
-    if (nr->chainTimedOut()) { engine->flushAndWait(); nr->fallBackToBarriers(); historyReset = true; }
+    if (nr->chainTimedOut()) {
+      engine->flushAndWait(); nr->fallBackToBarriers(); historyReset = true;
+      if (benchmarking) { benchmarkError = "benchmark invalid: GPU chained wait timed out"; running = false; }
+    }
     if (historyReset) { nr->resetHistory(); historyReset = false; }
     NrPass::Frame nrFrame = nr->beginFrame(controls, &background[0][0]);
+    if (benchmarking) benchmark.addGpu(nr->timingsFrame(),nr->timingsFresh(),nr->timingsEnabled(),nr->timings().frameMs,nr->timings().networkMs);
     auto cpuStart = std::chrono::high_resolution_clock::now();
     NrPass* pass = nr.get();
     queueGpuWork(*engine, {}, [pass, nrFrame](void* commands, std::vector<GpuImage>&) { pass->recordStamp(commands, nrFrame, NrPass::kFrameStart); });
@@ -561,11 +701,38 @@ int main(int argc, char** argv) {
     renderer->render(presentView);
     imgui->render(dt, [&](Engine*, View*) {
       ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Once);
-      ImGui::SetNextWindowSize(ImVec2(300, 0), ImGuiCond_Once);
+      ImGui::SetNextWindowSize(ImVec2(340, 0), ImGuiCond_Once);
+      ImGui::SetNextWindowSizeConstraints(ImVec2(280,100),ImVec2(float(std::max(drawableWidth-20,280)),float(std::max(drawableHeight-20,100))));
       ImGui::Begin("DLSS 5 NR - Filament", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
       ImGui::PushItemWidth(140.0f);
       ImGui::Text("%s", nr->deviceName().c_str());
-      ImGui::Text("%.0f fps (%.2f ms cpu)", fpsValue, cpuFrameMs);
+      ImGui::Text("NR: %s",controls.enabled ? (nr->timingsEnabled() && nr->timings().networkMs > 0 ? "ON (Tensor Core FP8)" : "ON / awaiting GPU sample") : "OFF (scene composite)");
+      ImGui::Text("%.1f FPS / %.2f ms wall",fpsValue,fpsValue > 0 ? 1000.0f/fpsValue : 0.0f);
+      ImGui::Text("CPU submit %.2f ms",cpuFrameMs);
+      ImGui::Text("Render / NR: %u x %u",width,height);
+      if (controls.enabled && nr->timingsEnabled() && nr->timings().networkMs > 0)
+        ImGui::Text("Network GPU: %.3f ms",nr->timings().networkMs);
+      else ImGui::TextUnformatted("Network GPU: no NR sample");
+      if (benchmarking) {
+        ImGui::Text("Benchmark warmup %d / samples %zu of %d",options.benchmarkWarmup,benchmark.networkMs.size(),options.benchmarkFrames);
+        ImGui::TextUnformatted("Controls locked during measurement");
+        ImGui::PopItemWidth(); ImGui::End(); return;
+      }
+      if (!importError.empty()) ImGui::TextWrapped("Import: %s",importError.c_str());
+      if (ImGui::CollapsingHeader("Resolution",ImGuiTreeNodeFlags_DefaultOpen)) {
+        if (ImGui::Button("512 x 512")) { requestedWidth = requestedHeight = 512; followWindow = false; }
+        ImGui::SameLine();
+        if (ImGui::Button("1024 x 1024")) { requestedWidth = requestedHeight = 1024; followWindow = false; }
+        ImGui::InputInt("Width",&customWidth);
+        ImGui::InputInt("Height",&customHeight);
+        if (ImGui::Button("Apply exact size")) {
+          if (customWidth >= 64 && customWidth <= 16384 && customHeight >= 64 && customHeight <= 16384) {
+            requestedWidth = uint32_t(customWidth); requestedHeight = uint32_t(customHeight); followWindow = false;
+          } else importError = "resolution must be 64..16384 in each dimension";
+        }
+        if (ImGui::Checkbox("Render follows window",&followWindow) && followWindow) pendingResize = true;
+        ImGui::Text("Window: %d x %d",drawableWidth,drawableHeight);
+      }
       if (ImGui::CollapsingHeader("DLSS NR", ImGuiTreeNodeFlags_DefaultOpen)) {
         if (ImGui::Checkbox("Enabled", &controls.enabled)) historyReset = true;
         if (ImGui::Checkbox("Temporal", &controls.temporal)) historyReset = true;
@@ -600,13 +767,18 @@ int main(int argc, char** argv) {
         const NrTimings& t = nr->timings();
         ImGui::Text("scene       %6.3f", t.sceneMs);
         ImGui::Text("preprocess  %6.3f", t.preprocessMs);
-        ImGui::Text("network     %6.3f", t.networkMs);
+        if (controls.enabled && nr->timingsEnabled()) ImGui::Text("network     %6.3f", t.networkMs);
+        else ImGui::TextUnformatted("network     NR off / pending");
         ImGui::Text("composite   %6.3f", t.compositeMs);
         ImGui::Text("present+ui  %6.3f", t.presentMs);
         ImGui::Text("frame       %6.3f", t.frameMs);
         ImGui::Text("%ux%u, frame %u", nr->width(), nr->height(), nr->frameCount());
       }
       if (ImGui::CollapsingHeader("Scene", ImGuiTreeNodeFlags_DefaultOpen)) {
+        if (ImGui::InputText("GLB / glTF path",modelPath,sizeof(modelPath),ImGuiInputTextFlags_EnterReturnsTrue)) droppedPath = modelPath;
+        if (ImGui::Button("Load model")) droppedPath = modelPath;
+        ImGui::TextWrapped("Drop GLB/glTF. Left drag: orbit; middle: pan; wheel: zoom. Right drag: look; WASD/QE: move.");
+        if (ImGui::Button("Reset camera (R)")) { resetCamera(); hasPreviousCamera = false; historyReset = true; }
         if (ImGui::BeginCombo("Demo scene", scenes[selectedScene].name.c_str())) {
           for (int i = 0; i < (int)scenes.size(); i++) {
             bool selected = i == selectedScene;
@@ -677,11 +849,54 @@ int main(int argc, char** argv) {
       if (f == 160) { capture("nr-settled"); controls.enabled = false; historyReset = true; }
       if (f == 200) { capture("nr-off"); controls.enabled = true; historyReset = true; }
     }
+    if (benchmarking) {
+      if (benchmark.complete()) running = false;
+      if (frameIndex > uint32_t(options.benchmarkWarmup + options.benchmarkFrames + 600) ||
+          std::chrono::duration<double>(std::chrono::steady_clock::now()-benchmarkStart).count() > 300) {
+        benchmarkError = "benchmark incomplete: insufficient fresh GPU samples within frame/time limit";
+        running = false;
+      }
+    }
     if (options.frames > 0 && (int)frameIndex >= options.frames) running = false;
   }
 
   // ---- shutdown
   engine->flushAndWait();
+  int exitCode = 0;
+  if (benchmarking) {
+    if (!benchmark.complete() || !benchmarkError.empty()) {
+      if (benchmarkError.empty()) benchmarkError = "benchmark interrupted before collecting all samples";
+      fprintf(stderr,"[benchmark] %s (wall %zu, GPU %zu)\n",benchmarkError.c_str(),benchmark.frameMs.size(),benchmark.networkMs.size());
+      std::ofstream output(options.benchmarkOutput);
+      output << "{\n  \"complete\": false,\n  \"error\": " << std::quoted(benchmarkError)
+             << ",\n  \"wall_samples\": " << benchmark.frameMs.size() << ", \"gpu_samples\": " << benchmark.networkMs.size() << "\n}\n";
+      exitCode = 3;
+    } else {
+      VkPhysicalDeviceDriverProperties driver{VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PROPERTIES};
+      VkPhysicalDeviceProperties2 properties2{VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2};
+      properties2.pNext = &driver;
+      vkGetPhysicalDeviceProperties2(nr->context().physical(),&properties2);
+      const auto& properties = properties2.properties;
+      const auto wall = client::summarize(benchmark.frameMs);
+      const auto gpu = client::summarize(benchmark.gpuFrameMs);
+      const auto network = client::summarize(benchmark.networkMs);
+      std::ofstream output(options.benchmarkOutput);
+      // std::quoted escapes JSON quotes/backslashes in device names and paths.
+      output << std::setprecision(9) << "{\n  \"complete\": true,\n  \"gpu\": " << std::quoted(nr->deviceName())
+             << ",\n  \"driver_version_raw\": " << properties.driverVersion
+             << ",\n  \"driver_name\": " << std::quoted(driver.driverName) << ",\n  \"driver_info\": " << std::quoted(driver.driverInfo)
+             << ",\n  \"backend\": \"Vulkan VK_NV_cuda_kernel_launch / FP8 Tensor Core PTX\",\n  \"nr_enabled\": true,\n  \"width\": " << width << ", \"height\": " << height
+             << ",\n  \"window_width\": " << drawableWidth << ", \"window_height\": " << drawableHeight
+             << ",\n  \"scene\": " << std::quoted(scenes[selectedScene].model)
+             << ",\n  \"temporal_enabled\": " << (controls.temporal ? "true" : "false")
+             << ",\n  \"warmup_frames\": " << options.benchmarkWarmup << ", \"samples\": " << options.benchmarkFrames
+             << ",\n  \"frame_wall_ms\": {\"median\": " << wall.median << ", \"p95\": " << wall.p95
+             << "},\n  \"frame_gpu_ms\": {\"median\": " << gpu.median << ", \"p95\": " << gpu.p95
+             << "},\n  \"network_gpu_ms\": {\"median\": " << network.median << ", \"p95\": " << network.p95 << "}\n}\n";
+      if (!output) { fprintf(stderr,"[benchmark] cannot write %s\n",options.benchmarkOutput.c_str()); exitCode = 3; }
+      else fprintf(stderr,"[benchmark] %s: wall median %.3f P95 %.3f ms, network median %.3f P95 %.3f ms\n",options.benchmarkOutput.c_str(),wall.median,wall.p95,network.median,network.p95);
+    }
+  }
   {
     const NrTimings& t = nr->timings();
     fprintf(stderr, "[demo] %u frames at %ux%u, last GPU timings (ms): scene %.3f preprocess %.3f network %.3f composite %.3f present+ui %.3f frame %.3f; %.1f fps\n",
@@ -707,5 +922,5 @@ int main(int argc, char** argv) {
   device.reset();
   SDL_DestroyWindow(window);
   SDL_Quit();
-  return 0;
+  return exitCode;
 }

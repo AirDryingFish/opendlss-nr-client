@@ -78,6 +78,10 @@ class NrPass {
   static uint32_t shaderReadOnlyLayout();
 
   const NrTimings& timings() const { return timings_; }
+  // Query results can lag the renderer. Only fresh results may be counted by a benchmark.
+  bool timingsFresh() const { return timingsFresh_; }
+  uint32_t timingsFrame() const { return timingsFrame_; }
+  bool timingsEnabled() const { return timingsEnabled_; }
   uint32_t frameCount() const { return frames_; }
   const std::string& deviceName() const { return context_->deviceName(); }
 
@@ -139,5 +143,9 @@ class NrPass {
   VkQueryPool queries_[2]{};       // per history parity: read when that parity comes around again
   std::atomic<bool> queriesWritten_[2]{};
   NrTimings timings_;
+  bool timingsFresh_ = false, timingsEnabled_ = false;
+  uint32_t timingsFrame_ = 0, queryFrames_[2]{};
+  bool queryEnabled_[2]{};
+  uint64_t queryEndTicks_[2]{};
   uint32_t frames_ = 0, framesSinceReset_ = 0, historyIndex_ = 0;
 };

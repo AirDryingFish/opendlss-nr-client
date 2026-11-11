@@ -66,6 +66,7 @@ class LoadedScene {
   void setEnvironmentRotation(float radians);
 
  private:
+  void cleanup();
   void loadEnvironment(const std::string& path);
   filament::Engine& engine_;
   SceneView view_;

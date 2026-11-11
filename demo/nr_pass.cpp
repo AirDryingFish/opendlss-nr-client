@@ -302,6 +302,7 @@ void NrPass::updateComputeSets() {
 
 NrPass::Frame NrPass::beginFrame(const NrControls& controls, const float background[16]) {
   historyIndex_ = frames_ & 1u;
+  timingsFresh_ = false;
   // the timestamps of the frame that used this parity last (two frames ago), when the GPU is done with them
   if (queriesWritten_[historyIndex_].load()) {
     uint64_t ticks[kStampCount * 2];
@@ -309,7 +310,13 @@ NrPass::Frame NrPass::beginFrame(const NrControls& controls, const float backgro
                                        VK_QUERY_RESULT_64_BIT | VK_QUERY_RESULT_WITH_AVAILABILITY_BIT);
     bool available = r == VK_SUCCESS;
     for (int i = 0; i < kStampCount && available; ++i) available = ticks[i * 2 + 1] != 0;
-    if (available) {
+    // A queued GPU reset may not have executed yet. Never count the same
+    // available timestamp twice merely because this parity came around again.
+    if (available && ticks[kPresentEnd * 2] != queryEndTicks_[historyIndex_]) {
+      queryEndTicks_[historyIndex_] = ticks[kPresentEnd * 2];
+      timingsFresh_ = true;
+      timingsFrame_ = queryFrames_[historyIndex_];
+      timingsEnabled_ = queryEnabled_[historyIndex_];
       const double period = context_->timestampPeriodNs() * 1e-6;
       auto ms = [&](Stamp s) { return ticks[s * 2] * period; };
       timings_.sceneMs = ms(kSceneEnd) - ms(kFrameStart);
@@ -320,6 +327,8 @@ NrPass::Frame NrPass::beginFrame(const NrControls& controls, const float backgro
       timings_.frameMs = ms(kPresentEnd) - ms(kFrameStart);
     }
   }
+  queryFrames_[historyIndex_] = frames_;
+  queryEnabled_[historyIndex_] = controls.enabled;
   Frame frame;
   frame.parity = historyIndex_;
   frame.enabled = controls.enabled;

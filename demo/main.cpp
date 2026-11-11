@@ -513,6 +513,8 @@ int main(int argc, char** argv) {
   };
 
   auto resize = [&](uint32_t w, uint32_t h) {
+    // Keep frame textures and NR image bindings together when the size is unchanged.
+    if (w == width && h == height) return;
     engine->flushAndWait();
     width = w; height = h;
     frame.destroy(*engine);
@@ -633,7 +635,7 @@ int main(int argc, char** argv) {
     }
     if (requestedWidth && requestedHeight) {
       resize(requestedWidth,requestedHeight);
-      SDL_SetWindowSize(window,int(requestedWidth),int(requestedHeight));
+      // Exact render dimensions are independent of the presentation window.
       requestedWidth = requestedHeight = 0;
       hasPreviousCamera = false;
     }

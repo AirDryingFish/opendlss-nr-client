@@ -7,15 +7,18 @@ struct UiResizeScenario {
     ImVec2 min{}, max{};
     bool hovered = false;
     void observe() { min = ImGui::GetItemRectMin(); max = ImGui::GetItemRectMax(); hovered = ImGui::IsItemHovered(); }
-  } apply, enabled;
+  } enabled;
   std::string output, error;
   std::ostringstream samples;
   std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
   unsigned action = 0, phase = 0, phaseFrame = 0, completed = 0, skipped = 0, resizeEvents = 0;
-  bool done = false, firstSample = true, geometryMatches = true, windowPreserved = true;
-  int initialW = 0, initialH = 0;
-  // Apply exact 2048, 512, 2048, then repeat the same size. Toggle off/on after each.
-  const int sizes[4] = {2048, 512, 2048, 2048};
+  unsigned resizeRequests = 0, resizesPassed = 0, clicksPassed = 0, actualExtentChanges = 0;
+  unsigned geometryStableSince = 0;
+  int lastSeenW = 0, lastSeenH = 0, lastCheckedW = 0, lastCheckedH = 0;
+  bool done = false, firstSample = true, geometryMatches = true, renderFollowsWindow = true;
+  // Landscape, portrait, a potentially WM-clamped request, then repeated dimensions.
+  // Requested sizes are stimuli; assertions use the actual settled window extent.
+  const int sizes[6][2] = {{800,600}, {1200,900}, {720,960}, {2048,2048}, {1024,768}, {1024,768}};
   explicit UiResizeScenario(std::string path) : output(std::move(path)) {}
   bool active() const { return !output.empty(); }
   bool timedOut() {
@@ -39,11 +42,15 @@ struct UiResizeScenario {
     if (SDL_PushEvent(&event) != 1) { error = "SDL_PushEvent failed"; done = true; }
   }
   void frame(SDL_Window* window, unsigned frameIndex, unsigned width, unsigned height,
-             int& customWidth, int& customHeight, bool isEnabled, const filament::Viewport& viewport) {
+             bool isEnabled, const filament::Viewport& viewport) {
     if (!active() || done) return;
     ++completed;
     const auto& io = ImGui::GetIO();
     int w = 0, h = 0; SDL_GetWindowSize(window, &w, &h);
+    if (w != lastSeenW || h != lastSeenH) {
+      lastSeenW = w; lastSeenH = h; geometryStableSince = frameIndex;
+    }
+    if (completed == 8) { lastCheckedW = w; lastCheckedH = h; }
     int nativeW = -1, nativeH = -1;
 #if defined(FILAMENT_SUPPORTS_X11)
     SDL_SysWMinfo info{}; SDL_VERSION(&info.version);
@@ -59,6 +66,7 @@ struct UiResizeScenario {
     auto vec = [&](ImVec2 v) { samples << '[' << v.x << ',' << v.y << ']'; };
     samples << "    {\"frame\":" << frameIndex << ",\"ui_frame\":" << ImGui::GetFrameCount()
             << ",\"action\":" << action << ",\"phase\":" << phase << ",\"nr_enabled\":" << (isEnabled ? "true" : "false")
+            << ",\"requested_window\":[" << sizes[action/3][0] << ',' << sizes[action/3][1] << ']'
             << ",\"native_window\":[" << nativeW << ',' << nativeH << ']'
             << ",\"render\":[" << width << ',' << height << "],\"sdl_window\":[" << w << ',' << h << "],\"display\":";
     vec(io.DisplaySize); samples << ",\"framebuffer_scale\":"; vec(io.DisplayFramebufferScale);
@@ -67,33 +75,50 @@ struct UiResizeScenario {
     samples << ",\"mouse_down\":" << (io.MouseDown[0] ? "true" : "false")
             << ",\"want_capture_mouse\":" << (io.WantCaptureMouse ? "true" : "false")
             << ",\"window_hovered\":" << (ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) ? "true" : "false")
-            << ",\"apply_min\":"; vec(apply.min); samples << ",\"apply_max\":"; vec(apply.max);
-    samples << ",\"enabled_min\":"; vec(enabled.min); samples << ",\"enabled_max\":"; vec(enabled.max);
-    samples << ",\"apply_hovered\":" << (apply.hovered ? "true" : "false")
-            << ",\"enabled_hovered\":" << (enabled.hovered ? "true" : "false")
+            << ",\"enabled_min\":"; vec(enabled.min); samples << ",\"enabled_max\":"; vec(enabled.max);
+    samples << ",\"enabled_hovered\":" << (enabled.hovered ? "true" : "false")
             << ",\"begin_frame_skips\":" << skipped << ",\"sdl_resize_events\":" << resizeEvents << '}';
-    if (completed == 8) { initialW = w; initialH = h; }
     if (completed < 8 || frameIndex < phaseFrame + (phase == 3 ? 5u : 1u)) return;
-    const bool isApply = action % 3 == 0;
-    const Item& item = isApply ? apply : enabled;
-    const ImVec2 center{(item.min.x+item.max.x)*0.5f, (item.min.y+item.max.y)*0.5f};
-    if (phase == 0) {
-      if (isApply) customWidth = customHeight = sizes[action/3];
-      push(window, SDL_MOUSEMOTION, center);
-    } else if (phase == 1) push(window, SDL_MOUSEBUTTONDOWN, center);
+    const bool isResize = action % 3 == 0;
+    const int targetW = sizes[action/3][0], targetH = sizes[action/3][1];
+    const ImVec2 center{(enabled.min.x+enabled.max.x)*0.5f, (enabled.min.y+enabled.max.y)*0.5f};
+    if (isResize && phase == 0) {
+      SDL_SetWindowSize(window,targetW,targetH);
+      ++resizeRequests;
+      phase = 3; phaseFrame = frameIndex; geometryStableSince = frameIndex;
+      return;
+    }
+    if (phase == 0) push(window, SDL_MOUSEMOTION, center);
+    else if (phase == 1) push(window, SDL_MOUSEBUTTONDOWN, center);
     else if (phase == 2) push(window, SDL_MOUSEBUTTONUP, center);
     else {
-      windowPreserved = windowPreserved && w == initialW && h == initialH;
-      geometryMatches = geometryMatches && io.DisplaySize.x == w && io.DisplaySize.y == h &&
+      // Allow asynchronous WM configure notifications to settle before asserting.
+      if (isResize && (frameIndex < geometryStableSince + 5 ||
+          (nativeW >= 0 && (nativeW != w || nativeH != h))) && frameIndex < phaseFrame + 60) return;
+      const bool geometryCorrect = io.DisplaySize.x == w && io.DisplaySize.y == h &&
           viewport.width == unsigned(w) && viewport.height == unsigned(h) &&
           (nativeW < 0 || (nativeW == w && nativeH == h));
-      const bool correct = isApply ? (width == unsigned(sizes[action/3]) && height == width) : (isEnabled == (action % 3 == 2));
-      fprintf(stderr, "[ui-resize-test] action %u (%s) %s at frame %u, window %dx%d, display %.0fx%.0f\n",
-              action, isApply ? "Apply" : "Enabled", correct ? "PASS" : "FAIL", frameIndex, w, h, io.DisplaySize.x, io.DisplaySize.y);
-      if (!correct) { error = "SDL click did not produce expected state at action " + std::to_string(action); done = true; return; }
-      if (++action == 12) {
-        if (!windowPreserved) error = "offscreen Apply changed SDL window dimensions";
-        else if (!geometryMatches) error = "settled native window/ImGui/viewport dimensions differ";
+      const bool renderCorrect = width == unsigned(w) && height == unsigned(h);
+      geometryMatches = geometryMatches && geometryCorrect;
+      renderFollowsWindow = renderFollowsWindow && renderCorrect;
+      const bool correct = w > 0 && h > 0 && geometryCorrect && renderCorrect &&
+          (isResize || isEnabled == (action % 3 == 2));
+      fprintf(stderr, "[ui-resize-test] action %u (%s) %s at frame %u, render %ux%u, window %dx%d, native %dx%d, display %.0fx%.0f\n",
+              action, isResize ? "Resize" : "Enabled", correct ? "PASS" : "FAIL", frameIndex,
+              width,height,w,h,nativeW,nativeH,io.DisplaySize.x,io.DisplaySize.y);
+      if (!correct) {
+        error = !renderCorrect ? "render/NR dimensions do not follow actual window" :
+            !geometryCorrect ? "settled native window/ImGui/viewport dimensions differ" :
+            isResize ? "actual window extent is invalid" : "SDL click did not produce expected NR state";
+        done = true; return;
+      }
+      if (isResize) {
+        ++resizesPassed;
+        if (w != lastCheckedW || h != lastCheckedH) ++actualExtentChanges;
+        lastCheckedW = w; lastCheckedH = h;
+      } else ++clicksPassed;
+      if (++action == 18) {
+        if (!actualExtentChanges) error = "window manager allowed no actual window extent change";
         done = true; return;
       }
     }
@@ -105,8 +130,12 @@ struct UiResizeScenario {
     std::ostringstream result;
     result << "{\n  \"complete\": " << (done && error.empty() ? "true" : "false")
            << ",\n  \"scope\": \"logical SDL/ImGui hit testing; rendered alignment requires visual verification\",\n  \"error\": " << client::jsonQuote(error)
-           << ",\n  \"logical_clicks_passed\": " << action
-           << ",\n  \"window_preserved\": " << (windowPreserved ? "true" : "false")
+           << ",\n  \"logical_clicks_passed\": " << clicksPassed
+           << ",\n  \"resize_requests\": " << resizeRequests
+           << ",\n  \"resizes_passed\": " << resizesPassed
+           << ",\n  \"actual_extent_changes\": " << actualExtentChanges
+           << ",\n  \"actions_passed\": " << action
+           << ",\n  \"render_follows_window\": " << (renderFollowsWindow ? "true" : "false")
            << ",\n  \"geometry_matches\": " << (geometryMatches ? "true" : "false") << ",\n  \"completed_frames\": " << completed
            << ",\n  \"begin_frame_skips\": " << skipped << ",\n  \"samples\": [\n" << samples.str() << "\n  ]\n}\n";
     try { client::writeTextFile(output,result.str()); }

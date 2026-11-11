@@ -115,7 +115,8 @@ def main(arguments=None):
     root = Path(__file__).resolve().parents[1]
     if '--help' in arguments:
         print('Usage: scripts/run-client.sh [model.glb [environment.hdr]] [native options]\n'
-              'Defaults: prepared test model, local NR weights, 1024x1024.\n'
+              'Defaults: prepared test model, local NR weights, initial window 1024x1024.\n'
+              'Render/NR resolution follows the actual window size; --width/--height request its initial size.\n'
               'Check only: scripts/check-gpu.sh [--json]\n'
               'Options: --model DIR --width N --height N --nr 0|1 --temporal 0|1\n'
               'Benchmark: --benchmark-warmup 30 --benchmark-frames 120 --benchmark-output result.json')

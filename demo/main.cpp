@@ -322,6 +322,7 @@ int main(int argc, char** argv) {
   SDL_Window* window = SDL_CreateWindow("DLSS 5 NR - Filament / Vulkan", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                         (int)options.width, (int)options.height, SDL_WINDOW_RESIZABLE);
   if (!window) fail(std::string("SDL_CreateWindow: ") + SDL_GetError());
+  SDL_SetWindowMinimumSize(window, 64, 64);
   SDL_StartTextInput();
   SDL_SysWMinfo wmi;
   SDL_VERSION(&wmi.version);
@@ -349,9 +350,10 @@ int main(int argc, char** argv) {
 
   // ---- views: the scene into its target, the present quad and the UI into the swapchain
   int drawableWidth = 0, drawableHeight = 0;
+  SDL_PumpEvents();
   SDL_GetWindowSize(window, &drawableWidth, &drawableHeight);
-  // Requested render size is exact even if the desktop constrains the physical window.
-  uint32_t width = options.width, height = options.height;
+  // CLI dimensions request the initial window; render at its actual client size.
+  uint32_t width = uint32_t(drawableWidth), height = uint32_t(drawableHeight);
   FrameTextures frame;
   frame.create(*engine, width, height);
 
@@ -382,8 +384,7 @@ int main(int argc, char** argv) {
   presentView->setPostProcessingEnabled(false);
   presentView->setShadowingEnabled(false);
   presentView->setFrustumCullingEnabled(false);
-  const auto initialPresent = client::letterbox(width,height,uint32_t(drawableWidth),uint32_t(drawableHeight));
-  presentView->setViewport({initialPresent.left,initialPresent.bottom,initialPresent.width,initialPresent.height});
+  presentView->setViewport({0, 0, width, height});
   PresentQuad quad;
   quad.create(*engine, *presentScene, dataDir + "/materials/present.filamat");
   quad.setTexture(frame.output);
@@ -488,9 +489,6 @@ int main(int argc, char** argv) {
   bool hasPreviousCamera = false;
   bool autoOrbit = false;
   bool mouseLook = false, mouseOrbit = false, mousePan = false;
-  bool followWindow = false;
-  int customWidth = int(width), customHeight = int(height);
-  uint32_t requestedWidth = 0, requestedHeight = 0;
   char modelPath[4096] = {};
   std::string droppedPath;
   const bool benchmarking = options.benchmarkFrames > 0;
@@ -501,7 +499,7 @@ int main(int argc, char** argv) {
   double cpuFrameMs = 0.0;
   uint32_t frameIndex = 0;
   bool running = true;
-  bool pendingResize = false;
+  bool pendingResize = true;
   int pendingScene = -1;   // a dropdown selection, loaded at the top of the next frame
 
   auto capture = [&](const std::string& name) {
@@ -522,9 +520,7 @@ int main(int argc, char** argv) {
     sceneView->setRenderTarget(frame.target);
     sceneView->setViewport({0, 0, width, height});
     sceneView->setVelocityBuffers(frame.velocity, frame.velocityDepth);
-    // Presentation follows the window; NR/scene keep the exact requested resolution.
-    const auto viewport = client::letterbox(width,height,uint32_t(drawableWidth),uint32_t(drawableHeight));
-    presentView->setViewport({viewport.left,viewport.bottom,viewport.width,viewport.height});
+    presentView->setViewport({0, 0, width, height});
     uiView->setViewport({0, 0, uint32_t(drawableWidth), uint32_t(drawableHeight)});
     imgui->setDisplaySize(drawableWidth, drawableHeight);
     quad.setTexture(frame.output);
@@ -551,10 +547,18 @@ int main(int argc, char** argv) {
       switch (event.type) {
         case SDL_QUIT: running = false; break;
         case SDL_WINDOWEVENT:
-          if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED || event.window.event == SDL_WINDOWEVENT_RESIZED) {
+          if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED || event.window.event == SDL_WINDOWEVENT_RESIZED ||
+              event.window.event == SDL_WINDOWEVENT_RESTORED || event.window.event == SDL_WINDOWEVENT_MAXIMIZED ||
+              event.window.event == SDL_WINDOWEVENT_SHOWN) {
             pendingResize = true;
             if (uiResizeTest.active()) ++uiResizeTest.resizeEvents;
           }
+          if (event.window.event == SDL_WINDOWEVENT_RESTORED || event.window.event == SDL_WINDOWEVENT_MINIMIZED) {
+            historyReset = true;
+            hasPreviousCamera = false;
+          }
+          if (benchmarking && event.window.event == SDL_WINDOWEVENT_MINIMIZED)
+            benchmarkError = "benchmark invalid: window minimized during measurement";
           break;
         case SDL_DROPFILE:
           if (!benchmarking) droppedPath = event.drop.file;
@@ -620,6 +624,7 @@ int main(int argc, char** argv) {
         default: break;
       }
     }
+    if (!benchmarkError.empty()) break;
     if (!droppedPath.empty()) {
       try {
         SceneView imported = sceneFromArguments(droppedPath,options.environmentArg);
@@ -633,26 +638,28 @@ int main(int argc, char** argv) {
       if (loadScene(pendingScene)) { hasPreviousCamera = false; historyReset = true; animationTime = 0; }
       pendingScene = -1;
     }
-    if (requestedWidth && requestedHeight) {
-      resize(requestedWidth,requestedHeight);
-      // Exact render dimensions are independent of the presentation window.
-      requestedWidth = requestedHeight = 0;
+    // A minimized surface may have zero extent even when SDL retains its old size.
+    if (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED) {
+      if (benchmarking) { benchmarkError = "benchmark invalid: window minimized during measurement"; break; }
+      historyReset = true;
       hasPreviousCamera = false;
+      SDL_Delay(10);
+      continue;
     }
     if (pendingResize) {
-      pendingResize = false;
       int w = 0, h = 0;
       SDL_GetWindowSize(window, &w, &h);
+      if (w <= 0 || h <= 0) { SDL_Delay(10); continue; }
+      pendingResize = false;
       if (w > 0 && h > 0) {
         if (benchmarking && frameIndex > 0 && (w != drawableWidth || h != drawableHeight)) {
-          benchmarkError = "benchmark invalid: window resized during measurement"; running = false;
+          benchmarkError = "benchmark invalid: window resized during measurement"; break;
         }
         drawableWidth = w; drawableHeight = h;
-        const auto viewport = client::letterbox(width,height,uint32_t(w),uint32_t(h));
-        presentView->setViewport({viewport.left,viewport.bottom,viewport.width,viewport.height});
+        presentView->setViewport({0,0,uint32_t(w),uint32_t(h)});
         uiView->setViewport({0,0,uint32_t(w),uint32_t(h)});
         imgui->setDisplaySize(w,h);
-        if (followWindow && !benchmarking && w >= 64 && h >= 64 && (uint32_t(w) != width || uint32_t(h) != height)) {
+        if (uint32_t(w) != width || uint32_t(h) != height) {
           resize(uint32_t(w),uint32_t(h)); hasPreviousCamera = false;
         }
       }
@@ -752,21 +759,7 @@ int main(int argc, char** argv) {
         ImGui::PopItemWidth(); ImGui::End(); return;
       }
       if (!importError.empty()) ImGui::TextWrapped("Import: %s",importError.c_str());
-      if (ImGui::CollapsingHeader("Resolution",ImGuiTreeNodeFlags_DefaultOpen)) {
-        if (ImGui::Button("512 x 512")) { requestedWidth = requestedHeight = 512; followWindow = false; }
-        ImGui::SameLine();
-        if (ImGui::Button("1024 x 1024")) { requestedWidth = requestedHeight = 1024; followWindow = false; }
-        ImGui::InputInt("Width",&customWidth);
-        ImGui::InputInt("Height",&customHeight);
-        if (ImGui::Button("Apply exact size")) {
-          if (customWidth >= 64 && customWidth <= 16384 && customHeight >= 64 && customHeight <= 16384) {
-            requestedWidth = uint32_t(customWidth); requestedHeight = uint32_t(customHeight); followWindow = false;
-          } else importError = "resolution must be 64..16384 in each dimension";
-        }
-        if (uiResizeTest.active()) uiResizeTest.apply.observe();
-        if (ImGui::Checkbox("Render follows window",&followWindow) && followWindow) pendingResize = true;
-        ImGui::Text("Window: %d x %d",drawableWidth,drawableHeight);
-      }
+      ImGui::TextUnformatted("Resolution follows window");
       if (ImGui::CollapsingHeader("DLSS NR", ImGuiTreeNodeFlags_DefaultOpen)) {
         if (ImGui::Checkbox("Enabled", &controls.enabled)) historyReset = true;
         if (uiResizeTest.active()) uiResizeTest.enabled.observe();
@@ -856,7 +849,7 @@ int main(int argc, char** argv) {
     cpuFrameMs = std::chrono::duration<double, std::milli>(std::chrono::high_resolution_clock::now() - cpuStart).count();
     frameIndex++;
     if (uiResizeTest.active()) {
-      uiResizeTest.frame(window,frameIndex,width,height,customWidth,customHeight,controls.enabled,uiView->getViewport());
+      uiResizeTest.frame(window,frameIndex,width,height,controls.enabled,uiView->getViewport());
       if (uiResizeTest.done) running = false;
     }
 

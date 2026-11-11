@@ -16,6 +16,7 @@
 
 #include <filagui/ImGuiHelper.h>
 #include <filament/Camera.h>
+#include <filament/Color.h>
 #include <filament/Engine.h>
 #include <filament/IndexBuffer.h>
 #include <filament/Material.h>
@@ -426,6 +427,7 @@ int main(int argc, char** argv) {
     sceneView->setMultiSampleAntiAliasingOptions({.enabled = msaa > 1, .sampleCount = (uint8_t)(msaa > 1 ? msaa : 1)});
   };
   bool backgroundEnvironment = false;
+  float3 backgroundColorSrgb{0, 0, 0};
   bool animate = true;
   int animationIndex = 0;
   std::string importError;
@@ -456,6 +458,7 @@ int main(int argc, char** argv) {
     sceneView->setScene(loaded->scene());
     exposure = view.exposure; environmentIntensity = view.environmentIntensity; sunIntensity = view.sunIntensity;
     environmentRotation = view.environmentRotation; backgroundEnvironment = view.backgroundEnvironment;
+    backgroundColorSrgb = Color::toSRGB<ACCURATE>(view.background);
     msaa = view.msaa;
     applyMsaa();
     // the camera: the view's, or a look-at of the bounds
@@ -616,7 +619,7 @@ int main(int argc, char** argv) {
             case SDLK_n: controls.enabled = !controls.enabled; historyReset = true; break;
             case SDLK_t: controls.temporal = !controls.temporal; historyReset = true; break;
             case SDLK_r: resetCamera(); hasPreviousCamera = false; historyReset = true; break;
-            case SDLK_b: backgroundEnvironment = !backgroundEnvironment; break;
+            case SDLK_b: backgroundEnvironment = !backgroundEnvironment; historyReset = true; break;
             case SDLK_c: capture("frame" + std::to_string(frameIndex)); break;
             default: break;
           }
@@ -816,7 +819,12 @@ int main(int argc, char** argv) {
           ImGui::EndCombo();
         }
         ImGui::Text("%zu renderables, %zu lights", loaded->renderableCount(), loaded->lightCount());
-        ImGui::Checkbox("Background", &backgroundEnvironment);
+        if (ImGui::ColorEdit3("Background color", &backgroundColorSrgb.x)) {
+          loaded->setBackgroundColor(Color::toLinear<ACCURATE>(backgroundColorSrgb));
+          backgroundEnvironment = false;
+          historyReset = true;
+        }
+        if (ImGui::Checkbox("HDR background", &backgroundEnvironment)) historyReset = true;
         ImGui::SliderFloat("Exposure", &exposure, 0.1f, 10.0f);
         ImGui::SliderFloat("IBL", &environmentIntensity, 0.0f, 4.0f);
         if (loaded->view().hasSun) ImGui::SliderFloat("Sun", &sunIntensity, 0.0f, 10.0f);
@@ -824,7 +832,7 @@ int main(int argc, char** argv) {
         {
           const char* msaaNames[] = {"off", "2x", "4x", "8x"};
           int msaaIndex = msaa >= 8 ? 3 : msaa >= 4 ? 2 : msaa >= 2 ? 1 : 0;
-          if (ImGui::Combo("Scene MSAA", &msaaIndex, msaaNames, 4)) { msaa = 1 << msaaIndex; applyMsaa(); }
+          if (ImGui::Combo("Scene MSAA", &msaaIndex, msaaNames, 4)) { msaa = 1 << msaaIndex; applyMsaa(); historyReset = true; }
         }
         ImGui::Text("camera %.2f %.2f %.2f", fps.position.x, fps.position.y, fps.position.z);
         ImGui::Checkbox("Orbit", &autoOrbit);

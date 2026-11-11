@@ -94,7 +94,7 @@ SceneView parseSceneView(const std::string& viewJsonPath, const std::string& dir
   }
   view.moveSpeed = number(root, "moveSpeed", 0.0f);
   view.exposure = number(root, "exposure", 1.0f);
-  view.msaa = std::max(1, std::min(8, (int)number(root, "msaa", 1.0f)));
+  view.msaa = std::max(1, std::min(8, (int)number(root, "msaa", float(view.msaa))));
   view.environmentIntensity = number(root, "environmentIntensity", 1.0f);
   if (root.has("sun")) {
     view.hasSun = true;
@@ -301,6 +301,11 @@ void LoadedScene::setSunIntensity(float intensity) {
   if (!sun_) return;
   auto& lcm = engine_.getLightManager();
   lcm.setIntensity(lcm.getInstance(utils::Entity::import((int32_t)sun_)), intensity);
+}
+
+void LoadedScene::setBackgroundColor(float3 linearColor) {
+  view_.background = linearColor;
+  colorSkybox_->setColor({linearColor, 1.0f});
 }
 
 void LoadedScene::setBackgroundEnvironment(bool environment) {

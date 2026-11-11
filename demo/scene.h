@@ -32,7 +32,7 @@ struct SceneView {
   float fov = 50.0f, nearPlane = 0.05f, farPlane = 1000.0f;
   float moveSpeed = 0.0f;   // 0: the distance to the target per second
   float exposure = 1.0f, environmentIntensity = 1.0f;
-  int msaa = 1;   // samples of the scene pass (1, 2, 4, 8): sub-pixel strands (hair grooms) need 4+
+  int msaa = 4;   // sample thin geometry by default; explicit scene settings / UI can override (1, 2, 4, 8)
   bool hasSun = false;
   filament::math::float3 sunDirection{0.5f, 0.8f, 0.3f};   // towards the sun
   float sunIntensity = 1.0f;
@@ -63,6 +63,8 @@ class LoadedScene {
   // the look controls (the UI's): applied to the lights / camera exposure by the app each frame
   void setEnvironmentIntensity(float intensity);
   void setSunIntensity(float intensity);
+  // Linear RGB; changes the solid skybox without affecting environment lighting.
+  void setBackgroundColor(filament::math::float3 linearColor);
   void setBackgroundEnvironment(bool environment);
   void setEnvironmentRotation(float radians);
 

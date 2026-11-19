@@ -91,3 +91,62 @@ else()
     target_link_libraries(dlss5-demo PRIVATE pthread dl xcb X11)
 endif()
 set_target_properties(dlss5-demo PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${ROOT}/build/demo BUILD_RPATH "$ORIGIN/../lib")
+
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    find_package(X11 REQUIRED COMPONENTS Xcomposite)
+    find_package(SDL2 2.0.19 CONFIG REQUIRED)
+    set(imgui_dir ${FILAMENT_SRC}/third_party/imgui)
+    add_executable(dlss5-live live_main.cpp live_x11.cpp live_nr.cpp live_processing.cpp live_controls.cpp
+        live_framegen.cpp live_rife.cpp live_mako.cpp
+        ${imgui_dir}/backends/imgui_impl_sdl2.cpp ${imgui_dir}/backends/imgui_impl_sdlrenderer2.cpp)
+    target_sources(dlss5-demo PRIVATE live_rife.cpp live_mako.cpp)
+    add_executable(live-nr-stability-test EXCLUDE_FROM_ALL ../tests/live_nr_stability.cpp live_nr.cpp)
+    target_include_directories(live-nr-stability-test PRIVATE ${FILAMENT_SRC}/third_party/stb)
+    target_link_libraries(live-nr-stability-test PRIVATE nr)
+    set_target_properties(live-nr-stability-test PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${ROOT}/build/demo BUILD_RPATH "$ORIGIN/../lib")
+    target_compile_definitions(dlss5-live PRIVATE FILAMENT_SUPPORTS_X11)
+    target_include_directories(dlss5-live PRIVATE ${imgui_dir})
+    target_link_libraries(dlss5-live PRIVATE nr SDL2::SDL2 ${FILAMENT_LIB}/libimgui.a
+        X11::Xcomposite X11::X11 ${CMAKE_DL_LIBS} pthread)
+    if (TARGET X11::Xext AND X11_XShm_FOUND)
+        target_compile_definitions(dlss5-live PRIVATE LIVE_X11_SHM)
+        target_link_libraries(dlss5-live PRIVATE X11::Xext)
+    endif()
+    find_package(CUDAToolkit QUIET)
+    add_executable(live-multipliers-test EXCLUDE_FROM_ALL ../tests/live_multipliers.cpp
+        live_framegen.cpp live_rife.cpp live_mako.cpp)
+    target_include_directories(live-multipliers-test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+    target_link_libraries(live-multipliers-test PRIVATE ${CMAKE_DL_LIBS})
+    set_target_properties(live-multipliers-test PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${ROOT}/build/demo BUILD_RPATH "$ORIGIN/../lib")
+    if (CUDAToolkit_FOUND AND CUDAToolkit_NVCC_EXECUTABLE)
+        target_compile_definitions(dlss5-demo PRIVATE LIVE_NVIDIA_FLOW)
+        add_executable(live-framegen-caption-test EXCLUDE_FROM_ALL ../tests/live_framegen_captions.cpp live_framegen.cpp)
+        target_include_directories(live-framegen-caption-test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+        target_link_libraries(live-framegen-caption-test PRIVATE ${CMAKE_DL_LIBS})
+        set_target_properties(live-framegen-caption-test PROPERTIES
+            RUNTIME_OUTPUT_DIRECTORY ${ROOT}/build/demo BUILD_RPATH "$ORIGIN/../lib")
+        set(midpoint_ptx ${ROOT}/build/data/shaders/live_midpoint.ptx)
+        add_custom_command(OUTPUT ${midpoint_ptx}
+            COMMAND ${CMAKE_COMMAND} -E make_directory ${ROOT}/build/data/shaders
+            COMMAND ${CUDAToolkit_NVCC_EXECUTABLE} --ptx -arch=compute_75 -O3
+                ${CMAKE_CURRENT_SOURCE_DIR}/shaders/live_midpoint.cu -o ${midpoint_ptx}
+            DEPENDS shaders/live_midpoint.cu live_flow_quality.h VERBATIM)
+        add_custom_target(live-midpoint-ptx DEPENDS ${midpoint_ptx})
+        foreach(target dlss5-live live-framegen-caption-test live-multipliers-test)
+            target_compile_definitions(${target} PRIVATE LIVE_NVIDIA_FLOW)
+            target_include_directories(${target} PRIVATE ${ROOT}/third_party/nvidia-optical-flow ${CUDAToolkit_INCLUDE_DIRS})
+            add_dependencies(${target} live-midpoint-ptx)
+        endforeach()
+        file(MAKE_DIRECTORY ${ROOT}/build/licenses/nvidia-optical-flow)
+        configure_file(${ROOT}/third_party/nvidia-optical-flow/LICENSE
+            ${ROOT}/build/licenses/nvidia-optical-flow/LICENSE COPYONLY)
+    endif()
+    configure_file(${ROOT}/scripts/client_start.py.in ${ROOT}/build/demo/client_start.py @ONLY)
+    configure_file(${ROOT}/scripts/client_launch.py ${ROOT}/build/demo/client_launch.py COPYONLY)
+    configure_file(${ROOT}/scripts/linux/kernel_resources.py ${ROOT}/build/demo/linux/kernel_resources.py COPYONLY)
+    set_target_properties(dlss5-live PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${ROOT}/build/demo BUILD_RPATH "$ORIGIN/../lib")
+    add_dependencies(dlss5-demo dlss5-live)
+endif()

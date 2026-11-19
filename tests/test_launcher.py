@@ -88,12 +88,22 @@ class LauncherTest(unittest.TestCase):
    for manifest in ([],dict(valid,stages=[]),dict(valid,stages={}),dict(valid,totals=[]),dict(valid,tensors={}),dict(valid,stages=[None]*11)):
     path.write_text(json.dumps(manifest))
     with self.subTest(manifest=manifest),self.assertRaisesRegex(ValueError,'[Mm]odel|[Mm]anifest'):mod.check_resources(root,mod.native_arguments(root,[]))
+ def test_mode_selection_does_not_probe_gpu_or_require_assets(self):
+  mod=self.module()
+  with tempfile.TemporaryDirectory() as directory:
+   root=pathlib.Path(directory)
+   picker=root/'build/demo/client_start.py';picker.parent.mkdir(parents=True);picker.touch()
+   for args in ([], ['--live']):
+    with patch.object(mod.os, 'execv', side_effect=SystemExit(0)) as start, patch.object(subprocess,'run') as probe:
+     with self.assertRaises(SystemExit):mod.main(args,root=root)
+     start.assert_called_once_with('/usr/bin/python3',['/usr/bin/python3',str(picker),*args])
+     probe.assert_not_called()
  def test_launch_exit_code_and_paths_with_spaces(self):
   with tempfile.TemporaryDirectory(prefix='Native NR test ') as tmp:
    root=pathlib.Path(tmp)
    (root/'scripts/linux').mkdir(parents=True);shutil.copy(MODULE,root/'scripts/client_launch.py');shutil.copy(MODULE.parent/'linux/kernel_resources.py',root/'scripts/linux/kernel_resources.py')
    model=self.fixture(root)
-   run=lambda:subprocess.run([sys.executable,str(root/'scripts/client_launch.py')],cwd='/',capture_output=True,text=True)
+   run=lambda:subprocess.run([sys.executable,str(root/'scripts/client_launch.py'),'--debug'],cwd='/',capture_output=True,text=True)
    self.assertEqual(run().returncode,17)
    (root/'build/nr-doctor').write_text('#!/bin/sh\nexit 2\n')
    self.assertEqual(run().returncode,2)

@@ -69,6 +69,26 @@ float proxyComponent(float scene, float paperWhite) {
   return roundF16(srgbEncode(value));
 }
 
+// Screen captures already contain display-referred sRGB code values. Matching the model's
+// half-precision proxy here avoids applying its scene-to-display shoulder a second time.
+#ifdef NR_SCREEN_CAPTURE
+layout(std430, set = 0, binding = 0) readonly buffer Screen { uint pixels[]; };
+layout(push_constant) uniform Params { NrParams params; };
+vec4 sourcePixel(ivec2 p) { return unpackUnorm4x8(pixels[uint(p.y) * params.sourceWidth + uint(p.x)]); }
+vec3 displayProxy(vec3 rgb, float paper) {
+  return vec3(roundF16(rgb.r), roundF16(rgb.g), roundF16(rgb.b));
+}
+#else
+layout(set = 0, binding = 0) uniform sampler2D sceneColor;
+layout(set = 0, binding = 1) uniform sampler2D historyPrev;
+layout(set = 0, binding = 2) uniform sampler2D motionTex;
+layout(std140, set = 0, binding = 4) uniform Params { NrParams params; };
+vec4 sourcePixel(ivec2 p) { return texelFetch(sceneColor, p, 0); }
+vec3 displayProxy(vec3 rgb, float paper) {
+  return vec3(proxyComponent(rgb.r, paper), proxyComponent(rgb.g, paper), proxyComponent(rgb.b, paper));
+}
+#endif
+
 ivec2 motionTexel(sampler2D motionTex, vec2 pixel, vec2 valid) {
   ivec2 size = textureSize(motionTex, 0);
   return min(ivec2((pixel + 0.5) / valid * vec2(size)), size - 1);

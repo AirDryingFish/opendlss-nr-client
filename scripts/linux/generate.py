@@ -36,6 +36,10 @@ def shaders():
         for src in sorted(folder.rglob('*.comp') if recursive else folder.glob('*.comp')):
             name = src.name + '.spv' if recursive else src.stem + '.spv'
             run(GLSLANG, '-V', '--target-env', 'vulkan1.3', '-I' + str(folder), src, '-o', output/name)
+            if recursive and src.name in ('nr_preprocess.comp', 'nr_composite.comp'):
+                live_name = name.replace('nr_', 'live_', 1)
+                run(GLSLANG, '-V', '--target-env', 'vulkan1.3', '-DNR_SCREEN_CAPTURE=1',
+                    '-I' + str(folder), src, '-o', output/live_name)
 
 def materials():
     output = BUILD / 'data/materials'

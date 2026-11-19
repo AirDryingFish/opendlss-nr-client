@@ -1,0 +1,1 @@
+NVIDIA Optical Flow CUDA API 2.0 headers, from commit `edb50da3cf849840d680249aa6dbef248ebce2ca` of [NVIDIA/NVIDIAOpticalFlowSDK](https://github.com/NVIDIA/NVIDIAOpticalFlowSDK/tree/edb50da3cf849840d680249aa6dbef248ebce2ca). Each header carries its BSD license. The optical-flow implementation is supplied by the installed NVIDIA Linux driver.

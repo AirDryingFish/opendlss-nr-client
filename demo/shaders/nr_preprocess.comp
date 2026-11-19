@@ -6,11 +6,7 @@
 
 layout(local_size_x = 8, local_size_y = 8) in;
 
-layout(set = 0, binding = 0) uniform sampler2D sceneColor;      // rgba16f, linear HDR (top-down rows)
-layout(set = 0, binding = 1) uniform sampler2D historyPrev;     // rgba16f neural half surface (linear sampler)
-layout(set = 0, binding = 2) uniform sampler2D motionTex;       // rg16f: current -> previous, uv units
 layout(std430, set = 0, binding = 3) writeonly buffer Features { vec4 features[]; };   // 4 x vec4 per pixel (coalesced 16 B stores)
-layout(std140, set = 0, binding = 4) uniform Params { NrParams params; };
 
 float hashUniform(uint value) {
   uint mixed = value;
@@ -29,6 +25,11 @@ vec3 gaussian3(uint x, uint y, uint seed) {
   float u1 = hashUniform(base * 0xfa6dc5f9u + 0x4712a88eu);
   float u2 = hashUniform(base * 0xcaa5b80du + 0x21dd796bu);
   float u3 = hashUniform(base * 0x83232c31u + 0x3463e0acu);
+#ifdef NR_SCREEN_CAPTURE
+  // A zero 24-bit draw would send infinity into the network at fixed screen pixels.
+  u0 = max(u0, exp2(-24.0));
+  u2 = max(u2, exp2(-24.0));
+#endif
   float radius0 = sqrt(log2(u0) * uintBitsToFloat(0x3f317218u) * -2.0);
   float radius1 = sqrt(log2(u2) * uintBitsToFloat(0x3f317218u) * -2.0);
   float tau = uintBitsToFloat(0x40c90fdbu);
@@ -42,10 +43,9 @@ void main() {
   int reflectedY = id.y < params.validHeight ? int(id.y) : 2 * int(params.validHeight) - int(id.y) - 2;
   uint sourceX = uint(clamp(reflectedX, 0, int(params.sourceWidth) - 1));
   uint sourceY = uint(clamp(reflectedY, 0, int(params.sourceHeight) - 1));
-  vec4 raw = texelFetch(sceneColor, ivec2(sourceX, sourceY), 0);
+  vec4 raw = sourcePixel(ivec2(sourceX, sourceY));
   vec3 scene = vec3(finiteNonnegative(raw.r), finiteNonnegative(raw.g), finiteNonnegative(raw.b));
-  vec3 proxy = vec3(proxyComponent(scene.r, params.paperWhite), proxyComponent(scene.g, params.paperWhite),
-                    proxyComponent(scene.b, params.paperWhite));
+  vec3 proxy = displayProxy(scene, params.paperWhite);
   vec3 centered = vec3(roundF16(roundF16(roundF16(proxy.r) - 0.5) * 0.125),
                        roundF16(roundF16(roundF16(proxy.g) - 0.5) * 0.125),
                        roundF16(roundF16(roundF16(proxy.b) - 0.5) * 0.125));
@@ -55,11 +55,13 @@ void main() {
   // lanes 7-9: the reprojected previous output, centred like the proxy; without a history (a reset, or a surface the
   // previous frame did not show) the current proxy stands in, as on the first frame
   vec3 history = centered;
+#ifndef NR_SCREEN_CAPTURE
   if (params.historyValid != 0u && hasHistory(motionTex, vec2(sourceX, sourceY), vec2(params.validWidth, params.validHeight))) {
     vec3 h = historySample(historyPrev, motionTex, vec2(sourceX, sourceY), vec2(params.validWidth, params.validHeight));
     history = vec3(roundF16(roundF16(roundF16(h.r) - 0.5) * 0.125), roundF16(roundF16(roundF16(h.g) - 0.5) * 0.125),
                    roundF16(roundF16(roundF16(h.b) - 0.5) * 0.125));
   }
+#endif
   features[base + 1u] = vec4(centered, history.r);
   features[base + 2u] = vec4(history.g, history.b, params.style / 128.0, roundF16(params.localTone));
   features[base + 3u] = vec4(roundF16(params.autoMask > 0.0 ? 1.0 : params.localStructure),

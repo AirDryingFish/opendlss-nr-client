@@ -290,16 +290,20 @@ Context::~Context() {
   }
 }
 
-uint32_t Context::findMemoryType(uint32_t typeBits, VkMemoryPropertyFlags required) {
+uint32_t Context::findMemoryType(uint32_t typeBits, VkMemoryPropertyFlags required, VkMemoryPropertyFlags preferred) {
+  uint32_t fallback = UINT32_MAX;
   for (uint32_t index = 0; index < memoryProperties_.memoryTypeCount; ++index) {
-    if ((typeBits & (1u << index)) &&
-        (memoryProperties_.memoryTypes[index].propertyFlags & required) == required)
-      return index;
+    const auto flags = memoryProperties_.memoryTypes[index].propertyFlags;
+    if (!(typeBits & (1u << index)) || (flags & required) != required) continue;
+    if ((flags & preferred) == preferred) return index;
+    if (fallback == UINT32_MAX) fallback = index;
   }
+  if (fallback != UINT32_MAX) return fallback;
   throw std::runtime_error("no suitable memory type");
 }
 
-Buffer Context::createBuffer(VkDeviceSize size, bool hostVisible, const char* label, VkBufferUsageFlags extra) {
+Buffer Context::createBuffer(VkDeviceSize size, bool hostVisible, const char* label, VkBufferUsageFlags extra,
+                             VkMemoryPropertyFlags preferredMemory) {
   Buffer result;
   result.size = std::max<VkDeviceSize>(size, 16);
   result.hostVisible = hostVisible;
@@ -320,7 +324,7 @@ Buffer Context::createBuffer(VkDeviceSize size, bool hostVisible, const char* la
   allocateInfo.memoryTypeIndex = findMemoryType(
       requirements.memoryTypeBits,
       hostVisible ? (VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)
-                  : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+                  : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, preferredMemory);
   VK_CHECK(vkAllocateMemory(device_, &allocateInfo, nullptr, &result.memory));
   VK_CHECK(vkBindBufferMemory(device_, result.buffer, result.memory, 0));
   if (hostVisible) VK_CHECK(vkMapMemory(device_, result.memory, 0, VK_WHOLE_SIZE, 0, &result.mapped));

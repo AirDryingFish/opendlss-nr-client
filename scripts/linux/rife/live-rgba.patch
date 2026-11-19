@@ -1,0 +1,129 @@
+diff --git a/src/rife.cpp b/src/rife.cpp
+index 66ce4c5..909becf 100644
+--- a/src/rife.cpp
++++ b/src/rife.cpp
+@@ -109,15 +109,11 @@ static void load_param_model(ncnn::Net& net, const std::wstring& modeldir, const
+     }
+ }
+ #else
+-static void load_param_model(ncnn::Net& net, const std::string& modeldir, const char* name)
++static int load_param_model(ncnn::Net& net, const std::string& modeldir, const char* name)
+ {
+-    char parampath[256];
+-    char modelpath[256];
+-    sprintf(parampath, "%s/%s.param", modeldir.c_str(), name);
+-    sprintf(modelpath, "%s/%s.bin", modeldir.c_str(), name);
+-
+-    net.load_param(parampath);
+-    net.load_model(modelpath);
++    const std::string prefix = modeldir + "/" + name;
++    if (net.load_param((prefix + ".param").c_str()) != 0) return -1;
++    return net.load_model((prefix + ".bin").c_str());
+ }
+ #endif
+ 
+@@ -155,7 +151,7 @@ int RIFE::load(const std::string& modeldir)
+         load_param_model(fusionnet, modeldir, L"fusionnet");
+     }
+ #else
+-    load_param_model(flownet, modeldir, "flownet");
++    if (load_param_model(flownet, modeldir, "flownet") != 0) return -1;
+     if (!rife_v4)
+     {
+         load_param_model(contextnet, modeldir, "contextnet");
+@@ -2483,13 +2479,22 @@ int RIFE::process_v4(const ncnn::Mat& in0image, const ncnn::Mat& in1image, float
+     const unsigned char* pixel1data = (const unsigned char*)in1image.data;
+     const int w = in0image.w;
+     const int h = in0image.h;
+-    const int channels = 3;//in0image.elempack;
++    const int channels = 4; // Live capture supplies tightly packed RGBA8.
+ 
+ //     fprintf(stderr, "%d x %d\n", w, h);
+ 
+     ncnn::VkAllocator* blob_vkallocator = vkdev->acquire_blob_allocator();
+     ncnn::VkAllocator* staging_vkallocator = vkdev->acquire_staging_allocator();
+ 
++    struct Allocators {
++        ncnn::VulkanDevice* device;
++        ncnn::VkAllocator* blob;
++        ncnn::VkAllocator* staging;
++        ~Allocators() {
++            device->reclaim_blob_allocator(blob);
++            device->reclaim_staging_allocator(staging);
++        }
++    } allocators{vkdev, blob_vkallocator, staging_vkallocator};
+     ncnn::Option opt = flownet.opt;
+     opt.blob_vkallocator = blob_vkallocator;
+     opt.workspace_vkallocator = blob_vkallocator;
+@@ -3092,7 +3097,7 @@ int RIFE::process_v4(const ncnn::Mat& in0image, const ncnn::Mat& in1image, float
+                 ex.input("flow2", flow[2]);
+                 ex.input("flow3", flow[3]);
+ 
+-                ex.extract("out0", out_gpu_padded, cmd);
++                if (ex.extract("out0", out_gpu_padded, cmd) != 0 || out_gpu_padded.empty()) return -1;
+             }
+ 
+             ncnn::VkMat out_gpu_padded_reversed;
+@@ -3142,7 +3147,7 @@ int RIFE::process_v4(const ncnn::Mat& in0image, const ncnn::Mat& in1image, float
+             ex.input("in0", in0_gpu_padded);
+             ex.input("in1", in1_gpu_padded);
+             ex.input("in2", timestep_gpu_padded);
+-            ex.extract("out0", out_gpu_padded, cmd);
++            if (ex.extract("out0", out_gpu_padded, cmd) != 0 || out_gpu_padded.empty()) return -1;
+         }
+ 
+         if (opt.use_fp16_storage && opt.use_int8_storage)
+@@ -3183,7 +3188,7 @@ int RIFE::process_v4(const ncnn::Mat& in0image, const ncnn::Mat& in1image, float
+ 
+         cmd.record_clone(out_gpu, out, opt);
+ 
+-        cmd.submit_and_wait();
++        if (cmd.submit_and_wait() != 0) return -1;
+ 
+         if (!(opt.use_fp16_storage && opt.use_int8_storage))
+         {
+@@ -3195,8 +3200,6 @@ int RIFE::process_v4(const ncnn::Mat& in0image, const ncnn::Mat& in1image, float
+         }
+     }
+ 
+-    vkdev->reclaim_blob_allocator(blob_vkallocator);
+-    vkdev->reclaim_staging_allocator(staging_vkallocator);
+ 
+     return 0;
+ }
+diff --git a/src/rife_postproc.comp b/src/rife_postproc.comp
+index 0dcb761..3c3e8ba 100644
+--- a/src/rife_postproc.comp
++++ b/src/rife_postproc.comp
+@@ -49,12 +49,13 @@ void main()
+ #if NCNN_int8_storage
+     int v_offset = gy * p.outw + gx;
+ 
++    if (gz == 0) top_blob_data[v_offset * 4 + 3] = uint8_t(255);
+     uint v32 = clamp(uint(floor(v)), 0, 255);
+ 
+     if (bgr == 0)
+-        top_blob_data[v_offset * 3 + gz] = uint8_t(v32);
++        top_blob_data[v_offset * 4 + gz] = uint8_t(v32);
+     else
+-        top_blob_data[v_offset * 3 + 2 - gz] = uint8_t(v32);
++        top_blob_data[v_offset * 4 + 2 - gz] = uint8_t(v32);
+ #else
+     int v_offset = gz * p.outcstep + gy * p.outw + gx;
+ 
+diff --git a/src/rife_preproc.comp b/src/rife_preproc.comp
+index e671b1b..a77f40d 100644
+--- a/src/rife_preproc.comp
++++ b/src/rife_preproc.comp
+@@ -51,9 +51,9 @@ void main()
+     float v;
+ 
+     if (bgr == 0)
+-        v = float(uint(bottom_blob_data[v_offset * 3 + gz]));
++        v = float(uint(bottom_blob_data[v_offset * 4 + gz]));
+     else
+-        v = float(uint(bottom_blob_data[v_offset * 3 + 2 - gz]));
++        v = float(uint(bottom_blob_data[v_offset * 4 + 2 - gz]));
+ #else
+     int v_offset = gz * p.cstep + gy * p.w + gx;
+ 

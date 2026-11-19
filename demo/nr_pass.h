@@ -131,7 +131,6 @@ class NrPass {
   ExternalView color_, velocity_;
   VkSampler linearSampler_ = VK_NULL_HANDLE, nearestSampler_ = VK_NULL_HANDLE;
   vk::Buffer params_[2];
-  struct ParamsBlock;
 
   VkDescriptorSetLayout computeSetLayout_ = VK_NULL_HANDLE, unpackSetLayout_ = VK_NULL_HANDLE;
   VkPipelineLayout computeLayout_ = VK_NULL_HANDLE, unpackLayout_ = VK_NULL_HANDLE;

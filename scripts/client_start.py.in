@@ -1,0 +1,115 @@
+"""Linux startup window. It opens a renderer only after a mode and source are chosen."""
+import os
+from pathlib import Path
+import subprocess
+import sys
+
+try:
+    import gi
+    gi.require_version('Gtk', '3.0')
+    from gi.repository import Gtk
+except (ImportError, ValueError) as error:
+    sys.exit(f'Cannot open the mode chooser ({error}). Install python3-gi and gir1.2-gtk-3.0.')
+
+
+def choose_mode(live=False):
+    binary_dir = Path(__file__).resolve().parent
+    result = []
+    window = Gtk.Window(title='OpenDLSS-NR')
+    window.set_position(Gtk.WindowPosition.CENTER)
+    window.set_resizable(False)
+    window.connect('destroy', Gtk.main_quit)
+    stack = Gtk.Stack()
+    stack.set_homogeneous(False)
+    window.add(stack)
+
+    def page(name, title):
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        box.set_border_width(22)
+        heading = Gtk.Label(xalign=0)
+        heading.set_markup(f'<big><b>{title}</b></big>')
+        box.pack_start(heading, False, False, 0)
+        stack.add_named(box, name)
+        return box
+
+    def button(box, text, callback):
+        action = Gtk.Button(label=text)
+        action.connect('clicked', lambda _: callback())
+        box.pack_start(action, True, True, 0)
+
+    def finish(args):
+        result.extend(args)
+        window.destroy()
+
+    modes = page('modes', 'Choose a mode')
+    button(modes, 'Live  ·  Capture a window or screen region', lambda: stack.set_visible_child_name('live'))
+    button(modes, 'Debug  ·  Open the 3D scene viewer', lambda: finish(['--debug']))
+
+    capture = page('live', 'Live capture')
+    nr = Gtk.CheckButton(label='Neural rendering (NR)')
+    model_dir = Path(os.environ.get('DLSS5VK_MODEL') or binary_dir.parent.parent / 'models/nr')
+    nr.set_active((model_dir / 'manifest.json').is_file())
+    nr.set_tooltip_text(f'NR starts enabled when {model_dir / "manifest.json"} exists. '
+                        'You can also preview or use frame generation with NR off.')
+    capture.pack_start(nr, False, False, 0)
+    installed = subprocess.check_output([str(binary_dir / 'dlss5-live'), '--list-fg-backends'], text=True)
+    backends = dict(line.split('\t', 1) for line in installed.splitlines())
+    generation = Gtk.Box(spacing=12)
+    generation.pack_start(Gtk.Label(label='Frame generation', xalign=0), True, True, 0)
+    fg = Gtk.ComboBoxText()
+    fg.append('off', 'Off')
+    for key, label in backends.items():
+        fg.append(key, label)
+    fg.set_active_id('off')
+    if len(backends) < 3:
+        fg.set_tooltip_text('Optional Vulkan backends: scripts/linux/prepare-rife.sh or prepare-mako.sh.')
+    generation.pack_end(fg, False, False, 0)
+    capture.pack_start(generation, False, False, 0)
+    ratio_row = Gtk.Box(spacing=12)
+    ratio_row.pack_start(Gtk.Label(label='Multiplier', xalign=0), True, True, 0)
+    ratio = Gtk.ComboBoxText()
+    for number in (2, 3, 4):
+        ratio.append(str(number), f'{number}×')
+    ratio.set_active(0)
+    ratio_row.set_sensitive(False)
+    fg.connect('changed', lambda combo: ratio_row.set_sensitive(combo.get_active_id() != 'off'))
+    ratio_row.pack_end(ratio, False, False, 0)
+    capture.pack_start(ratio_row, False, False, 0)
+    settings = Gtk.Box(spacing=12)
+    settings.pack_start(Gtk.Label(label='Capture FPS', xalign=0), True, True, 0)
+    fps = Gtk.ComboBoxText()
+    for value, label in [('30', '30'), ('60', '60'), ('0', 'Unlimited')]:
+        fps.append(value, label)
+    fps.set_active(0)
+    settings.pack_end(fps, False, False, 0)
+    capture.pack_start(settings, False, False, 0)
+
+    def pick(flag):
+        selected = fg.get_active_id()
+        backend = selected if selected != 'off' else next(iter(backends), 'flow')
+        finish([str(binary_dir / 'dlss5-live'), flag, 'pick', '--nr', str(int(nr.get_active())),
+                '--frame-gen', str(int(selected != 'off')), '--fg-backend', backend,
+                '--fg-multiplier', ratio.get_active_id(), '--fps', fps.get_active_id()])
+
+    sources = Gtk.Box(spacing=8, homogeneous=True)
+    button(sources, 'Pick window…', lambda: pick('--window'))
+    button(sources, 'Pick region…', lambda: pick('--region'))
+    capture.pack_start(sources, False, False, 0)
+    button(capture, 'Back', lambda: stack.set_visible_child_name('modes'))
+    window.show_all()
+    stack.set_visible_child_name('live' if live else 'modes')
+    Gtk.main()
+    if result == ['--debug']:
+        from client_launch import main
+        return main(result, root=binary_dir.parent.parent)
+    if result:
+        os.environ['SDL_VIDEODRIVER'] = 'x11'
+        os.execv(result[0], result)
+    return 0
+
+
+if __name__ == '__main__':
+    try:
+        sys.exit(choose_mode(sys.argv[1:] == ['--live']))
+    except (OSError, subprocess.CalledProcessError) as error:
+        sys.exit(f'Cannot start the selected mode: {error}')

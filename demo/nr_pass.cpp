@@ -7,19 +7,9 @@
 #include <fstream>
 #include <stdexcept>
 
+#include "nr_shader_params.h"
 #include "numeric.h"
 #include "reference.h"
-
-struct NrPass::ParamsBlock {
-  uint32_t fullWidth, fullHeight, validWidth, validHeight;
-  uint32_t sourceWidth, sourceHeight;
-  float autoMask, paperWhite, colorStrength, intensity, localTone, localStructure, skinStructure, style;
-  uint32_t historyValid, seed, nrEnabled, pad0;
-  float blendScale, pad1;
-  float styleExposure, styleContrast, styleGamma, styleSaturation;
-  float styleHue, styleVibrance, styleStrength;
-  uint32_t styleMode;
-};
 
 namespace {
 struct UnpackPush { float background[16]; uint32_t width, height; };
@@ -52,7 +42,7 @@ NrPass::NrPass(const GpuDevice& device, uint32_t width, uint32_t height, const s
   VK_CHECK(vkCreateSampler(device_, &samplerInfo, nullptr, &nearestSampler_));
   // the parameters are written into the command stream (vkCmdUpdateBuffer): device-local, one per parity
   for (vk::Buffer& b : params_)
-    b = context_->createBuffer(sizeof(ParamsBlock), false, "nr params", VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT);
+    b = context_->createBuffer(sizeof(NrShaderParams), false, "nr params", VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT);
 
   // ---- compute pipelines: preprocess / composite share one layout (7 bindings); the motion unpack has its own
   VkDescriptorSetLayoutBinding bindings[7] = {
@@ -282,7 +272,7 @@ void NrPass::updateComputeSets() {
       VkDescriptorImageInfo motion{nearestSampler_, sceneMotion_.view, VK_IMAGE_LAYOUT_GENERAL};
       const nr::Activation& head = graph_->head();
       VkDescriptorBufferInfo buffer{k == 0 ? features_->buffer.buffer : head.buffer.buffer, 0, VK_WHOLE_SIZE};
-      VkDescriptorBufferInfo params{params_[h].buffer, 0, sizeof(ParamsBlock)};
+      VkDescriptorBufferInfo params{params_[h].buffer, 0, sizeof(NrShaderParams)};
       VkDescriptorImageInfo out{VK_NULL_HANDLE, output_.view, VK_IMAGE_LAYOUT_GENERAL};
       VkDescriptorImageInfo next{VK_NULL_HANDLE, history_[1 - h].view, VK_IMAGE_LAYOUT_GENERAL};
       VkWriteDescriptorSet writes[7]{};
@@ -339,7 +329,7 @@ NrPass::Frame NrPass::beginFrame(const NrControls& controls, const float backgro
   frame.collectTimings = timingSlot.reserve(frames_,controls.enabled);
   if (frame.collectTimings) queriesWritten_[historyIndex_] = false;
   memcpy(frame.background, background, sizeof(frame.background));
-  ParamsBlock block{};
+  NrShaderParams block{};
   block.fullWidth = geometry_.fullWidth; block.fullHeight = geometry_.fullHeight;
   block.validWidth = width_; block.validHeight = height_;
   block.sourceWidth = width_; block.sourceHeight = height_;
@@ -354,7 +344,7 @@ NrPass::Frame NrPass::beginFrame(const NrControls& controls, const float backgro
   block.styleExposure = controls.styleExposure; block.styleContrast = controls.styleContrast; block.styleGamma = controls.styleGamma;
   block.styleSaturation = controls.styleSaturation; block.styleHue = controls.styleHue; block.styleVibrance = controls.styleVibrance;
   block.styleStrength = controls.styleStrength; block.styleMode = controls.styleCustom ? 1u : 0u;
-  static_assert(sizeof(ParamsBlock) <= sizeof(frame.params));
+  static_assert(sizeof(NrShaderParams) <= sizeof(frame.params));
   memcpy(frame.params, &block, sizeof(block));
   return frame;
 }
@@ -423,7 +413,7 @@ void NrPass::record(void* commandBuffer, const Frame& frame, const GpuImage& col
     buildComputeCommands();
   }
   // this frame's parameters, in the command stream
-  vkCmdUpdateBuffer(commands, params_[h].buffer, 0, sizeof(ParamsBlock), frame.params);
+  vkCmdUpdateBuffer(commands, params_[h].buffer, 0, sizeof(NrShaderParams), frame.params);
   VkMemoryBarrier paramsBarrier{VK_STRUCTURE_TYPE_MEMORY_BARRIER};
   paramsBarrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT; paramsBarrier.dstAccessMask = VK_ACCESS_UNIFORM_READ_BIT;
   vkCmdPipelineBarrier(commands, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, 0, 1, &paramsBarrier, 0, nullptr, 0, nullptr);

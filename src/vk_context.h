@@ -100,7 +100,7 @@ class Context {
 
   // Buffers -----------------------------------------------------------------
   Buffer createBuffer(VkDeviceSize size, bool hostVisible, const char* label,
-                      VkBufferUsageFlags extra = 0);
+                      VkBufferUsageFlags extra = 0, VkMemoryPropertyFlags preferredMemory = 0);
   void destroyBuffer(Buffer& buffer);
   // Upload through a staging buffer and wait for completion.
   void upload(const Buffer& target, const void* data, VkDeviceSize size, VkDeviceSize offset = 0);
@@ -147,7 +147,7 @@ class Context {
   uint32_t maxComputeSharedMemory() const { return maxSharedMemory_; }
 
  private:
-  uint32_t findMemoryType(uint32_t typeBits, VkMemoryPropertyFlags required);
+  uint32_t findMemoryType(uint32_t typeBits, VkMemoryPropertyFlags required, VkMemoryPropertyFlags preferred);
   VkInstance instance_ = VK_NULL_HANDLE;
   VkDebugUtilsMessengerEXT messenger_ = VK_NULL_HANDLE;
   bool validation_ = false;

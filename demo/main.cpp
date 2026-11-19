@@ -61,6 +61,11 @@ namespace ImGui { IMGUI_API void ClearIniSettings(); }
 #include "asset_catalog.h"
 #include "environment_presets.h"
 #include "model_file_browser.h"
+#ifdef __linux__
+#include "live_preview_launcher.h"
+#include "live_backends.h"
+#include <unistd.h>
+#endif
 #include "../tests/ui_resize_scenario.h"
 #include "../tests/environment_scenario.h"
 #include "../tests/asset_import_scenario.h"
@@ -165,6 +170,7 @@ Options parseOptions(int argc, char** argv) {
     std::string a = argv[i];
     auto next = [&](std::string& out) { if (i + 1 >= argc) fail("missing value for " + a + "\n\n" + kUsage); out = argv[++i]; };
     std::string v;
+    if (a == "--debug") continue;
     if (a == "--model") next(o.modelDir);
     else if (a == "--kernels") next(o.kernelDir);
     else if (a == "--scenes") next(o.scenesDir);
@@ -301,6 +307,14 @@ struct FrameTextures {
 int main(int argc, char** argv) {
   setvbuf(stdout, nullptr, _IONBF, 0);
   setvbuf(stderr, nullptr, _IONBF, 0);
+#ifdef __linux__
+  if (argc == 1) {
+    const auto selector = exeDirectory() + "client_start.py";
+    execl("/usr/bin/python3", "python3", selector.c_str(), static_cast<char*>(nullptr));
+    perror("Could not open the Live / Debug chooser");
+    return 1;
+  }
+#endif
   Options options = parseOptions(argc, argv);
   const auto routing = client::backendRouting([](const char* name) { return std::getenv(name); });
   const std::string backendLabel = routing.label();
@@ -693,7 +707,24 @@ int main(int argc, char** argv) {
     }
     ImGui::Text("%zu bundled models",assetCatalog.size());
   };
+#ifdef __linux__
+  LivePreviewLauncher livePreview;
+  int liveFpsIndex = 0;
+  int liveMultiplierIndex = 0;
+  std::vector<const char*> fgLabels{"Off"};
+  std::vector<const char*> fgIds;
+  for (const auto& backend : liveBackends()) {
+    if (backend.installed) {
+      fgIds.push_back(backend.id);
+      fgLabels.push_back(backend.label);
+    }
+  }
+  int liveFgIndex = 0;
+#endif
   while (running) {
+#ifdef __linux__
+    livePreview.poll();
+#endif
     if (uiResizeTest.active() && uiResizeTest.timedOut()) break;
     if (assetImportTest.active() && assetImportTest.timedOut()) break;
     if (benchmarking && std::chrono::duration<double>(std::chrono::steady_clock::now()-benchmarkStart).count() > 300) {
@@ -942,6 +973,32 @@ int main(int argc, char** argv) {
       if (!importError.empty()) ImGui::TextWrapped("Import: %s",importError.c_str());
       ImGui::TextUnformatted("Resolution follows window");
       if (ImGui::CollapsingHeader("Model",ImGuiTreeNodeFlags_DefaultOpen)) drawModelPicker();
+#ifdef __linux__
+      if (ImGui::CollapsingHeader("Live screen capture")) {
+        if (livePreview.active()) {
+          ImGui::TextWrapped("Live preview active. Press Esc in the preview to finish.");
+        } else {
+          constexpr int fpsLimits[] = {30, 60, 0};
+          const int fps = fpsLimits[liveFpsIndex];
+          const char* backend = fgIds.empty() ? "flow" : fgIds[std::max(0, liveFgIndex - 1)];
+          if (ImGui::Button("Pick window..."))
+            livePreview.open(exeDir + "dlss5-live", "--window", modelDir, kernelDir, fps, liveFgIndex != 0, backend, 2 + liveMultiplierIndex);
+          ImGui::SameLine();
+          if (ImGui::Button("Pick region..."))
+            livePreview.open(exeDir + "dlss5-live", "--region", modelDir, kernelDir, fps, liveFgIndex != 0, backend, 2 + liveMultiplierIndex);
+          const char* fpsLabels[] = {"30", "60", "Unlimited"};
+          ImGui::Combo("Capture FPS", &liveFpsIndex, fpsLabels, IM_ARRAYSIZE(fpsLabels));
+          ImGui::Combo("Frame generation", &liveFgIndex, fgLabels.data(), int(fgLabels.size()));
+          if (fgIds.size() < 3 && ImGui::IsItemHovered())
+            ImGui::SetTooltip("Optional Vulkan backends: scripts/linux/prepare-rife.sh or prepare-mako.sh.");
+          const char* ratios[] = {"2x", "3x", "4x"};
+          ImGui::BeginDisabled(liveFgIndex == 0);
+          ImGui::Combo("Multiplier", &liveMultiplierIndex, ratios, IM_ARRAYSIZE(ratios));
+          ImGui::EndDisabled();
+          if (!livePreview.message().empty()) ImGui::TextWrapped("%s", livePreview.message().c_str());
+        }
+      }
+#endif
       if (ImGui::CollapsingHeader("DLSS NR", ImGuiTreeNodeFlags_DefaultOpen)) {
         if (ImGui::Checkbox("Enabled", &controls.enabled)) historyReset = true;
         if (uiResizeTest.active()) uiResizeTest.enabled.observe();

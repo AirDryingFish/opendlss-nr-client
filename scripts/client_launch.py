@@ -110,18 +110,31 @@ def check_resources(root, arguments):
         raise ValueError('Scene does not exist: ' + str(scene))
 
 
-def main(arguments=None):
+def main(arguments=None, root=None):
     arguments = sys.argv[1:] if arguments is None else arguments
-    root = Path(__file__).resolve().parents[1]
+    root = Path(__file__).resolve().parents[1] if root is None else root
     if '--help' in arguments:
-        print('Usage: scripts/run-client.sh [model.glb [environment.hdr]] [native options]\n'
-              'Defaults: prepared test model, local NR weights, initial window 1024x1024.\n'
+        print('Usage: scripts/run-client.sh opens the Live / Debug chooser.\n'
+              'Debug viewer: scripts/run-client.sh --debug [model.glb [environment.hdr]] [native options]\n'
               'Render/NR resolution follows the actual window size; --width/--height request its initial size.\n'
-              'Check only: scripts/check-gpu.sh [--json]\n'
+              'Feature checks: scripts/check-features.py [--only build chooser region window nr debug flow rife mako] [--json]\n'
+              'Live setup: scripts/run-client.sh --live (use Settings or F1 in the preview)\n'
+              'Capture directly: scripts/run-client.sh --live (--window pick | --region pick) [--frame-gen 0|1] [--fg-backend flow|rife|mako] [--fg-multiplier 2|3|4] [--fps N]\n'
               'Options: --model DIR --width N --height N --nr 0|1 --temporal 0|1\n'
               'HDR preset: --environment-preset studio-small-09|kloofendal-daylight|chalk-quarry-sunset|entrance-hall\n'
               'Benchmark: --benchmark-warmup 30 --benchmark-frames 120 --benchmark-output result.json')
         return 0
+    if not arguments or arguments == ['--live']:
+        selector = root / 'build/demo/client_start.py'
+        try:
+            if not selector.is_file():
+                raise FileNotFoundError('Mode chooser is not built. Run scripts/linux/build.sh first.')
+            os.execv('/usr/bin/python3', ['/usr/bin/python3', str(selector), *arguments])
+        except OSError as error:
+            print('Cannot open the mode chooser:', error, file=sys.stderr)
+            return 1
+    if arguments[0] == '--debug':
+        arguments = arguments[1:]
     environment = os.environ.copy()
     environment['SDL_VIDEODRIVER'] = 'x11'
     environment['LD_LIBRARY_PATH'] = str(root / 'build/lib') + (':' + environment['LD_LIBRARY_PATH'] if environment.get('LD_LIBRARY_PATH') else '')

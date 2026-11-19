@@ -1,11 +1,12 @@
 The source code is licensed under the MIT License (see LICENSE). The test assets have separate provenance
 and are not covered by that source-code license (see assets/README.md). It is not affiliated with, endorsed by, or
 supported by NVIDIA Corporation. "DLSS" is a trademark of NVIDIA Corporation; it is used here only to describe
-what the network implemented by this code is compatible with. No NVIDIA software, weights, headers or
-documentation are included, and no rights under any NVIDIA intellectual property are granted.
+what the network implemented by this code is compatible with. Users supply their NVIDIA driver and model weights.
 
 Third-party components and attribution:
 
+- NVIDIA Optical Flow API headers, Copyright (c) 2020 NVIDIA Corporation, BSD-3-Clause.
+  The headers under third_party/nvidia-optical-flow retain the upstream copyright and license.
 - Filament by Google (Apache-2.0), including the third-party libraries its build brings in (SDL2 (zlib),
   Dear ImGui (MIT), stb (MIT / public domain), Draco, meshoptimizer, Basis Universal, zstd, Abseil and others,
   see its third_party/ directory): the demo renderer. third_party/filament.patch is a modification of Filament's
@@ -56,3 +57,13 @@ Third-party components and attribution:
   ports/browser-webgpu/web/vendor/basis/; see its README and LICENSE.
 - The static PE weight extractor under scripts/model/ is Copyright (c) 2026 SamG-Coder (MIT),
   with its license preserved in scripts/model/LICENSE.
+- Optional Live interpolation backends:
+  - RIFE v4.6 uses nihui/rife-ncnn-vulkan (MIT) and Tencent ncnn. The build helper pins release
+    20221029, adapts the input/output to packed RGBA, and installs notices under build/licenses/rife/.
+    https://github.com/nihui/rife-ncnn-vulkan/releases/tag/20221029
+  - MAKO FG by Eugenio Segala, v1.24. The optional helper downloads the unmodified model
+    for non-commercial research and education (CC BY-NC 4.0). The prebuilt runtime
+    is distributed under its separate free non-commercial use terms.
+    The local adapter links the runtime and transfers captured frames using Vulkan.
+    build/licenses/mako/ contains the model card, LICENSE and the runtime's THIRD_PARTY_NOTICES.
+    https://huggingface.co/eugeniosegala/MAKO-FG · https://creativecommons.org/licenses/by-nc/4.0/

@@ -1,8 +1,8 @@
 # One line ending in the repository. Windows tools all read LF; the mix was accidental.
 * text=auto eol=lf
 
-# the Filament patch is applied byte for byte to an LF checkout: no line-ending conversion
-*.patch -text
+# Preserve patch context, including the space that represents an empty context line.
+*.patch -text -whitespace
 
 # The bundled test model is a binary Git blob (no LFS required).
 assets/test-static.glb binary
@@ -15,3 +15,6 @@ assets/**/*.hdr binary
 assets/cases/LICENSES/*.txt -whitespace
 assets/environments/LICENSE.txt -whitespace
 assets/realistic-scenes/gothic-cloister-corner/license.txt -whitespace
+
+# Preserve the upstream NVIDIA SDK headers verbatim.
+third_party/nvidia-optical-flow/nvOpticalFlow*.h -whitespace

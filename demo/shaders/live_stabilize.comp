@@ -1,0 +1,76 @@
+#version 460
+// Reproject the enhancement residual onto the current capture. Captured video has no
+// engine motion vectors, so each 8x8 tile estimates a displacement from the source colors.
+layout(local_size_x = 8, local_size_y = 8) in;
+layout(std430, binding = 0) readonly buffer Source { uint src[]; };
+layout(std430, binding = 1) readonly buffer PreviousSource { uint prev[]; };
+layout(std430, binding = 2) readonly buffer PreviousResult { uint prevResult[]; };
+layout(std430, binding = 3) readonly buffer History { uint valid; };
+layout(std430, binding = 5) buffer Result { uint result[]; };
+layout(push_constant) uniform Size { uint width, height; };
+
+shared uint best;
+uint indexAt(ivec2 p) {
+    p = clamp(p, ivec2(0), ivec2(width, height) - 1);
+    return uint(p.y) * width + uint(p.x);
+}
+
+uvec3 rgb8(uint v) { return (uvec3(v) >> uvec3(0, 8, 16)) & 255u; }
+uint difference(uint a, uint b) {
+    ivec3 d = abs(ivec3(rgb8(a)) - ivec3(rgb8(b)));
+    return uint(d.r + 2 * d.g + d.b);
+}
+
+// Each candidate tests nine samples covering the tile. The low bits resolve ties
+// consistently in flat regions; the center candidate wins if the source is stationary.
+ivec2 matchTile(ivec2 origin, ivec2 center, int step, out uint error) {
+    uint lane = gl_LocalInvocationIndex;
+    if (lane == 0) best = 0xffffffffu;
+    barrier();
+    if (lane < 49) {
+        ivec2 delta = center + (ivec2(int(lane % 7), int(lane / 7)) - 3) * step;
+        uint sad = 0;
+        for (int y = 1; y < 8; y += 3) {
+            for (int x = 1; x < 8; x += 3) {
+                ivec2 p = origin + ivec2(x, y);
+                sad += difference(src[indexAt(p)], prev[indexAt(p + delta)]);
+            }
+        }
+        uint rank = (sad * 32u + uint(abs(delta.x) + abs(delta.y))) * 64u + lane;
+        atomicMin(best, rank);
+    }
+    barrier();
+    uint winner = best;
+    barrier(); // All invocations must read the winner before starting the refinement.
+    error = winner / (32u * 64u);
+    uint candidate = winner % 64u;
+    return center + (ivec2(int(candidate % 7u), int(candidate / 7u)) - 3) * step;
+}
+
+void main() {
+    if (valid == 0u) return;
+    ivec2 origin = ivec2(gl_WorkGroupID.xy) * 8;
+    uint sad;
+    ivec2 coarse = matchTile(origin, ivec2(0), 4, sad);
+    ivec2 motion = matchTile(origin, coarse, 1, sad);
+    ivec2 p = ivec2(gl_GlobalInvocationID.xy), q = p + motion;
+    if (any(greaterThanEqual(p, ivec2(width, height))) || any(lessThan(q, ivec2(0))) ||
+        any(greaterThanEqual(q, ivec2(width, height)))) return;
+
+    uint i = indexAt(p), j = indexAt(q);
+    vec3 current = vec3(rgb8(src[i])), previous = vec3(rgb8(prev[j]));
+    vec3 d = abs(current - previous);
+    float pixelError = max(d.r, max(d.g, d.b));
+    float tileError = float(sad) / 36.0;
+    float confidence = (1.0 - smoothstep(2.0, 12.0, pixelError)) *
+                       (1.0 - smoothstep(2.0, 9.0, tileError));
+    if (confidence == 0.0) return;
+
+    vec3 residual = vec3(rgb8(result[i])) - current;
+    vec3 history = vec3(rgb8(prevResult[j])) - previous;
+    // Limit the influence of a false match at an occlusion to a small color correction.
+    history = clamp(history, residual - 12.0, residual + 12.0);
+    float weight = (sad == 0u && pixelError == 0.0 && motion == ivec2(0)) ? 1.0 : 0.8 * confidence;
+    vec3 stable = current + mix(residual, history, weight);
+    result[i] = packUnorm4x8(vec4(clamp(stable / 255.0, 0.0, 1.0), unpackUnorm4x8(src[i]).a));
+}
